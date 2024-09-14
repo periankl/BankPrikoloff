@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccess.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,9 @@ namespace DataAccess.Wrapper
 {
     public interface IRepositoryWrapper
     {
+        IUserRepository User {  get; }
+
+        IFileRepository File { get; }
         void Save();
     }
 }
