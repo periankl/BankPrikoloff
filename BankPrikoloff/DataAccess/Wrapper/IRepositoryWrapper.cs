@@ -12,6 +12,12 @@ namespace DataAccess.Wrapper
         IUserRepository User {  get; }
 
         IFileRepository File { get; }
+
+        IMessageRepository Message { get; }
+
+        ITredRepository Tred { get; }
+
+        IChatRepository Chat { get; }
         void Save();
     }
 }

@@ -19,7 +19,9 @@ namespace BankPrikoloff
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IFileService, FileService>();
-
+            builder.Services.AddScoped<IMessageService, MessageService>();
+            builder.Services.AddScoped<ITredService, TredService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddControllers();
            
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
