@@ -22,6 +22,14 @@ namespace BankPrikoloff
             builder.Services.AddScoped<IMessageService, MessageService>();
             builder.Services.AddScoped<ITredService, TredService>();
             builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IDocumentService, DocumentService>();
+            builder.Services.AddScoped<IDepositTypeService, DepositTypeService>();
+            builder.Services.AddScoped<IDepositService, DepositService>();
+            builder.Services.AddScoped<ILoanService, LoanService>();
+            builder.Services.AddScoped<ILoanTypeService, LoanTypeService>();
+            builder.Services.AddScoped<IOperationHistoryService, OperationHistoryService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<ICardService, CardService>();
             builder.Services.AddControllers();
            
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

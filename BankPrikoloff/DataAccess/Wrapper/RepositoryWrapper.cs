@@ -17,6 +17,14 @@ namespace DataAccess.Wrapper
         private IMessageRepository _message;
         private ITredRepository _tred;
         private IChatRepository _chat;
+        private IDocumentRepository _document;
+        private IDepositTypeRepository _depositType;
+        private IDepositRepository _deposit;
+        private ILoanRepository _loan;
+        private ILoanTypeRepository _loanType;
+        private IOperationHistoryRepository _operationHistory;
+        private IAccountRepository _account;
+        private ICardRepository _card;
         public IUserRepository User
         {
             get
@@ -77,6 +85,101 @@ namespace DataAccess.Wrapper
             }
         }
 
+        public IDocumentRepository Document
+        {
+            get
+            {
+                if(_document == null)
+                {
+                    _document = new DocumentRepository(_repoContext);
+                }
+                return _document;
+            }
+        }
+
+        public IDepositTypeRepository DepositType
+        {
+            get
+            {
+                if (_depositType == null)
+                {
+                    _depositType = new DepositTypeRepository(_repoContext);
+                }
+                return _depositType;
+            }
+        }
+
+        public IDepositRepository Deposit
+        {
+            get
+            {
+                if (_deposit == null)
+                {
+                    _deposit = new DepositRepository(_repoContext);
+                }
+                return _deposit;
+            }
+        }
+
+        public ILoanRepository Loan
+        {
+            get
+            {
+                if (_loan == null)
+                {
+                    _loan = new LoanRepository(_repoContext);
+                }
+                return _loan;
+            }
+        }
+
+        public ILoanTypeRepository LoanType
+        {
+            get
+            {
+                if (_loanType == null)
+                {
+                    _loanType = new LoanTypeRepository(_repoContext);
+                }
+                return _loanType;
+            }
+        }
+
+        public IOperationHistoryRepository OperationHistory
+        {
+            get
+            {
+                if(_operationHistory == null)
+                {
+                    _operationHistory = new OperationHistoryRepository(_repoContext);
+                }
+                return _operationHistory;
+            }
+        }
+
+        public IAccountRepository Account
+        {
+            get
+            {
+                if(_account == null)
+                {
+                    _account = new AccountRepository(_repoContext);
+                }
+                return _account;
+            }
+        }
+
+        public ICardRepository Card
+        {
+            get
+            {
+                if(_card == null)
+                {
+                    _card = new CardRepository(_repoContext);
+                }
+                return _card;
+            }
+        }
         public RepositoryWrapper(BankContext repositoryContext)
         {
             _repoContext = repositoryContext;
