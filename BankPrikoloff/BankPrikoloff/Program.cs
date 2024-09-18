@@ -1,5 +1,6 @@
 using BusinessLogic.Interfaces;
-using DataAccess.Models;
+using Domain.Models;
+using Domain.Interfaces;
 using DataAccess.Wrapper;
 using BusinessLogic.Servises;
 using Microsoft.AspNetCore.Hosting.Server;

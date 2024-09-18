@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using DataAccess.Models;
+using Domain.Models;
+using Domain.Interfaces;
 using BusinessLogic.Interfaces;
 
 namespace BankPrikoloff.Controllers

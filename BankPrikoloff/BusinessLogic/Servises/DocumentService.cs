@@ -1,12 +1,11 @@
-﻿using DataAccess.Interfaces;
+﻿using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -22,40 +21,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<Document>> GetAll()
+        public async Task<List<Document>> GetAll()
         {
-            return _repositoryWrapper.Document.FindAll().ToListAsync();
+            return await _repositoryWrapper.Document.FindAll();
         }
 
-        public Task<Document> GetById(string id)
+        public async Task<Document> GetById(string id)
         {
-            var document = _repositoryWrapper.Document
-                .FindByCondition(x => x.DocumentId == id).First();
-            return Task.FromResult(document);
+            var document = await _repositoryWrapper.Document
+                .FindByCondition(x => x.DocumentId == id);
+            return document.First();
         }
 
-        public Task Create(Document model)
+        public async Task Create(Document model)
         {
-            _repositoryWrapper.Document.Create(model);
+            await _repositoryWrapper.Document.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(Document model)
+        public async Task Update(Document model)
         {
             _repositoryWrapper.Document.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            var document = _repositoryWrapper.Document
-                .FindByCondition(x => x.DocumentId == id).First();
+            var document = await _repositoryWrapper.Document
+                .FindByCondition(x => x.DocumentId == id);
 
-            _repositoryWrapper.Document.Delete(document);
+            _repositoryWrapper.Document.Delete(document.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,40 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<Deposit>> GetAll()
+        public async Task<List<Deposit>> GetAll()
         {
-            return _repositoryWrapper.Deposit.FindAll().ToListAsync();
+            return await _repositoryWrapper.Deposit.FindAll();
         }
 
-        public Task<Deposit> GetById(string id)
+        public async Task<Deposit> GetById(string id)
         {
-            var deposit = _repositoryWrapper.Deposit
-                .FindByCondition(x => x.DepositId == id).First();
-            return Task.FromResult(deposit);
+            var deposit = await _repositoryWrapper.Deposit
+                .FindByCondition(x => x.DepositId == id);
+            return deposit.First();
         }
 
-        public Task Create(Deposit model)
+        public async Task Create(Deposit model)
         {
-            _repositoryWrapper.Deposit.Create(model);
+            await _repositoryWrapper.Deposit.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(Deposit model)
+        public async Task Update(Deposit model)
         {
             _repositoryWrapper.Deposit.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            var deposit = _repositoryWrapper.Deposit
-                .FindByCondition(x => x.DepositId == id).First();
+            var deposit = await _repositoryWrapper.Deposit
+                .FindByCondition(x => x.DepositId == id);
 
-            _repositoryWrapper.Deposit.Delete(deposit);
+            _repositoryWrapper.Deposit.Delete(deposit.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

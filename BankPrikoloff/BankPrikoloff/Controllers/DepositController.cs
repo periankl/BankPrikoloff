@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.Interfaces;
-using DataAccess.Models;
+using Domain.Models;
 
 namespace BankPrikoloff.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,40 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<Chat>> GetAll()
+        public async Task<List<Chat>> GetAll()
         {
-            return _repositoryWrapper.Chat.FindAll().ToListAsync();
+            return await _repositoryWrapper.Chat.FindAll();
         }
 
-        public Task<Chat> GetById(int id)
+        public async Task<Chat> GetById(int id)
         {
-            var chat = _repositoryWrapper.Chat
-                .FindByCondition(x => x.ChatId == id).First();
-            return Task.FromResult(chat);
+            var chat = await _repositoryWrapper.Chat
+                .FindByCondition(x => x.ChatId == id);
+            return chat.First();
         }
 
-        public Task Create(Chat model)
+        public async Task Create(Chat model)
         {
-            _repositoryWrapper.Chat.Create(model);
+            await _repositoryWrapper.Chat.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(Chat model)
+        public async Task Update(Chat model)
         {
             _repositoryWrapper.Chat.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            var chat = _repositoryWrapper.Chat
-                .FindByCondition(x => x.ChatId == id).First();
+            var chat = await _repositoryWrapper.Chat
+                .FindByCondition(x => x.ChatId == id);
 
-            _repositoryWrapper.Chat.Delete(chat);
+            _repositoryWrapper.Chat.Delete(chat.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

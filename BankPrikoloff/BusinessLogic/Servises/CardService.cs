@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Interfaces;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,40 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<Card>> GetAll()
+        public async Task<List<Card>> GetAll()
         {
-            return _repositoryWrapper.Card.FindAll().ToListAsync();
+            return await _repositoryWrapper.Card.FindAll();
         }
 
-        public Task<Card> GetById(string id)
+        public async Task<Card> GetById(string id)
         {
-            var card = _repositoryWrapper.Card
-                .FindByCondition(x => x.CardId == id).First();
-            return Task.FromResult(card);
+            var card = await _repositoryWrapper.Card
+                .FindByCondition(x => x.CardId == id);
+            return card.First();
         }
 
-        public Task Create(Card model)
+        public async Task Create(Card model)
         {
-            _repositoryWrapper.Card.Create(model);
+            await _repositoryWrapper.Card.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(Card model)
+        public async Task Update(Card model)
         {
             _repositoryWrapper.Card.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            var card = _repositoryWrapper.Card
-                .FindByCondition(x => x.CardId == id).First();
+            var card = await _repositoryWrapper.Card
+                .FindByCondition(x => x.CardId == id);
 
-            _repositoryWrapper.Card.Delete(card);
+            _repositoryWrapper.Card.Delete(card.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

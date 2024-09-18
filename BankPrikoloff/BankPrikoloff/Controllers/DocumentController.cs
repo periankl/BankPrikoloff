@@ -1,5 +1,5 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
+using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

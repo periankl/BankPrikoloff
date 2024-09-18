@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using DataAccess.Models;
+using Domain.Models;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Servises;
 
@@ -31,14 +31,14 @@ namespace BankPrikoloff.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(DataAccess.Models.File file)
+        public async Task<IActionResult> Add(Domain.Models.File file)
         {
             await _fileService.Create(file);
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(DataAccess.Models.File file)
+        public async Task<IActionResult> Update(Domain.Models.File file)
         {
             await _fileService.Update(file);
             return Ok();

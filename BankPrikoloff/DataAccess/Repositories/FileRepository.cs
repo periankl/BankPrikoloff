@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccess.Interfaces;
-using DataAccess.Models;
+using Domain.Interfaces;
+using Domain.Models;
 
 namespace DataAccess.Repositories
 {
-    public class FileRepository : RepositoryBase<Models.File>, IFileRepository
+    public class FileRepository : RepositoryBase<Domain.Models.File>, IFileRepository
     {
         public FileRepository(BankContext repositoryContext)
             : base(repositoryContext)

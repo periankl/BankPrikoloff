@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Servises
@@ -19,37 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<Message>> GetAll()
+        public async Task<List<Message>> GetAll()
         {
-            return _repositoryWrapper.Message.FindAll().ToListAsync();
+            return await _repositoryWrapper.Message.FindAll();
         }
 
-        public Task<Message> GetById(int id)
+        public async Task<Message> GetById(int id)
         {
-            var message = _repositoryWrapper.Message.FindByCondition(x => x.MessageId == id).First();
-            return Task.FromResult(message);
+            var message = await _repositoryWrapper.Message
+                .FindByCondition(x => x.MessageId == id);
+            return message.First();
         }
 
-        public Task Create(Message model)
+        public async Task Create(Message model)
         {
-            _repositoryWrapper.Message.Create(model);
+            await _repositoryWrapper.Message.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(Message model)
+        public async Task Update(Message model)
         {
             _repositoryWrapper.Message.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            var message = _repositoryWrapper.Message.FindByCondition(x => x.MessageId == id).First();
-            _repositoryWrapper.Message.Delete(message);
+            var message = await _repositoryWrapper.Message
+                .FindByCondition(x => x.MessageId == id);
+
+            _repositoryWrapper.Message.Delete(message.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

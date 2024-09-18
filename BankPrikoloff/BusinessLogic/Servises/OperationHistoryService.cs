@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,40 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<OperationHistory>> GetAll()
+        public async Task<List<OperationHistory>> GetAll()
         {
-            return _repositoryWrapper.OperationHistory.FindAll().ToListAsync();
+            return await _repositoryWrapper.OperationHistory.FindAll();
         }
 
-        public Task<OperationHistory> GetById(string id)
+        public async Task<OperationHistory> GetById(string id)
         {
-            var operationHistory = _repositoryWrapper.OperationHistory
-                .FindByCondition(x => x.OperationId == id).First();
-            return Task.FromResult(operationHistory);
+            var operationHistory = await _repositoryWrapper.OperationHistory
+                .FindByCondition(x => x.OperationId == id);
+            return operationHistory.First();
         }
 
-        public Task Create(OperationHistory model)
+        public async Task Create(OperationHistory model)
         {
-            _repositoryWrapper.OperationHistory.Create(model);
+            await _repositoryWrapper.OperationHistory.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(OperationHistory model)
+        public async Task Update(OperationHistory model)
         {
             _repositoryWrapper.OperationHistory.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            var operationHistory = _repositoryWrapper.OperationHistory
-                .FindByCondition(x => x.OperationId == id).First();
+            var operationHistory = await _repositoryWrapper.OperationHistory
+                .FindByCondition(x => x.OperationId == id);
 
-            _repositoryWrapper.OperationHistory.Delete(operationHistory);
+            _repositoryWrapper.OperationHistory.Delete(operationHistory.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

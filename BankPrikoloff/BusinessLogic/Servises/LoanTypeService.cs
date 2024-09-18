@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,40 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<LoanType>> GetAll()
+        public async Task<List<LoanType>> GetAll()
         {
-            return _repositoryWrapper.LoanType.FindAll().ToListAsync();
+            return await _repositoryWrapper.LoanType.FindAll();
         }
 
-        public Task<LoanType> GetById(int id)
+        public async Task<LoanType> GetById(int id)
         {
-            var loanType = _repositoryWrapper.LoanType
-                .FindByCondition(x => x.LoanTypeId == id).First();
-            return Task.FromResult(loanType);
+            var loanType = await _repositoryWrapper.LoanType
+                .FindByCondition(x => x.LoanTypeId == id);
+            return loanType.First();
         }
 
-        public Task Create(LoanType model)
+        public async Task Create(LoanType model)
         {
-            _repositoryWrapper.LoanType.Create(model);
+            await _repositoryWrapper.LoanType.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(LoanType model)
+        public async Task Update(LoanType model)
         {
             _repositoryWrapper.LoanType.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            var loanType = _repositoryWrapper.LoanType
-                .FindByCondition(x => x.LoanTypeId == id).First();
+            var loanType = await _repositoryWrapper.LoanType
+                .FindByCondition(x => x.LoanTypeId == id);
 
-            _repositoryWrapper.LoanType.Delete(loanType);
+            _repositoryWrapper.LoanType.Delete(loanType.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

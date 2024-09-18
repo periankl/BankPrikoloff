@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Servises
@@ -19,37 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<DataAccess.Models.File>> GetAll()
+        public async Task<List<Domain.Models.File>> GetAll()
         {
-            return _repositoryWrapper.File.FindAll().ToListAsync();
+            return await _repositoryWrapper.File.FindAll();
         }
 
-        public Task<DataAccess.Models.File> GetById(string id)
+        public async Task<Domain.Models.File> GetById(string id)
         {
-            var file = _repositoryWrapper.File.FindByCondition(x => x.FileId == id).First();
-            return Task.FromResult(file);
+            var file = await _repositoryWrapper.File
+                .FindByCondition(x => x.FileId == id);
+            return file.First();
         }
 
-        public Task Create(DataAccess.Models.File model)
+        public async Task Create(Domain.Models.File model)
         {
-            _repositoryWrapper.File.Create(model);
+            await _repositoryWrapper.File.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(DataAccess.Models.File model)
+        public async Task Update(Domain.Models.File model)
         {
             _repositoryWrapper.File.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            var file = _repositoryWrapper.File.FindByCondition(x => x.FileId == id).First();
-            _repositoryWrapper.File.Delete(file);
+            var file = await _repositoryWrapper.File
+                .FindByCondition(x => x.FileId == id);
+
+            _repositoryWrapper.File.Delete(file.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

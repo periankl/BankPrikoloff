@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,40 +19,38 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<Account>> GetAll()
+        public async Task<List<Account>> GetAll()
         {
-            return _repositoryWrapper.Account.FindAll().ToListAsync();
+            return await _repositoryWrapper.Account.FindAll();
         }
 
-        public Task<Account> GetById(string id)
+        public async Task<Account> GetById(string id)
         {
-            var account = _repositoryWrapper.Account
-                .FindByCondition(x => x.AccountId == id).First();
-            return Task.FromResult(account);
+            var account = await _repositoryWrapper.Account
+                .FindByCondition(x => x.AccountId == id);
+            return account.First();
         }
 
-        public Task Create(Account model)
+
+        public async Task Create(Account model)
         {
-            _repositoryWrapper.Account.Create(model);
+            await _repositoryWrapper.Account.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(Account model)
+        public async Task Update(Account model)
         {
             _repositoryWrapper.Account.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            var account = _repositoryWrapper.Account
-                .FindByCondition(x => x.AccountId == id).First();
+            var account = await _repositoryWrapper.Account
+                .FindByCondition(x => x.AccountId == id);
 
-            _repositoryWrapper.Account.Delete(account);
+            _repositoryWrapper.Account.Delete(account.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

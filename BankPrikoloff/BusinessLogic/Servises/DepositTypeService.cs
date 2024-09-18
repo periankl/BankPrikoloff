@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,40 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<DepositType>> GetAll()
+        public async Task<List<DepositType>> GetAll()
         {
-            return _repositoryWrapper.DepositType.FindAll().ToListAsync();
+            return await _repositoryWrapper.DepositType.FindAll();
         }
 
-        public Task<DepositType> GetById(int id)
+        public async Task<DepositType> GetById(int id)
         {
-            var depositType = _repositoryWrapper.DepositType
-                .FindByCondition(x => x.DepositTypeId == id).First();
-            return Task.FromResult(depositType);
+            var depositType = await _repositoryWrapper.DepositType
+                .FindByCondition(x => x.DepositTypeId == id);
+            return depositType.First();
         }
 
-        public Task Create(DepositType model)
+        public async Task Create(DepositType model)
         {
-            _repositoryWrapper.DepositType.Create(model);
+            await _repositoryWrapper.DepositType.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(DepositType model)
+        public async Task Update(DepositType model)
         {
             _repositoryWrapper.DepositType.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            var depositType = _repositoryWrapper.DepositType
-                .FindByCondition(x => x.DepositTypeId == id).First();
+            var depositType = await _repositoryWrapper.DepositType
+                .FindByCondition(x => x.DepositTypeId == id);
 
-            _repositoryWrapper.DepositType.Delete(depositType);
+            _repositoryWrapper.DepositType.Delete(depositType.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }

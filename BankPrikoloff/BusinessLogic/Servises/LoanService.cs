@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
-using DataAccess.Wrapper;
+using Domain.Models;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,40 +19,37 @@ namespace BusinessLogic.Servises
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public Task<List<Loan>> GetAll()
+        public async Task<List<Loan>> GetAll()
         {
-            return _repositoryWrapper.Loan.FindAll().ToListAsync();
+            return await _repositoryWrapper.Loan.FindAll();
         }
 
-        public Task<Loan> GetById(string id)
+        public async Task<Loan> GetById(string id)
         {
-            var loan = _repositoryWrapper.Loan
-                .FindByCondition(x => x.LoanId == id).First();
-            return Task.FromResult(loan);
+            var loan = await _repositoryWrapper.Loan
+                .FindByCondition(x => x.LoanId == id);
+            return loan.First();
         }
 
-        public Task Create(Loan model)
+        public async Task Create(Loan model)
         {
-            _repositoryWrapper.Loan.Create(model);
+            await _repositoryWrapper.Loan.Create(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Update(Loan model)
+        public async Task Update(Loan model)
         {
             _repositoryWrapper.Loan.Update(model);
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
 
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            var loan = _repositoryWrapper.Loan
-                .FindByCondition(x => x.LoanId == id).First();
+            var loan = await _repositoryWrapper.Loan
+                .FindByCondition(x => x.LoanId == id);
 
-            _repositoryWrapper.Loan.Delete(loan);
+            _repositoryWrapper.Loan.Delete(loan.First());
             _repositoryWrapper.Save();
-            return Task.CompletedTask;
         }
     }
 }
