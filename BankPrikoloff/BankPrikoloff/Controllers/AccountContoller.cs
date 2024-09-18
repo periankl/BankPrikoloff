@@ -1,5 +1,5 @@
 ﻿using BusinessLogic.Interfaces;
-using DataAccess.Models;
+using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,10 +7,10 @@ namespace BankPrikoloff.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountContoller : ControllerBase
+    public class AccountController : ControllerBase
     {
         private IAccountService _accountService;
-        public AccountContoller(IAccountService accountService)
+        public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
         }

@@ -31,12 +31,12 @@ namespace Domain.Models
         public DateTime? DeletedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        public virtual Chat Chat { get; set; } = null!;
-        public virtual Role Role { get; set; } = null!;
-        public virtual ICollection<Account> Accounts { get; set; }
-        public virtual ICollection<Document> Documents { get; set; }
-        public virtual ICollection<File> Files { get; set; }
-        public virtual ICollection<Message> Messages { get; set; }
-        public virtual ICollection<Tred> Treds { get; set; }
+        public virtual Chat? Chat { get; set; } = null!;
+        public virtual Role? Role { get; set; } = null!;
+        public virtual ICollection<Account>? Accounts { get; set; }
+        public virtual ICollection<Document>? Documents { get; set; }
+        public virtual ICollection<File>? Files { get; set; }
+        public virtual ICollection<Message>? Messages { get; set; }
+        public virtual ICollection<Tred>? Treds { get; set; }
     }
 }

@@ -31,7 +31,9 @@ namespace BankPrikoloff.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(User user)
         {
+
             await _userService.Create(user);
+
             return Ok();    
         }
 

@@ -32,6 +32,7 @@ namespace BusinessLogic.Servises
         public async Task Create(User model)
         {
             await _repositoryWrapper.User.Create(model);
+            //Генерация id
             _repositoryWrapper.Save();
         }
 
