@@ -17,7 +17,7 @@ namespace BankPrikoloff
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<BankContext>(
-                optionsAction : options => options.UseSqlServer(connectionString: "Server = COMPUTER-2; Database = Bank; Integrated Security = True; TrustServerCertificate=True;"));
+                optionsAction: options => options.UseSqlServer(connectionString: "Server = COMPUTER-2; Database = Bank; Integrated Security = True; TrustServerCertificate=True;"));
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IFileService, FileService>();
@@ -33,7 +33,7 @@ namespace BankPrikoloff
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<ICardService, CardService>();
             builder.Services.AddControllers();
-           
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
@@ -61,7 +61,7 @@ namespace BankPrikoloff
             });
 
 
-            
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

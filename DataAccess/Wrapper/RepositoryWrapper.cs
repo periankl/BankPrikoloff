@@ -41,7 +41,7 @@ namespace DataAccess.Wrapper
         {
             get
             {
-                if(_file == null)
+                if (_file == null)
                 {
                     _file = new FileRepository(_repoContext);
                 }
@@ -53,7 +53,7 @@ namespace DataAccess.Wrapper
         {
             get
             {
-                if(_message == null)
+                if (_message == null)
                 {
                     _message = new MessageRepository(_repoContext);
                 }
@@ -77,7 +77,7 @@ namespace DataAccess.Wrapper
         {
             get
             {
-                if(_chat == null)
+                if (_chat == null)
                 {
                     _chat = new ChatRepository(_repoContext);
                 }
@@ -89,7 +89,7 @@ namespace DataAccess.Wrapper
         {
             get
             {
-                if(_document == null)
+                if (_document == null)
                 {
                     _document = new DocumentRepository(_repoContext);
                 }
@@ -149,7 +149,7 @@ namespace DataAccess.Wrapper
         {
             get
             {
-                if(_operationHistory == null)
+                if (_operationHistory == null)
                 {
                     _operationHistory = new OperationHistoryRepository(_repoContext);
                 }
@@ -161,7 +161,7 @@ namespace DataAccess.Wrapper
         {
             get
             {
-                if(_account == null)
+                if (_account == null)
                 {
                     _account = new AccountRepository(_repoContext);
                 }
@@ -173,7 +173,7 @@ namespace DataAccess.Wrapper
         {
             get
             {
-                if(_card == null)
+                if (_card == null)
                 {
                     _card = new CardRepository(_repoContext);
                 }

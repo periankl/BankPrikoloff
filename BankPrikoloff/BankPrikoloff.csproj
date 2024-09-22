@@ -25,4 +25,8 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\GitHub\BankPrikoloff\BankPrikoloff\.editorconfig" />
+  </ItemGroup>
+
 </Project>

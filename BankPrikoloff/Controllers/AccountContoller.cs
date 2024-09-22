@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankPrikoloff.Controllers
 {
-    [Route(template:"api/[controller]")]
+    [Route(template: "api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> GetAll()
         {
 
-            var account = await _accountService.GetAll();   
+            var account = await _accountService.GetAll();
             return Ok(account.Adapt<List<GetAccountRequest>>());
         }
         /// <summary>
