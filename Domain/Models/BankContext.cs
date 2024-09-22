@@ -538,6 +538,11 @@ namespace Domain.Models
 
                 entity.Property(e => e.TredId).HasColumnName("TredID");
 
+                entity.Property(e => e.Content)
+                    .IsRequired() 
+                    .HasMaxLength(1024)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Client)
                     .WithMany(p => p.Messages)
                     .HasForeignKey(d => d.ClientId)

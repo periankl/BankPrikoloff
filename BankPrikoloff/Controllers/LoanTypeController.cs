@@ -1,5 +1,8 @@
-﻿using BusinessLogic.Interfaces;
+﻿using BankPrikoloff.Contracts;
+using BusinessLogic.Interfaces;
+using BusinessLogic.Servises;
 using Domain.Models;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,33 +17,70 @@ namespace BankPrikoloff.Controllers
         {
             _loanTypeService = loanTypeService;
         }
-
+        /// <summary>
+        /// Получение всех типов кредитов
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _loanTypeService.GetAll());
+            var dto = await _loanTypeService.GetAll();
+            return Ok(dto.Adapt<List<GetLoanTypeRequest>>());
         }
-
+        /// <summary>
+        /// Получение типа кредита по ID 
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await _loanTypeService.GetById(id));
+            var dto = await _loanTypeService.GetById(id);
+            return Ok(dto.Adapt<GetLoanTypeRequest>());
         }
-
+        /// <summary>
+        /// Создание нового типа кредита
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        /// 
+        ///     POST /Todo
+        ///     {
+        ///         "name": "Расширенный",
+        ///         "interestRate": 8,
+        ///         "maxLoanAmount": 100000
+        ///     }
+        /// </remarks>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Add(LoanType loanType)
+        public async Task<IActionResult> Add(CreateLoanTypeRequest request)
         {
-            await _loanTypeService.Create(loanType);
+            var Dto = request.Adapt<LoanType>();
+            await _loanTypeService.Create(Dto);
             return Ok();
         }
-
+        /// <summary>
+        /// Изменение типа кредита
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        /// 
+        ///     PUT /Todo
+        ///     {
+        ///         "loanTypeId": 1,
+        ///         "name": "Расширенный",
+        ///         "interestRate": 8,
+        ///         "maxLoanAmount": 100000
+        ///     }
+        /// </remarks>
+        /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> Update(LoanType loanType)
+        public async Task<IActionResult> Update(GetLoanTypeRequest request)
         {
-            await _loanTypeService.Update(loanType);
+            var Dto = request.Adapt<LoanType>();
+            await _loanTypeService.Create(Dto);
             return Ok();
         }
-
+        /// <summary>
+        /// Удаление типа кредита по ID
+        /// </summary>
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

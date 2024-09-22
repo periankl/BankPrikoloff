@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.Interfaces;
 using Domain.Models;
+using BankPrikoloff.Contracts;
+using BusinessLogic.Servises;
+using Mapster;
 
 namespace BankPrikoloff.Controllers
 {
@@ -14,33 +17,74 @@ namespace BankPrikoloff.Controllers
         {
             _messageService = messageService;
         }
-
+        /// <summary>
+        /// Получение всех сообщений
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _messageService.GetAll());
+            var dto = await _messageService.GetAll();
+            return Ok(dto.Adapt<List<GetMessageRequest>>());
         }
-
+        /// <summary>
+        /// Получение сообщения по ID
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await _messageService.GetById(id));
+            var dto = await _messageService.GetById(id);
+            return Ok(dto.Adapt<GetMessageRequest>());
         }
-
+        /// <summary>
+        /// Создание нового сообщения
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        /// 
+        ///     POST /Todo
+        ///     {
+        ///         "statusId": 1,
+        ///         "tredId": 2,
+        ///         "clientId": "qwerty",
+        ///         "content": "AAAAA",
+        ///         "createdAt": "2024-09-22T12:14:09.047Z"
+        ///     }
+        /// </remarks>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Add(Message message)
+        public async Task<IActionResult> Add(CreateMessageRequest request)
         {
-            await _messageService.Create(message);
+            var Dto = request.Adapt<Message>();
+            await _messageService.Create(Dto);
             return Ok();
         }
-
+        /// <summary>
+        /// Изменение сообщения
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        /// 
+        ///     PUT /Todo
+        ///     {
+        ///         "messageId": 1,
+        ///         "statusId": 1,
+        ///         "tredId": 2,
+        ///         "clientId": "qwerty",
+        ///         "content": "AAAAA",
+        ///         "createdAt": "2024-09-22T12:14:09.047Z"
+        ///     }
+        /// </remarks>
+        /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> Update(Message message)
+        public async Task<IActionResult> Update(GetMessageRequest request)
         {
-            await _messageService.Update(message);
+            var Dto = request.Adapt<Message>();
+            await _messageService.Create(Dto);
             return Ok();
         }
-
+        /// <summary>
+        /// Удаление сообщения по ID
+        /// </summary>
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

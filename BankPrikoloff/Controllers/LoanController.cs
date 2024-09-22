@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.Interfaces;
 using Domain.Models;
+using BankPrikoloff.Contracts;
+using BusinessLogic.Servises;
+using Mapster;
 
 namespace BankPrikoloff.Controllers
 {
@@ -14,33 +17,81 @@ namespace BankPrikoloff.Controllers
         {
             _loanService = loanService;
         }
-
+        /// <summary>
+        /// Получение всех кредитов
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _loanService.GetAll());
+            var dto = await _loanService.GetAll();
+            return Ok(dto.Adapt<List<GetLoanRequest>>());
         }
-
+        /// <summary>
+        /// Получение кредита по ID
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            return Ok(await _loanService.GetById(id));
+            var dto = await _loanService.GetById(id);
+            return Ok(dto.Adapt<GetLoanRequest>());
         }
-
+        /// <summary>
+        /// Создание нового кредита
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        /// 
+        ///     POST /Todo
+        ///     {
+        ///         "loanId": "Qwerty",
+        ///         "accountId": "Qwerty",
+        ///         "loanTypeId": 1,
+        ///         "statusId": 1,
+        ///         "documentId": "Qwerty1",
+        ///         "amount": 3000,
+        ///         "remarningAmount": 0,
+        ///         "startDate": "2024-09-22T10:57:25.113",
+        ///         "endDate": "2026-09-22T10:57:25.113"
+        ///     }
+        /// </remarks>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Add(Loan loan)
+        public async Task<IActionResult> Add(CreateLoanRequest request)
         {
-            await _loanService.Create(loan);
+            var Dto = request.Adapt<Loan>();
+            await _loanService.Create(Dto);
             return Ok();
         }
-
+        /// <summary>
+        /// Редактирование кредита
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        /// 
+        ///     PUT /Todo
+        ///     {
+        ///         "loanId": "Qwerty",
+        ///         "accountId": "Qwerty",
+        ///         "loanTypeId": 1,
+        ///         "statusId": 1,
+        ///         "documentId": "Qwerty1",
+        ///         "amount": 3000,
+        ///         "remarningAmount": 0,
+        ///         "startDate": "2024-09-22T10:57:25.113",
+        ///         "endDate": "2026-09-22T10:57:25.113"
+        ///     }
+        /// </remarks>
+        /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> Update(Loan loan)
+        public async Task<IActionResult> Update(GetLoanRequest request)
         {
-            await _loanService.Update(loan);
+            var Dto = request.Adapt<Loan>();
+            await _loanService.Create(Dto);
             return Ok();
         }
-
+        /// <summary>
+        /// Удаление кредита по ID
+        /// </summary>
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {

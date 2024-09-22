@@ -23,8 +23,9 @@ namespace BankPrikoloff.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+
             var account = await _accountService.GetAll();   
-            return Ok(account.Adapt<GetAccountRequest>());
+            return Ok(account.Adapt<List<GetAccountRequest>>());
         }
         /// <summary>
         /// Получение счета по ID
@@ -33,7 +34,7 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             var account = await _accountService.GetById(id);
-            return Ok(account.Adapt<List<GetCardRequest>>());
+            return Ok(account.Adapt<GetCardRequest>());
         }
 
         /// <summary>

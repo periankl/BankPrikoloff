@@ -23,7 +23,7 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> GetAll()
         {
             var Dto = await _chatService.GetAll();
-            return Ok(Dto.Adapt<GetChatRequest>());
+            return Ok(Dto.Adapt<List<GetChatRequest>>());
         }
         /// <summary>
         /// Получение чата по ID
@@ -32,7 +32,7 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var Dto = await _chatService.GetAll();
-            return Ok(Dto.Adapt<List<GetChatRequest>>());
+            return Ok(Dto.Adapt<GetChatRequest>());
         }
         /// <summary>
         /// Изменение чата
@@ -46,9 +46,9 @@ namespace BankPrikoloff.Controllers
         ///     }
         /// </remarks>
         [HttpPost]
-        public async Task<IActionResult> Add(CreateChatRequest chat)
+        public async Task<IActionResult> Add(CreateChatRequest request)
         {
-            var Dto = chat.Adapt<Chat>();
+            var Dto = request.Adapt<Chat>();
             await _chatService.Create(Dto);
             return Ok();
         }
@@ -64,9 +64,9 @@ namespace BankPrikoloff.Controllers
         ///     }
         /// </remarks>
         [HttpPut]
-        public async Task<IActionResult> Update(GetChatRequest chat)
+        public async Task<IActionResult> Update(GetChatRequest request)
         {
-            var Dto = chat.Adapt<Chat>();
+            var Dto = request.Adapt<Chat>();
             await _chatService.Update(Dto);
             return Ok();
         }
