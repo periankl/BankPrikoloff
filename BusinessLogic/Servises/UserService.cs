@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Domain.Interfaces;
+using Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain.Interfaces;
-using Domain.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Servises
 {
@@ -17,7 +17,7 @@ namespace BusinessLogic.Servises
         {
             _repositoryWrapper = repositoryWrapper;
         }
-        
+
         public async Task<List<User>> GetAll()
         {
             return await _repositoryWrapper.User.FindAll();
@@ -41,10 +41,10 @@ namespace BusinessLogic.Servises
             _repositoryWrapper.Save();
         }
 
-        public async Task Delete(string id) 
+        public async Task Delete(string id)
         {
             var user = await _repositoryWrapper.User
-                .FindByCondition(x =>x.ClientId == id);
+                .FindByCondition(x => x.ClientId == id);
             _repositoryWrapper.User.Delete(user.First());
             _repositoryWrapper.Save();
         }

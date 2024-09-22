@@ -1,14 +1,14 @@
-﻿using Domain.Interfaces;
+﻿using BusinessLogic.Interfaces;
+using Domain.Interfaces;
+using Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BusinessLogic.Interfaces;
-using Domain.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Globalization;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BusinessLogic.Servises
 {

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain.Models;
 
 namespace BusinessLogic.Interfaces
 {
@@ -14,5 +14,5 @@ namespace BusinessLogic.Interfaces
         Task Create(Document model);
         Task Update(Document model);
         Task Delete(string id);
-    }   
+    }
 }

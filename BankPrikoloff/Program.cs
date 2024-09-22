@@ -1,8 +1,8 @@
 using BusinessLogic.Interfaces;
-using Domain.Models;
-using Domain.Interfaces;
-using DataAccess.Wrapper;
 using BusinessLogic.Servises;
+using DataAccess.Wrapper;
+using Domain.Interfaces;
+using Domain.Models;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -42,15 +42,15 @@ namespace BankPrikoloff
                 {
                     Version = "v1",
                     Title = "Prikoloff API",
-                    Description = "API для работы с банком Prikoloff",
+                    Description = "API пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Prikoloff",
                     Contact = new OpenApiContact
                     {
-                        Name = "Контакт",
+                        Name = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
                         Url = new Uri("https://example.com/contact")
                     },
                     License = new OpenApiLicense
                     {
-                        Name = "Лицензия",
+                        Name = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
                         Url = new Uri("https://example.com/license")
 
                     }

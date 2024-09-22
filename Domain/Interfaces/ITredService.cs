@@ -1,16 +1,16 @@
-﻿using System;
+﻿using BusinessLogic.Interfaces;
+using Domain.Interfaces;
+using Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BusinessLogic.Interfaces;
-using Domain.Models;
-using Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Interfaces
 {
-    public interface ITredService 
+    public interface ITredService
     {
         Task<List<Tred>> GetAll();
         Task<Tred> GetById(int id);

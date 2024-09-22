@@ -8,7 +8,7 @@ namespace Domain.Interfaces
 {
     public interface IRepositoryWrapper
     {
-        IUserRepository User {  get; }
+        IUserRepository User { get; }
         IFileRepository File { get; }
         IMessageRepository Message { get; }
         ITredRepository Tred { get; }
