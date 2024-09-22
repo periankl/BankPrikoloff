@@ -539,7 +539,7 @@ namespace Domain.Models
                 entity.Property(e => e.TredId).HasColumnName("TredID");
 
                 entity.Property(e => e.Content)
-                    .IsRequired() 
+                    .IsRequired()
                     .HasMaxLength(1024)
                     .IsUnicode(false);
 
