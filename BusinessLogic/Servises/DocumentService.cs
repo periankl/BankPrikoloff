@@ -35,6 +35,29 @@ namespace BusinessLogic.Servises
 
         public async Task Create(Document model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.DocumentId))
+            {
+                throw new ArgumentException(nameof(model.DocumentId));
+            }
+            if (string.IsNullOrEmpty(model.ClientId))
+            {
+                throw new ArgumentException(nameof(model.ClientId));
+            }
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                throw new ArgumentException(nameof(model.Name));
+            }
+            if (string.IsNullOrEmpty(model.Path))
+            {
+                throw new ArgumentException(nameof(model.Path));
+            }
+
+
+
             await _repositoryWrapper.Document.Create(model);
             _repositoryWrapper.Save();
         }

@@ -33,6 +33,11 @@ namespace BusinessLogic.Servises
 
         public async Task Create(Chat model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+
+            }
             await _repositoryWrapper.Chat.Create(model);
             model.CreatedAt = DateTime.Now;
             _repositoryWrapper.Save();

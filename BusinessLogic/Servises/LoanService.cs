@@ -33,6 +33,26 @@ namespace BusinessLogic.Servises
 
         public async Task Create(Loan model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.LoanId))
+            {
+                throw new ArgumentException(nameof(model.LoanId));
+            }
+            if (string.IsNullOrEmpty(model.DocumentId))
+            {
+                throw new ArgumentException(nameof(model.DocumentId));
+            }
+            if (string.IsNullOrEmpty(model.AccountId))
+            {
+                throw new ArgumentException(nameof(model.AccountId));
+            }
+            if (model.StartDate > model.EndDate)
+            {
+                throw new ArgumentException(nameof(model.StartDate));
+            }
             await _repositoryWrapper.Loan.Create(model);
             _repositoryWrapper.Save();
         }

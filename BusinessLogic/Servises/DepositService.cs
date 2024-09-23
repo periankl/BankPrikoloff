@@ -4,6 +4,7 @@ using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +34,30 @@ namespace BusinessLogic.Servises
 
         public async Task Create(Deposit model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.DepositId))
+            {
+                throw new ArgumentException(nameof(model.DepositId));
+            }
+            if (string.IsNullOrEmpty(model.DocumentId))
+            {
+                throw new ArgumentException(nameof(model.DocumentId));
+            }
+            if (string.IsNullOrEmpty(model.AccountId))
+            {
+                throw new ArgumentException(nameof(model.AccountId));
+            }
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                throw new ArgumentException(nameof(model.Name));
+            }
+            if (model.StartDate > model.EndDate)
+            {
+                throw new ArgumentException(nameof(model.StartDate));
+            }
             await _repositoryWrapper.Deposit.Create(model);
             _repositoryWrapper.Save();
         }

@@ -31,7 +31,41 @@ namespace BusinessLogic.Servises
 
         public async Task Create(User model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+
+            }
+            if (string.IsNullOrEmpty(model.ClientId))
+            {
+                throw new ArgumentException(nameof(model.ClientId));
+            }
+            if (string.IsNullOrEmpty(model.FirstName))
+            {
+                throw new ArgumentException(nameof(model.FirstName));
+            }
+            if (string.IsNullOrEmpty(model.LastName))
+            {
+                throw new ArgumentException(nameof(model.LastName));
+            }
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                throw new ArgumentException(nameof(model.Email));
+            }
+            if (string.IsNullOrEmpty(model.Login))
+            {
+                throw new ArgumentException(nameof(model.Login));
+            }
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                throw new ArgumentException(nameof(model.Password));
+            }
+            if (model.DateOfBirth > DateTime.Now.AddYears(-14))
+            {
+                throw new ArgumentException(nameof(model.DateOfBirth));
+            }
             await _repositoryWrapper.User.Create(model);
+
             _repositoryWrapper.Save();
         }
 

@@ -33,6 +33,36 @@ namespace BusinessLogic.Servises
 
         public async Task Create(Card model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+
+            }
+            if (string.IsNullOrEmpty(model.CardId))
+            {
+                throw new ArgumentException(nameof(model.CardId));
+            }
+            if (string.IsNullOrEmpty(model.AccountId))
+            {
+                throw new ArgumentException(nameof(model.AccountId));
+            }
+            if (string.IsNullOrEmpty(model.CardNumber))
+            {
+                throw new ArgumentException(nameof(model.CardNumber));
+            }
+            if (string.IsNullOrEmpty(model.Cvv))
+            {
+                throw new ArgumentException(nameof(model.Cvv));
+            }
+            if (string.IsNullOrEmpty(model.OwnerName))
+            {
+                throw new ArgumentException(nameof(model.OwnerName));
+            }
+            if (model.ExpDate < model.CreatedAt)
+            {
+                throw new ArgumentException(nameof(model.CreatedAt));
+            }
+
             await _repositoryWrapper.Card.Create(model);
             _repositoryWrapper.Save();
         }

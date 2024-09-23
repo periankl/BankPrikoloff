@@ -33,6 +33,22 @@ namespace BusinessLogic.Servises
 
         public async Task Create(Tred model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (model.IsClosed == true & model.ClosedAt == null)
+            {
+                throw new ArgumentException(nameof(model.IsClosed));
+            }
+            if (model.IsClosed == false & model.ClosedAt != null)
+            {
+                throw new ArgumentException(nameof(model.IsClosed));
+            }
+            if (model.CreatedAt > model.ClosedAt)
+            {
+                throw new ArgumentException(nameof(model.CreatedAt));
+            }
             await _repositoryWrapper.Tred.Create(model);
             _repositoryWrapper.Save();
         }

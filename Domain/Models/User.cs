@@ -14,7 +14,7 @@ namespace Domain.Models
             Treds = new HashSet<Tred>();
         }
 
-        public string ClientId { get; set; } = null!;
+        public string? ClientId { get; set; }
         public int RoleId { get; set; }
         public string Login { get; set; } = null!;
         public string Password { get; set; } = null!;

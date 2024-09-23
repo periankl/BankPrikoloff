@@ -33,6 +33,22 @@ namespace BusinessLogic.Servises
 
         public async Task Create(Domain.Models.File model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.FileId))
+            {
+                throw new ArgumentException(nameof(model.FileId));
+            }
+            if (string.IsNullOrEmpty(model.FilePath))
+            {
+                throw new ArgumentException(nameof(model.FilePath));
+            }
+            if (string.IsNullOrEmpty(model.ClientId))
+            {
+                throw new ArgumentException(nameof(model.ClientId));
+            }
             await _repositoryWrapper.File.Create(model);
             _repositoryWrapper.Save();
         }

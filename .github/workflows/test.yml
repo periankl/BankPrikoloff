@@ -24,3 +24,7 @@ jobs:
 
       - name: Run dotnet format
         run: dotnet-format --folder --check --verbosity diagnostic
+      
+      - name: Run tests
+        run: dotnet test
+        
