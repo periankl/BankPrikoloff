@@ -43,12 +43,8 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "documentId": "Qwerty1",
         ///         "clientId": "Qwerty1234",
         ///         "typeId": 1,
-        ///         "name": "Депозит",
-        ///         "path": "/Depositqwerty1",
-        ///         "createdAt": "2024-09-21T22:06:09"
         ///     }
         /// </remarks>
         /// <returns></returns>
@@ -56,6 +52,9 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateDocumentRequest request)
         {
             var Dto = request.Adapt<Document>();
+            Dto.DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9);
+            Dto.Name = $"Doc{Dto.DocumentId}";
+            Dto.Path = $"Docs/{Dto.Name}";
             await _documentService.Create(Dto);
             return Ok();
         }

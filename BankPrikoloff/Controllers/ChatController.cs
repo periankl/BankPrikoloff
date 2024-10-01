@@ -35,14 +35,13 @@ namespace BankPrikoloff.Controllers
             return Ok(Dto.Adapt<GetChatRequest>());
         }
         /// <summary>
-        /// Изменение чата
+        /// Добавление нового чата
         /// </summary>
         /// <remarks>
         /// Пример запроса:
         /// 
         ///     POST /Todo
         ///     {
-        ///       "createdAt": "2024-09-18T21:11:03",
         ///     }
         /// </remarks>
         [HttpPost]
@@ -53,12 +52,12 @@ namespace BankPrikoloff.Controllers
             return Ok();
         }
         /// <summary>
-        /// Добавление нового чата
+        /// Изменение чата
         /// </summary>
         /// <remarks>
         /// Пример запроса:
         /// 
-        ///     POST /Todo
+        ///     PUT /Todo
         ///     {
         ///       "createdAt": "2024-09-18T21:11:03",
         ///     }

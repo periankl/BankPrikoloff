@@ -45,19 +45,15 @@ namespace BankPrikoloff.Controllers
         ///     POST /Todo
         ///     {
         ///         "clientId": "Qwerty12",
-        ///         "roleId": 1,
         ///         "login": "Login",
         ///         "password": "Password",
         ///         "firstName": "FName",
         ///         "lastName": "LName",
         ///         "patronomic": "Patr",
-        ///         "dateOfBirth": "2024-09-22T15:04:59.377Z",
+        ///         "dateOfBirth": "2004-09-22T15:04:59.377Z",
         ///         "seriesPasport": 4512,
         ///         "numberPasport": 123456,
-        ///         "email": "example@example.com",
-        ///         "chatId": 3,
-        ///         "createdAt": "2024-09-22T15:04:59.377Z",
-        ///         "updatedAt": "2024-09-22T15:04:59.377Z"
+        ///         "email": "example@example.com"
         ///     }
         /// </remarks>
         /// <returns></returns>
@@ -65,6 +61,9 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateUserRequest request)
         {
             var Dto = request.Adapt<User>();
+            Dto.ClientId = Guid.NewGuid().ToString();
+            Dto.Chat = new Chat();
+            Dto.ChatId = Dto.Chat.ChatId;
             await _userService.Create(Dto);
             return Ok();
         }

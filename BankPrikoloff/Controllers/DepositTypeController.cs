@@ -46,9 +46,7 @@ namespace BankPrikoloff.Controllers
         ///         "name": "Накопительный",
         ///         "interestRate": 5,
         ///         "minAmount": 500,
-        ///         "minTerm": 1,
-        ///         "createdAt": "2024-09-21T21:52:18",
-        ///         "deletedAt": null
+        ///         "minTerm": 1
         ///     }
         /// </remarks>
         /// <returns></returns>
@@ -65,7 +63,7 @@ namespace BankPrikoloff.Controllers
         /// <remarks>
         /// Пример запроса:
         /// 
-        ///     POST /Todo
+        ///     PUT /Todo
         ///     {
         ///         "depositTypeId": 1,
         ///         "name": "Накопительный",

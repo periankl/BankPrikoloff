@@ -43,11 +43,9 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "statusId": 1,
         ///         "tredId": 2,
         ///         "clientId": "qwerty",
         ///         "content": "AAAAA",
-        ///         "createdAt": "2024-09-22T12:14:09.047Z"
         ///     }
         /// </remarks>
         /// <returns></returns>

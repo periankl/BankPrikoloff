@@ -45,13 +45,9 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "accountId": "Qwerty",
         ///         "clientId": "Qwerty",
         ///         "typeId": 1,
         ///         "currencyId": 1,
-        ///         "statusId": 1,
-        ///         "balance": 0,
-        ///         "updatedAt": "2024-09-21T14:19:50.851Z"
         ///     }
         /// </remarks>
         /// <returns></returns>
@@ -59,8 +55,9 @@ namespace BankPrikoloff.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CreateAccountRequest request)
         {
-            var account = request.Adapt<Account>();
-            await _accountService.Create(account);
+            var Dto = request.Adapt<Account>();
+            Dto.AccountId = Guid.NewGuid().ToString("N").Substring(0, 9);
+            await _accountService.Create(Dto);
             return Ok();
         }
         /// <summary>
@@ -85,8 +82,9 @@ namespace BankPrikoloff.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(GetAccountRequest request)
         {
-            var account = request.Adapt<Account>();
-            await _accountService.Update(account);
+            var Dto = request.Adapt<Account>();
+
+            await _accountService.Update(Dto);
             return Ok();
         }
         /// <summary>

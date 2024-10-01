@@ -45,11 +45,7 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "fileId": "qwerty1",
-        ///         "filePath": "./qwerty1",
         ///         "messageId": 2,
-        ///         "clientId": "qwerty",
-        ///         "uploadAt": "2024-09-21T22:30:34.195Z"
         ///     }
         /// </remarks>
         /// <returns></returns>
@@ -57,6 +53,9 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateFileRequest request)
         {
             var Dto = request.Adapt<Domain.Models.File>();
+            Dto.FileId = Guid.NewGuid().ToString("N").Substring(0, 9);
+            Dto.ClientId = "qwerty";
+            Dto.FilePath = $"File{Dto.FileId}";
             await _fileService.Create(Dto);
             return Ok();
         }

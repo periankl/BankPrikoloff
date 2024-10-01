@@ -45,11 +45,7 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "chatId": 1,
-        ///         "operatorId": null,
-        ///         "createdAt": "2024-09-22T14:56:10.707Z",
-        ///         "isClosed": false,
-        ///         "closedAt": null
+        ///         "chatId": 1
         ///     }
         /// </remarks>
         /// <returns></returns>

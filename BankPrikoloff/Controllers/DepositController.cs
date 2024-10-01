@@ -43,19 +43,28 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "depositId": "Qwerty1",
+        ///         "depositId": "",
         ///         "depositTypeId": 1,
         ///         "statusId": 1,
-        ///         "documentId": "Qwerty",
         ///         "accountId": "Qwerty",
-        ///         "name": "Dep",
-        ///         "startDate": "2024-09-21T19:04:25.120Z"
         ///     }
         /// </remarks>
         [HttpPost]
         public async Task<IActionResult> Add(CreateDepositRequest request)
         {
             var Dto = request.Adapt<Deposit>();
+            Dto.DepositId = Guid.NewGuid().ToString("N").Substring(0, 9);
+            Dto.StatusId = 1;
+            Dto.Document = new Document();
+            Dto.Document.DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9);
+            Dto.Document.ClientId = "qwerty";
+            Dto.DocumentId = Dto.Document.DocumentId;
+            Dto.Document.TypeId = 1;
+            Dto.Document.Name = Dto.Document.DocumentId;
+            Dto.Document.Path = $"/document/{Dto.Document.DocumentId}";
+            Dto.Document.CreatedAt = DateTime.Now;
+            Dto.Name = $"{Dto.AccountId}Deposit";
+
             await _depositService.Create(Dto);
             return Ok();
         }

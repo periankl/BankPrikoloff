@@ -46,11 +46,7 @@ namespace BankPrikoloff.Controllers
         ///         "loanId": "Qwerty",
         ///         "accountId": "Qwerty",
         ///         "loanTypeId": 1,
-        ///         "statusId": 1,
-        ///         "documentId": "Qwerty1",
         ///         "amount": 3000,
-        ///         "remarningAmount": 0,
-        ///         "startDate": "2024-09-22T10:57:25.113",
         ///         "endDate": "2026-09-22T10:57:25.113"
         ///     }
         /// </remarks>
@@ -59,7 +55,18 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateLoanRequest request)
         {
             var Dto = request.Adapt<Loan>();
+            Dto.LoanId = Guid.NewGuid().ToString("N").Substring(0, 9);
+            Dto.StatusId = 1;
+            Dto.RemarningAmount = 0;
+            Dto.Document = new Document();
+            Dto.Document.DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9);
+            Dto.Document.ClientId = "qwerty";
+            Dto.Document.TypeId = 2;
+            Dto.Document.Path = $"/document/{Dto.Document.DocumentId}";
+            Dto.Document.Name = Dto.Document.DocumentId;
+            Dto.DocumentId = Dto.Document.DocumentId;
             await _loanService.Create(Dto);
+
             return Ok();
         }
         /// <summary>

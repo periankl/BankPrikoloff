@@ -59,6 +59,7 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateOperationHistoryRequest request)
         {
             var Dto = request.Adapt<OperationHistory>();
+            Dto.OperationId = Guid.NewGuid().ToString("N").Substring(0, 9);
             await _operationHistoryService.Create(Dto);
             return Ok();
         }
