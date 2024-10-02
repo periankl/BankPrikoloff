@@ -18,7 +18,7 @@ namespace BankPrikoloff.Controllers
             _accountService = accountService;
         }
         /// <summary>
-        /// Получение всех счетов
+        /// Получение информации о всех счетах
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -28,7 +28,7 @@ namespace BankPrikoloff.Controllers
             return Ok(account.Adapt<List<GetAccountRequest>>());
         }
         /// <summary>
-        /// Получение счета по ID
+        /// Получение информации о счете по ID
         /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
@@ -61,7 +61,7 @@ namespace BankPrikoloff.Controllers
             return Ok();
         }
         /// <summary>
-        /// Обновление счета
+        /// Обновление информации о счете
         /// </summary>
         /// <remarks>
         /// Пример запроса:
@@ -88,7 +88,7 @@ namespace BankPrikoloff.Controllers
             return Ok();
         }
         /// <summary>
-        /// Удаление по ID
+        /// Удаление счета по ID
         /// </summary>
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)

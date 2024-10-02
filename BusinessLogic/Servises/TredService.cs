@@ -26,9 +26,13 @@ namespace BusinessLogic.Servises
 
         public async Task<Tred> GetById(int id)
         {
-            var tred = await _repositoryWrapper.Tred
+            var model = await _repositoryWrapper.Tred
                 .FindByCondition(x => x.TredId == id);
-            return tred.First();
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
         public async Task Create(Tred model)
@@ -61,10 +65,13 @@ namespace BusinessLogic.Servises
 
         public async Task Delete(int id)
         {
-            var tred = await _repositoryWrapper.Tred
+            var model = await _repositoryWrapper.Tred
                 .FindByCondition(x => x.TredId == id);
-
-            _repositoryWrapper.Tred.Delete(tred.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.Tred.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

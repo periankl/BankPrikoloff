@@ -5,7 +5,7 @@ using System;
 
 namespace Domain.Migrations
 {
-    public partial class MigratonName : Migration
+    public partial class Migraton123 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -449,6 +449,7 @@ namespace Domain.Migrations
                     StatusID = table.Column<int>(type: "int", nullable: false),
                     TredID = table.Column<int>(type: "int", nullable: false),
                     ClientID = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Content = table.Column<string>(type: "varchar(1024)", unicode: false, maxLength: 1024, nullable: false),
                     Created_at = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>

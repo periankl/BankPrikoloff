@@ -26,9 +26,13 @@ namespace BusinessLogic.Servises
 
         public async Task<Account> GetById(string id)
         {
-            var account = await _repositoryWrapper.Account
+            var model = await _repositoryWrapper.Account
                 .FindByCondition(x => x.AccountId == id);
-            return account.First();
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
 
@@ -43,30 +47,49 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.ClientId));
             }
-            if (string.IsNullOrEmpty(model.AccountId))
+            if (model.CurrencyId < 1)
             {
-                throw new ArgumentException(nameof(model.AccountId));
+                throw new ArgumentException(nameof(model.CurrencyId));
             }
-            if (model.UpdatedAt > DateTime.Now)
+            if (model.TypeId < 1)
             {
-                throw new ArgumentException(nameof(model.UpdatedAt));
+                throw new ArgumentException(nameof(model.TypeId));
             }
+            model.AccountId = Guid.NewGuid().ToString("N").Substring(0, 9);
+
             await _repositoryWrapper.Account.Create(model);
             _repositoryWrapper.Save();
         }
 
         public async Task Update(Account model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+
+            }
+            if (string.IsNullOrEmpty(model.ClientId))
+            {
+                throw new ArgumentException(nameof(model.ClientId));
+            }
+            if (string.IsNullOrEmpty(model.AccountId))
+            {
+                throw new ArgumentException(nameof(model.AccountId));
+            }
             _repositoryWrapper.Account.Update(model);
             _repositoryWrapper.Save();
         }
 
         public async Task Delete(string id)
         {
-            var account = await _repositoryWrapper.Account
+            var model = await _repositoryWrapper.Account
                 .FindByCondition(x => x.AccountId == id);
 
-            _repositoryWrapper.Account.Delete(account.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.Account.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

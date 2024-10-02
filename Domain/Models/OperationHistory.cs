@@ -11,8 +11,8 @@ namespace Domain.Models
         public string DestinationAccountId { get; set; } = null!;
         public string? DestinationCardId { get; set; }
         public int TypeId { get; set; }
-        public int StatusId { get; set; }
-        public DateTime Date { get; set; }
+        public int StatusId { get; set; } = 1;
+        public DateTime Date { get; set; } = DateTime.Now;
         public decimal Amount { get; set; }
 
         public virtual Account DestinationAccount { get; set; } = null!;

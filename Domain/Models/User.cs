@@ -15,7 +15,7 @@ namespace Domain.Models
         }
 
         public string? ClientId { get; set; }
-        public int RoleId { get; set; }
+        public int RoleId { get; set; } = 1;
         public string Login { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string FirstName { get; set; } = null!;
@@ -26,10 +26,10 @@ namespace Domain.Models
         public int NumberPasport { get; set; }
         public string Email { get; set; } = null!;
         public int ChatId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int? DeletedBy { get; set; }
         public DateTime? DeletedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         public virtual Chat? Chat { get; set; } = null!;
         public virtual Role? Role { get; set; } = null!;

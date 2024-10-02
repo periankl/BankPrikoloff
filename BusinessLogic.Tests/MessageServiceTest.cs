@@ -5,6 +5,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -74,6 +75,24 @@ namespace BusinessLogic.Tests
             await service.Create(newMessage);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<Message>()), Times.Once);
 
+        }
+
+        [Fact]
+        public async void GetByIdAsyncNullMessageShouldThrowArgumentException()
+        {
+            var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() => service.GetById(-1));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.FindByCondition(It.IsAny<Expression<Func<Message, bool>>>()), Times.Once);
+        }
+
+        [Fact]
+        public async void DeleteAsyncNullMessageShouldThrowArgumentException()
+        {
+            var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() => service.Delete(-1));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Delete(It.IsAny<Message>()), Times.Never);
         }
     }
 }

@@ -11,12 +11,12 @@ namespace Domain.Models
         }
 
         public int MessageId { get; set; }
-        public int StatusId { get; set; }
+        public int StatusId { get; set; } = 1;
         public int TredId { get; set; }
         public string ClientId { get; set; } = null!;
 
         public string Content { get; set; } = null!;
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public virtual User Client { get; set; } = null!;
         public virtual MessageStatus Status { get; set; } = null!;

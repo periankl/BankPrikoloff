@@ -16,7 +16,7 @@ namespace Domain.Models
         public int TypeId { get; set; }
         public string Name { get; set; } = null!;
         public string Path { get; set; } = null!;
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? DeletedAt { get; set; }
 
         public virtual User Client { get; set; } = null!;

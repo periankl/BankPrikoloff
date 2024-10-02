@@ -26,9 +26,24 @@ namespace BusinessLogic.Servises
 
         public async Task<Card> GetById(string id)
         {
-            var card = await _repositoryWrapper.Card
+            var model = await _repositoryWrapper.Card
                 .FindByCondition(x => x.CardId == id);
-            return card.First();
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
+        }
+
+        public async Task<Card> GetByCardNumber(string number)
+        {
+            var model = await _repositoryWrapper.Card
+                .FindByCondition(x => x.CardNumber == number);
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
         public async Task Create(Card model)
@@ -36,7 +51,29 @@ namespace BusinessLogic.Servises
             if (model == null)
             {
                 throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.CardId))
+            {
+                throw new ArgumentException(nameof(model.CardId));
+            }
+            if (string.IsNullOrEmpty(model.AccountId))
+            {
+                throw new ArgumentException(nameof(model.AccountId));
+            }
+            if (string.IsNullOrEmpty(model.OwnerName))
+            {
+                throw new ArgumentException(nameof(model.OwnerName));
+            }
 
+            await _repositoryWrapper.Card.Create(model);
+            _repositoryWrapper.Save();
+        }
+
+        public async Task Update(Card model)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
             }
             if (string.IsNullOrEmpty(model.CardId))
             {
@@ -62,23 +99,19 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.CreatedAt));
             }
-
-            await _repositoryWrapper.Card.Create(model);
-            _repositoryWrapper.Save();
-        }
-
-        public async Task Update(Card model)
-        {
             _repositoryWrapper.Card.Update(model);
             _repositoryWrapper.Save();
         }
 
         public async Task Delete(string id)
         {
-            var card = await _repositoryWrapper.Card
+            var model = await _repositoryWrapper.Card
                 .FindByCondition(x => x.CardId == id);
-
-            _repositoryWrapper.Card.Delete(card.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.Card.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

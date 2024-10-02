@@ -25,8 +25,13 @@ namespace BusinessLogic.Servises
 
         public async Task<User> GetById(string id)
         {
-            var user = await _repositoryWrapper.User.FindByCondition(x => x.ClientId == id);
-            return user.First();
+            var model = await _repositoryWrapper.User
+                .FindByCondition(x => x.ClientId == id);
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
         public async Task Create(User model)
@@ -64,6 +69,33 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.DateOfBirth));
             }
+            var users = await _repositoryWrapper.User.FindByCondition(u => true);
+            if (users == null)
+            {
+                users = new List<User>();
+            }
+
+            var existingUser = users.FirstOrDefault(u =>
+                u.SeriesPasport == model.SeriesPasport &&
+                u.NumberPasport == model.NumberPasport);
+
+            if (existingUser != null)
+            {
+                throw new ArgumentException("A passport with this series and number already exists.");
+            }
+
+            existingUser = users.FirstOrDefault(u => u.Login == model.Login);
+
+            if (existingUser != null)
+            {
+                throw new ArgumentException("Login is taken by another user");
+            }
+            existingUser = users.FirstOrDefault(u => u.Email == model.Email);
+
+            if (existingUser != null)
+            {
+                throw new ArgumentException("Email is taken by another user");
+            }
             await _repositoryWrapper.User.Create(model);
 
             _repositoryWrapper.Save();
@@ -71,15 +103,78 @@ namespace BusinessLogic.Servises
 
         public async Task Update(User model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+
+            }
+            if (string.IsNullOrEmpty(model.ClientId))
+            {
+                throw new ArgumentException(nameof(model.ClientId));
+            }
+            if (string.IsNullOrEmpty(model.FirstName))
+            {
+                throw new ArgumentException(nameof(model.FirstName));
+            }
+            if (string.IsNullOrEmpty(model.LastName))
+            {
+                throw new ArgumentException(nameof(model.LastName));
+            }
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                throw new ArgumentException(nameof(model.Email));
+            }
+            if (string.IsNullOrEmpty(model.Login))
+            {
+                throw new ArgumentException(nameof(model.Login));
+            }
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                throw new ArgumentException(nameof(model.Password));
+            }
+            if (model.DateOfBirth > DateTime.Now.AddYears(-14))
+            {
+                throw new ArgumentException(nameof(model.DateOfBirth));
+            }
+            var users = await _repositoryWrapper.User.FindByCondition(u => true);
+            if (users == null)
+            {
+                users = new List<User>();
+            }
+            var existingUser = users.FirstOrDefault(u =>
+                u.SeriesPasport == model.SeriesPasport &&
+                u.NumberPasport == model.NumberPasport);
+
+            if (existingUser != null)
+            {
+                throw new ArgumentException("A passport with this series and number already exists.");
+            }
+
+            existingUser = users.FirstOrDefault(u => u.Login == model.Login);
+
+            if (existingUser != null)
+            {
+                throw new ArgumentException("Login is taken by another user");
+            }
+            existingUser = users.FirstOrDefault(u => u.Email == model.Email);
+
+            if (existingUser != null)
+            {
+                throw new ArgumentException("Email is taken by another user");
+            }
             _repositoryWrapper.User.Update(model);
             _repositoryWrapper.Save();
         }
 
         public async Task Delete(string id)
         {
-            var user = await _repositoryWrapper.User
+            var model = await _repositoryWrapper.User
                 .FindByCondition(x => x.ClientId == id);
-            _repositoryWrapper.User.Delete(user.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.User.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

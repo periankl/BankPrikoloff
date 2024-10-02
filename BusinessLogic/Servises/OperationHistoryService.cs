@@ -26,9 +26,13 @@ namespace BusinessLogic.Servises
 
         public async Task<OperationHistory> GetById(string id)
         {
-            var operationHistory = await _repositoryWrapper.OperationHistory
+            var model = await _repositoryWrapper.OperationHistory
                 .FindByCondition(x => x.OperationId == id);
-            return operationHistory.First();
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
         public async Task Create(OperationHistory model)
@@ -65,10 +69,13 @@ namespace BusinessLogic.Servises
 
         public async Task Delete(string id)
         {
-            var operationHistory = await _repositoryWrapper.OperationHistory
+            var model = await _repositoryWrapper.OperationHistory
                 .FindByCondition(x => x.OperationId == id);
-
-            _repositoryWrapper.OperationHistory.Delete(operationHistory.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.OperationHistory.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

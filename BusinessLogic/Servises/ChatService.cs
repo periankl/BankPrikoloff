@@ -26,9 +26,13 @@ namespace BusinessLogic.Servises
 
         public async Task<Chat> GetById(int id)
         {
-            var chat = await _repositoryWrapper.Chat
+            var model = await _repositoryWrapper.Chat
                 .FindByCondition(x => x.ChatId == id);
-            return chat.First();
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
         public async Task Create(Chat model)
@@ -51,10 +55,13 @@ namespace BusinessLogic.Servises
 
         public async Task Delete(int id)
         {
-            var chat = await _repositoryWrapper.Chat
+            var model = await _repositoryWrapper.Chat
                 .FindByCondition(x => x.ChatId == id);
-
-            _repositoryWrapper.Chat.Delete(chat.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.Chat.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

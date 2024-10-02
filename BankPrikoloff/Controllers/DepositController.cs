@@ -43,10 +43,10 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "depositId": "",
         ///         "depositTypeId": 1,
         ///         "statusId": 1,
         ///         "accountId": "Qwerty",
+        ///         "endTime": null
         ///     }
         /// </remarks>
         [HttpPost]
@@ -82,7 +82,9 @@ namespace BankPrikoloff.Controllers
         ///         "documentId": "Qwerty",
         ///         "accountId": "Qwerty",
         ///         "name": "Dep",
-        ///         "startDate": "2024-09-21T19:04:25.120Z"
+        ///         "startDate": "2024-09-21T19:04:25.120Z",
+        ///         "endTime": null
+
         ///     }
         /// </remarks>
         [HttpPut]

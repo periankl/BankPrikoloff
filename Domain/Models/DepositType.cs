@@ -15,7 +15,7 @@ namespace Domain.Models
         public decimal InterestRate { get; set; }
         public decimal? MinAmount { get; set; }
         public int? MinTerm { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? DeletedAt { get; set; }
 
         public virtual ICollection<Deposit> Deposits { get; set; }

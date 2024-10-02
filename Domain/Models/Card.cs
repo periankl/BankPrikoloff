@@ -19,9 +19,9 @@ namespace Domain.Models
         public DateTime ExpDate { get; set; }
         public string Cvv { get; set; } = null!;
         public string OwnerName { get; set; } = null!;
-        public decimal Balance { get; set; }
-        public bool Blocked { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public decimal Balance { get; set; } = 0;
+        public bool Blocked { get; set; } = false;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? BlockedAt { get; set; }
 
         public virtual Account? Account { get; set; } = null!;

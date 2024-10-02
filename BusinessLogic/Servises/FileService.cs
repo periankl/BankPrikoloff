@@ -26,9 +26,13 @@ namespace BusinessLogic.Servises
 
         public async Task<Domain.Models.File> GetById(string id)
         {
-            var file = await _repositoryWrapper.File
+            var model = await _repositoryWrapper.File
                 .FindByCondition(x => x.FileId == id);
-            return file.First();
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
         public async Task Create(Domain.Models.File model)
@@ -61,10 +65,13 @@ namespace BusinessLogic.Servises
 
         public async Task Delete(string id)
         {
-            var file = await _repositoryWrapper.File
+            var model = await _repositoryWrapper.File
                 .FindByCondition(x => x.FileId == id);
-
-            _repositoryWrapper.File.Delete(file.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.File.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

@@ -28,9 +28,13 @@ namespace BusinessLogic.Servises
 
         public async Task<Document> GetById(string id)
         {
-            var document = await _repositoryWrapper.Document
+            var model = await _repositoryWrapper.Document
                 .FindByCondition(x => x.DocumentId == id);
-            return document.First();
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
         public async Task Create(Document model)
@@ -70,10 +74,13 @@ namespace BusinessLogic.Servises
 
         public async Task Delete(string id)
         {
-            var document = await _repositoryWrapper.Document
+            var model = await _repositoryWrapper.Document
                 .FindByCondition(x => x.DocumentId == id);
-
-            _repositoryWrapper.Document.Delete(document.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.Document.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

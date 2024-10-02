@@ -27,9 +27,13 @@ namespace BusinessLogic.Servises
 
         public async Task<Deposit> GetById(string id)
         {
-            var deposit = await _repositoryWrapper.Deposit
+            var model = await _repositoryWrapper.Deposit
                 .FindByCondition(x => x.DepositId == id);
-            return deposit.First();
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
         }
 
         public async Task Create(Deposit model)
@@ -70,10 +74,13 @@ namespace BusinessLogic.Servises
 
         public async Task Delete(string id)
         {
-            var deposit = await _repositoryWrapper.Deposit
+            var model = await _repositoryWrapper.Deposit
                 .FindByCondition(x => x.DepositId == id);
-
-            _repositoryWrapper.Deposit.Delete(deposit.First());
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            _repositoryWrapper.Deposit.Delete(model.First());
             _repositoryWrapper.Save();
         }
     }

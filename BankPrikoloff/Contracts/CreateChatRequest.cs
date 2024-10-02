@@ -2,6 +2,6 @@
 {
     public class CreateChatRequest
     {
-        public DateTime CreatedAt { get; set; }
+        //public DateTime CreatedAt { get; set; }
     }
 }

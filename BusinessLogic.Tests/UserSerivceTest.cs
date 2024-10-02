@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -69,17 +70,34 @@ namespace BusinessLogic.Tests
                 Patronomic = "Test",
                 DateOfBirth = DateTime.ParseExact("22-01-2006", "dd-MM-yyyy", CultureInfo.InvariantCulture),
                 Email = "Test",
-                Login = "Test",
+                Login = "Test123441513412241",
                 Password = "Test",
-                CreatedAt = DateTime.Now,
-                ChatId = 1,
-                SeriesPasport = 1234,
-                NumberPasport = 234567
+                SeriesPasport = 1111,
+                NumberPasport = 111111
 
             };
             await service.Create(newUser);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<User>()), Times.Once);
 
+        }
+
+
+        [Fact]
+        public async void GetByIdAsyncNullUserShouldThrowArgumentException()
+        {
+            var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() => service.GetById("FFFFF"));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.FindByCondition(It.IsAny<Expression<Func<User, bool>>>()), Times.Once);
+        }
+
+        [Fact]
+        public async void DeleteAsyncNullUserShouldThrowArgumentException()
+        {
+            var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() => service.Delete("FFFF"));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Delete(It.IsAny<User>()), Times.Never);
         }
     }
 }

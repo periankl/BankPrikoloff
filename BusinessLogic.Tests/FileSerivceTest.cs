@@ -5,6 +5,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using File = Domain.Models.File;
@@ -75,6 +76,24 @@ namespace BusinessLogic.Tests
             await service.Create(newFile);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<File>()), Times.Once);
 
+        }
+
+        [Fact]
+        public async void GetByIdAsyncNullFileShouldThrowArgumentException()
+        {
+            var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() => service.GetById("FFFFF"));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.FindByCondition(It.IsAny<Expression<Func<File, bool>>>()), Times.Once);
+        }
+
+        [Fact]
+        public async void DeleteAsyncNullFileShouldThrowArgumentException()
+        {
+            var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() => service.Delete("FFFF"));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Delete(It.IsAny<File>()), Times.Never);
         }
     }
 }
