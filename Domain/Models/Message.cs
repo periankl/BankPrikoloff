@@ -10,7 +10,7 @@ namespace Domain.Models
             Files = new HashSet<File>();
         }
 
-        public int MessageId { get; set; }
+        public int? MessageId { get; set; }
         public int StatusId { get; set; } = 1;
         public int TredId { get; set; }
         public string ClientId { get; set; } = null!;

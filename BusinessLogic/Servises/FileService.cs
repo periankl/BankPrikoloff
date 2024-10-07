@@ -2,6 +2,7 @@
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,20 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentNullException(nameof(model));
             }
+            if (string.IsNullOrEmpty(nameof(model.MessageId)) || model.MessageId <= 0)
+            {
+                throw new ArgumentNullException(nameof(model.MessageId));
+            }
+            await _repositoryWrapper.File.Create(model);
+            _repositoryWrapper.Save();
+        }
+
+        public async Task Update(Domain.Models.File model)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
             if (string.IsNullOrEmpty(model.FileId))
             {
                 throw new ArgumentException(nameof(model.FileId));
@@ -53,12 +68,10 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.ClientId));
             }
-            await _repositoryWrapper.File.Create(model);
-            _repositoryWrapper.Save();
-        }
-
-        public async Task Update(Domain.Models.File model)
-        {
+            if (string.IsNullOrEmpty(nameof(model.MessageId)) || model.MessageId <= 0)
+            {
+                throw new ArgumentNullException(nameof(model.MessageId));
+            }
             _repositoryWrapper.File.Update(model);
             _repositoryWrapper.Save();
         }

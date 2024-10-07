@@ -44,7 +44,6 @@ namespace BankPrikoloff.Controllers
         ///     POST /Todo
         ///     {
         ///         "depositTypeId": 1,
-        ///         "statusId": 1,
         ///         "accountId": "Qwerty",
         ///         "endTime": null
         ///     }
@@ -53,8 +52,6 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateDepositRequest request)
         {
             var Dto = request.Adapt<Deposit>();
-            Dto.DepositId = Guid.NewGuid().ToString("N").Substring(0, 9);
-            Dto.StatusId = 1;
             Dto.Document = new Document();
             Dto.Document.DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9);
             Dto.Document.ClientId = "qwerty";

@@ -29,11 +29,8 @@ namespace BusinessLogic.Tests
         {
             return new List<object[]>
             {
-                new object[] { new Loan() {LoanId = "", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "Test", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1)} },
-                new object[] { new Loan() {LoanId = "Test", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "Test", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1)} },
-                new object[] { new Loan() {LoanId = "", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "Test", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1)} },
-                new object[] { new Loan() {LoanId = "Test", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1)} },
-                new object[] { new Loan() {LoanId = "Test", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "Test", StartDate = DateTime.Now.AddYears(1), EndDate = DateTime.Now } }
+                new object[] { new Loan() {AccountId = "", EndDate = DateTime.Now.AddYears(2)} },
+                new object[] { new Loan() {AccountId = "Test", EndDate = DateTime.Now.AddYears(-12)} }
             };
         }
 
@@ -65,6 +62,47 @@ namespace BusinessLogic.Tests
         {
             var newLoan = new Loan()
             {
+                LoanTypeId = 1,
+                AccountId = "Qwerty",
+                Amount = 10000,
+                EndDate = DateTime.Now.AddYears(5)
+            };
+            await service.Create(newLoan);
+            userRepositoryMoq.Verify(x => x.Create(It.IsAny<Loan>()), Times.Once);
+        }
+
+        public static IEnumerable<object[]> UpdateIncorrectLoans()
+        {
+            return new List<object[]>
+            {
+                new object[] { new Loan() {LoanId = "", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "Test", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1)} },
+                new object[] { new Loan() {LoanId = "Test", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "Test", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1)} },
+                new object[] { new Loan() {LoanId = "", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "Test", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1)} },
+                new object[] { new Loan() {LoanId = "Test", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1)} },
+                new object[] { new Loan() {LoanId = "Test", LoanTypeId = 1, StatusId = 1, DocumentId = "", AccountId = "Test", StartDate = DateTime.Now.AddYears(1), EndDate = DateTime.Now } }
+            };
+        }
+
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectLoans))]
+        public async Task UpdateAsyncBadDeposit_ShouldThrowNullArgumentException(Loan model)
+        {
+            var newLoan = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newLoan));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Loan>()), Times.Never());
+        }
+
+
+        [Fact]
+
+        public async Task UpdateAsyncNewLoanShouldUpdateLoan()
+        {
+            var newLoan = new Loan()
+            {
                 LoanId = "Test",
                 LoanTypeId = 1,
                 StatusId = 1,
@@ -74,9 +112,18 @@ namespace BusinessLogic.Tests
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddYears(5)
             };
-            await service.Create(newLoan);
-            userRepositoryMoq.Verify(x => x.Create(It.IsAny<Loan>()), Times.Once);
+            await service.Update(newLoan);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Loan>()), Times.Once);
 
+        }
+
+        [Fact]
+        public async Task UpdateAsyncNullLoanShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Loan>()), Times.Never());
         }
 
         [Fact]

@@ -96,6 +96,10 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Email is taken by another user");
             }
+            if (model.DeletedAt < model.CreatedAt)
+            {
+                throw new ArgumentException(nameof(model.CreatedAt));
+            }
             await _repositoryWrapper.User.Create(model);
 
             _repositoryWrapper.Save();

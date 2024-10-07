@@ -43,6 +43,20 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentNullException(nameof(model));
             }
+            if (string.IsNullOrEmpty(model.ClientId))
+            {
+                throw new ArgumentException(nameof(model.ClientId));
+            }
+            await _repositoryWrapper.Document.Create(model);
+            _repositoryWrapper.Save();
+        }
+
+        public async Task Update(Document model)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
             if (string.IsNullOrEmpty(model.DocumentId))
             {
                 throw new ArgumentException(nameof(model.DocumentId));
@@ -59,15 +73,6 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.Path));
             }
-
-
-
-            await _repositoryWrapper.Document.Create(model);
-            _repositoryWrapper.Save();
-        }
-
-        public async Task Update(Document model)
-        {
             _repositoryWrapper.Document.Update(model);
             _repositoryWrapper.Save();
         }

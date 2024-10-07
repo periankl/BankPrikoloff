@@ -29,11 +29,7 @@ namespace BusinessLogic.Tests
         {
             return new List<object[]>
             {
-                new object[] { new Document() {DocumentId = "", ClientId = "", Name = "", Path = "", CreatedAt = DateTime.MaxValue} },
-                new object[] { new Document() {DocumentId = "Test", ClientId = "", Name = "", Path = "", CreatedAt = DateTime.MaxValue} },
-                new object[] { new Document() {DocumentId = "", ClientId = "Test", Name = "", Path = "", CreatedAt = DateTime.MaxValue} },
-                new object[] { new Document() {DocumentId = "", ClientId = "", Name = "", Path = "Test", CreatedAt = DateTime.MaxValue} },
-
+                new object[] { new Document() {ClientId = ""} }
             };
         }
 
@@ -65,16 +61,62 @@ namespace BusinessLogic.Tests
         {
             var newDocument = new Document()
             {
-                DocumentId = "Test",
                 ClientId = "Test",
-                TypeId = 1,
-                Name = "Test",
-                Path = "Test",
-                CreatedAt = DateTime.Now
             };
             await service.Create(newDocument);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<Document>()), Times.Once);
 
+        }
+
+        public static IEnumerable<object[]> UpdateIncorrectDocuments()
+        {
+            return new List<object[]>
+            {
+                new object[] { new Document() {DocumentId = "", ClientId = "", Name = "", Path = "", CreatedAt = DateTime.MaxValue} },
+                new object[] { new Document() {DocumentId = "Test", ClientId = "", Name = "", Path = "", CreatedAt = DateTime.MaxValue} },
+                new object[] { new Document() {DocumentId = "", ClientId = "Test", Name = "", Path = "", CreatedAt = DateTime.MaxValue} },
+                new object[] { new Document() {DocumentId = "", ClientId = "", Name = "", Path = "Test", CreatedAt = DateTime.MaxValue} },
+
+            };
+        }
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectDocuments))]
+        public async Task UpdateAsyncBadDeposit_ShouldThrowNullArgumentException(Document model)
+        {
+            var newDeposit = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newDeposit));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Document>()), Times.Never());
+        }
+
+        [Fact]
+
+        public async Task UpdateAsyncNewDocumentShouldCreateNewDocument()
+        {
+            var newDocument = new Document()
+            {
+                ClientId = "Test",
+                Path = "Test",
+                Name = "Test",
+
+                CreatedAt = DateTime.Now
+
+            };
+            await service.Create(newDocument);
+            userRepositoryMoq.Verify(x => x.Create(It.IsAny<Document>()), Times.Once);
+
+        }
+
+        [Fact]
+        public async Task UpdateAsyncNullDepositShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Document>()), Times.Never());
         }
 
         [Fact]

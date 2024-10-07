@@ -5,7 +5,7 @@ namespace Domain.Models
 {
     public partial class File
     {
-        public string FileId { get; set; } = null!;
+        public string FileId { get; set; } = Guid.NewGuid().ToString("N").Substring(0, 9);
         public string FilePath { get; set; } = null!;
         public int MessageId { get; set; }
         public string ClientId { get; set; } = null!;

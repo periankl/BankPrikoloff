@@ -55,6 +55,22 @@ namespace BusinessLogic.Servises
 
         public async Task Update(Message model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (!model.MessageId.HasValue)
+            {
+                throw new ArgumentException(nameof(model.MessageId));
+            }
+            if (string.IsNullOrEmpty(model.ClientId))
+            {
+                throw new ArgumentException(nameof(model.ClientId));
+            }
+            if (string.IsNullOrEmpty(model.Content))
+            {
+                throw new ArgumentException(nameof(model.Content));
+            }
             _repositoryWrapper.Message.Update(model);
             _repositoryWrapper.Save();
         }

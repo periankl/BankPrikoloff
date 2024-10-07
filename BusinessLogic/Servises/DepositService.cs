@@ -46,10 +46,6 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.DepositId));
             }
-            if (string.IsNullOrEmpty(model.DocumentId))
-            {
-                throw new ArgumentException(nameof(model.DocumentId));
-            }
             if (string.IsNullOrEmpty(model.AccountId))
             {
                 throw new ArgumentException(nameof(model.AccountId));
@@ -68,6 +64,30 @@ namespace BusinessLogic.Servises
 
         public async Task Update(Deposit model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.DepositId))
+            {
+                throw new ArgumentException(nameof(model.DepositId));
+            }
+            if (string.IsNullOrEmpty(model.DocumentId))
+            {
+                throw new ArgumentException(nameof(model.DocumentId));
+            }
+            if (string.IsNullOrEmpty(model.AccountId))
+            {
+                throw new ArgumentException(nameof(model.AccountId));
+            }
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                throw new ArgumentException(nameof(model.Name));
+            }
+            if (model.StartDate > model.EndDate)
+            {
+                throw new ArgumentException(nameof(model.StartDate));
+            }
             _repositoryWrapper.Deposit.Update(model);
             _repositoryWrapper.Save();
         }

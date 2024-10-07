@@ -41,10 +41,6 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentNullException(nameof(model));
             }
-            if (string.IsNullOrEmpty(model.OperationId))
-            {
-                throw new ArgumentException(nameof(model.OperationId));
-            }
             if (model.Amount < 0)
             {
                 throw new ArgumentException(nameof(model.Amount));
@@ -63,6 +59,26 @@ namespace BusinessLogic.Servises
 
         public async Task Update(OperationHistory model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.OperationId))
+            {
+                throw new ArgumentException(nameof(model.OperationId));
+            }
+            if (model.Amount < 0)
+            {
+                throw new ArgumentException(nameof(model.Amount));
+            }
+            if (model.SenderAccount == model.DestinationAccount & model.DestinationCardId == null)
+            {
+                throw new ArgumentException(nameof(model.SenderAccount));
+            }
+            if (model.SenderCard != null & model.DestinationCardId != null & (model.SenderAccountId == null | model.DestinationAccountId == null))
+            {
+                throw new ArgumentException(nameof(model.SenderCard));
+            }
             _repositoryWrapper.OperationHistory.Update(model);
             _repositoryWrapper.Save();
         }

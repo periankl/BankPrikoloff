@@ -59,6 +59,22 @@ namespace BusinessLogic.Servises
 
         public async Task Update(LoanType model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                throw new ArgumentException(nameof(model.Name));
+            }
+            if (model.InterestRate < 0)
+            {
+                throw new ArgumentException(nameof(model.InterestRate));
+            }
+            if (model.MaxLoanAmount < 0)
+            {
+                throw new ArgumentException(nameof(model.MaxLoanAmount));
+            }
             _repositoryWrapper.LoanType.Update(model);
             _repositoryWrapper.Save();
         }

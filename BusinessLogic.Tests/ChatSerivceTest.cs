@@ -52,6 +52,29 @@ namespace BusinessLogic.Tests
         }
 
         [Fact]
+        public async Task UpdateAsync_NullChat_ShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Chat>()), Times.Never());
+        }
+
+        [Fact]
+
+        public async Task UpdateAsyncNewChatShouldCreateNewChat()
+        {
+            var newChat = new Chat()
+            {
+                ChatId = 1,
+                CreatedAt = DateTime.Now
+            };
+            await service.Update(newChat);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Chat>()), Times.Once);
+        }
+
+
+        [Fact]
         public async void GetByIdAsyncNullChatShouldThrowArgumentException()
         {
             var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() => service.GetById(-1));

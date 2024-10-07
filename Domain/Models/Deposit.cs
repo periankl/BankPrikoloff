@@ -5,7 +5,7 @@ namespace Domain.Models
 {
     public partial class Deposit
     {
-        public string DepositId { get; set; } = null!;
+        public string DepositId { get; set; } = Guid.NewGuid().ToString("N").Substring(0, 9);
         public int DepositTypeId { get; set; }
         public int StatusId { get; set; } = 1;
         public string DocumentId { get; set; } = null!;

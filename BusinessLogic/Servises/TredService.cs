@@ -41,6 +41,10 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentNullException(nameof(model));
             }
+            if (!model.ChatId.HasValue)
+            {
+                throw new ArgumentException(nameof(model.ChatId));
+            }
             if (model.IsClosed == true & model.ClosedAt == null)
             {
                 throw new ArgumentException(nameof(model.IsClosed));
@@ -59,6 +63,22 @@ namespace BusinessLogic.Servises
 
         public async Task Update(Tred model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (model.IsClosed == true & model.ClosedAt == null)
+            {
+                throw new ArgumentException(nameof(model.IsClosed));
+            }
+            if (model.IsClosed == false & model.ClosedAt != null)
+            {
+                throw new ArgumentException(nameof(model.IsClosed));
+            }
+            if (model.CreatedAt > model.ClosedAt)
+            {
+                throw new ArgumentException(nameof(model.CreatedAt));
+            }
             _repositoryWrapper.Tred.Update(model);
             _repositoryWrapper.Save();
         }

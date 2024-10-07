@@ -68,13 +68,7 @@ namespace BusinessLogic.Tests
                 TypeId = 1,
                 CurrencyId = 1,
                 AccountId = "Test",
-                CardNumber = "Test",
-                ExpDate = DateTime.Now.AddDays(10),
-                Cvv = "Test",
                 OwnerName = "Test",
-                Balance = 1,
-                Blocked = false,
-                CreatedAt = DateTime.Now
             };
             await service.Create(newCard);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<Card>()), Times.Once);
@@ -99,10 +93,12 @@ namespace BusinessLogic.Tests
         {
             var newCard = model;
 
-            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Create(newCard));
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newCard));
 
             Assert.IsType<ArgumentException>(ex);
             userRepositoryMoq.Verify(x => x.Update(It.IsAny<Card>()), Times.Never());
+            Assert.IsType<ArgumentException>(ex);
+
         }
 
 
@@ -116,7 +112,28 @@ namespace BusinessLogic.Tests
         }
 
 
+        [Fact]
 
+        public async Task UpdateAsyncNewCardShouldCreateNewCard()
+        {
+            var newCard = new Card()
+            {
+                CardId = "Test",
+                TypeId = 1,
+                CurrencyId = 1,
+                AccountId = "Test",
+                CardNumber = "Test",
+                ExpDate = DateTime.Now.AddYears(3),
+                Cvv = "Test",
+                OwnerName = "Test",
+                Balance = 1,
+                Blocked = false,
+                CreatedAt = DateTime.Now
+            };
+            await service.Update(newCard);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Card>()), Times.Once);
+
+        }
 
 
         [Fact]

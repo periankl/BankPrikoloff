@@ -29,13 +29,8 @@ namespace BusinessLogic.Tests
         {
             return new List<object[]>
             {
-                new object[] { new LoanType() { Name = "", InterestRate = 3, MaxLoanAmount = 10000} },
-                new object[] { new LoanType() {Name = "", InterestRate = 3, MaxLoanAmount = 10000 } },
                 new object[] { new LoanType() {Name = "", InterestRate = 3, MaxLoanAmount = -10000 } },
                 new object[] { new LoanType() {Name = "", InterestRate = -3, MaxLoanAmount = 10000 } },
-                new object[] { new LoanType() {Name = "", InterestRate = 3, MaxLoanAmount = 10000 } }
-
-
             };
         }
 
@@ -62,7 +57,15 @@ namespace BusinessLogic.Tests
         }
 
         [Fact]
+        public async Task UpdateAsync_NullLoanType_ShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
 
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<LoanType>()), Times.Never());
+        }
+
+        [Fact]
         public async Task CreateAsyncNewLoanTypeShouldCreateNewLoanType()
         {
             var newLoanType = new LoanType()
@@ -73,7 +76,40 @@ namespace BusinessLogic.Tests
             };
             await service.Create(newLoanType);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<LoanType>()), Times.Once);
+        }
 
+        public static IEnumerable<object[]> UpdateIncorrectLoanTypes()
+        {
+            return new List<object[]>
+            {
+                new object[] { new LoanType() {LoanTypeId = 1, Name = "", InterestRate = 3, MaxLoanAmount = -10000 } },
+                new object[] { new LoanType() {LoanTypeId = 1, Name = "", InterestRate = -3, MaxLoanAmount = 10000 } },
+            };
+        }
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectLoanTypes))]
+        public async Task UpdateAsync_BadLoanType_ShouldThrowNullArgumentException(LoanType model)
+        {
+            var newLoanType = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newLoanType));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<LoanType>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task UpdateAsyncNewLoanTypeShouldCreateNewLoanType()
+        {
+            var newLoanType = new LoanType()
+            {
+                Name = "Test",
+                InterestRate = 3,
+                MaxLoanAmount = 10000
+            };
+            await service.Update(newLoanType);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<LoanType>()), Times.Once);
         }
 
         [Fact]

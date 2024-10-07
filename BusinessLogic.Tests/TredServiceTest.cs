@@ -29,11 +29,7 @@ namespace BusinessLogic.Tests
         {
             return new List<object[]>
             {
-                new object[] { new Tred() { IsClosed = true, ClosedAt = null} },
-                new object[] { new Tred() { CreatedAt = DateTime.Now, IsClosed = true, ClosedAt = DateTime.Now.AddDays(-5)} },
-                new object[] { new Tred() { CreatedAt = DateTime.Now, IsClosed = false, ClosedAt = DateTime.Now.AddDays(1)} },
-
-
+                new object[] { new Tred() {} },
 
             };
         }
@@ -66,16 +62,58 @@ namespace BusinessLogic.Tests
         {
             var newTred = new Tred()
             {
-                TredId = 1,
                 ChatId = 1,
-                CreatedAt = DateTime.Now,
-                IsClosed = false,
-                ClosedAt = null
-
             };
             await service.Create(newTred);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<Tred>()), Times.Once);
+        }
 
+        public static IEnumerable<object[]> UpdateIncorrectTreds()
+        {
+            return new List<object[]>
+            {
+                new object[] { new Tred() { IsClosed = true, ClosedAt = null} },
+                new object[] { new Tred() { CreatedAt = DateTime.Now, IsClosed = true, ClosedAt = DateTime.Now.AddDays(-5)} },
+                new object[] { new Tred() { CreatedAt = DateTime.Now, IsClosed = false, ClosedAt = DateTime.Now.AddDays(1)} },
+            };
+        }
+
+
+        [Fact]
+
+        public async Task UpdateAsyncNewTredShouldCreateNewTred()
+        {
+            var newTred = new Tred()
+            {
+                ChatId = 1,
+                TredId = 1,
+                CreatedAt = DateTime.UtcNow,
+                IsClosed = true,
+                ClosedAt = DateTime.Now.AddDays(1)
+            };
+            await service.Update(newTred);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Tred>()), Times.Once);
+        }
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectTreds))]
+        public async Task UpdateAsync_BadTred_ShouldThrowNullArgumentException(Tred model)
+        {
+            var newTred = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newTred));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Tred>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task UpdateAsync_NullTred_ShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Tred>()), Times.Never());
         }
 
         [Fact]

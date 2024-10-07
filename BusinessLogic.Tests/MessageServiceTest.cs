@@ -78,6 +78,29 @@ namespace BusinessLogic.Tests
         }
 
         [Fact]
+        public static IEnumerable<object[]> UpdateIncorrectMessages()
+        {
+            return new List<object[]>
+            {
+                new object[] { new Message() {MessageId = 1, ClientId = "", Content = "", CreatedAt  = DateTime.MaxValue } },
+                new object[] { new Message() {ClientId = "Test", Content = "", CreatedAt  = DateTime.MaxValue } },
+                new object[] { new Message() {ClientId = "", Content = "Test", CreatedAt  = DateTime.MaxValue } }
+
+            };
+        }
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectMessages))]
+        public async Task UpdateAsync_BadMessage_ShouldThrowNullArgumentException(Message model)
+        {
+            var newMessage = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newMessage));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Message>()), Times.Never());
+        }
+        [Fact]
         public async void GetByIdAsyncNullMessageShouldThrowArgumentException()
         {
             var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() => service.GetById(-1));
@@ -86,6 +109,14 @@ namespace BusinessLogic.Tests
             userRepositoryMoq.Verify(x => x.FindByCondition(It.IsAny<Expression<Func<Message, bool>>>()), Times.Once);
         }
 
+        [Fact]
+        public async Task UpdateAsync_NullMessage_ShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<Message>()), Times.Never());
+        }
         [Fact]
         public async void DeleteAsyncNullMessageShouldThrowArgumentException()
         {

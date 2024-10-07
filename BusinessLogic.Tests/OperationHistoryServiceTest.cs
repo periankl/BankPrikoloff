@@ -31,7 +31,7 @@ namespace BusinessLogic.Tests
             {
                 new object[] { new OperationHistory() { OperationId = "", SenderAccountId = "Test", DestinationAccountId = "Test" } },
                 new object[] { new OperationHistory() { OperationId = "Test", SenderAccountId = "Test", DestinationAccountId = "Test", Amount = -1 } },
-                new object[] { new OperationHistory() { OperationId = "Test", SenderAccountId = "Test", DestinationAccountId = "Test", DestinationCardId = null } },
+                new object[] { new OperationHistory() { OperationId = "Test", SenderAccountId = "Test", DestinationAccountId = "Test"} },
             };
         }
 
@@ -63,18 +63,37 @@ namespace BusinessLogic.Tests
         {
             var newOperationHistory = new OperationHistory()
             {
-                OperationId = "Test",
                 SenderAccountId = "Test",
                 SenderCardId = "Test",
                 DestinationAccountId = "Test1",
                 DestinationCardId = "Test12",
-                StatusId = 1,
-                Date = DateTime.Now,
                 Amount = 100
             };
             await service.Create(newOperationHistory);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<OperationHistory>()), Times.Once);
 
+        }
+
+        public static IEnumerable<object[]> UpdateIncorrectOperationHistorys()
+        {
+            return new List<object[]>
+            {
+                new object[] { new OperationHistory() { OperationId = "", SenderAccountId = "Test", DestinationAccountId = "Test" } },
+                new object[] { new OperationHistory() { OperationId = "Test", SenderAccountId = "Test", DestinationAccountId = "Test", Amount = -1 } },
+                new object[] { new OperationHistory() { OperationId = "Test", SenderAccountId = "Test", DestinationAccountId = "Test"} },
+            };
+        }
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectOperationHistorys))]
+        public async Task UpdateAsync_BadOperationHistory_ShouldThrowNullArgumentException(OperationHistory model)
+        {
+            var newOperationHistory = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newOperationHistory));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<OperationHistory>()), Times.Never());
         }
 
         [Fact]
@@ -84,6 +103,15 @@ namespace BusinessLogic.Tests
 
             Assert.IsType<ArgumentException>(ex);
             userRepositoryMoq.Verify(x => x.FindByCondition(It.IsAny<Expression<Func<OperationHistory, bool>>>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_NullOperationHistory_ShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<OperationHistory>()), Times.Never());
         }
 
         [Fact]

@@ -5,9 +5,9 @@ namespace Domain.Models
 {
     public partial class Loan
     {
-        public string LoanId { get; set; } = null!;
+        public string LoanId { get; set; } = Guid.NewGuid().ToString("N").Substring(0, 9);
         public string? AccountId { get; set; }
-        public int LoanTypeId { get; set; }
+        public int? LoanTypeId { get; set; }
         public int StatusId { get; set; } = 1;
         public string DocumentId { get; set; } = null!;
         public decimal Amount { get; set; } = 0;

@@ -30,12 +30,9 @@ namespace BusinessLogic.Tests
             return new List<object[]>
             {
                 new object[] { new DepositType() { Name = "", InterestRate = 3, MinAmount = 10000, MinTerm = 5, CreatedAt = DateTime.Now} },
-                new object[] { new DepositType() { Name = "", InterestRate = 3, MinAmount = 10000, MinTerm = 5, CreatedAt = DateTime.Now} },
                 new object[] { new DepositType() { Name = "", InterestRate = 3, MinAmount = -10000, MinTerm = 5, CreatedAt = DateTime.Now} },
                 new object[] { new DepositType() { Name = "", InterestRate = -3, MinAmount = 10000, MinTerm = 5, CreatedAt = DateTime.Now} },
                 new object[] { new DepositType() { Name = "", InterestRate = 3, MinAmount = 10000, MinTerm = -5, CreatedAt = DateTime.Now} }
-
-
             };
         }
 
@@ -67,15 +64,63 @@ namespace BusinessLogic.Tests
         {
             var newDepositType = new DepositType()
             {
-                DepositTypeId = 1,
                 Name = "Test",
                 InterestRate = 5,
                 MinAmount = 100,
                 MinTerm = 3,
-                CreatedAt = DateTime.Now
             };
             await service.Create(newDepositType);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<DepositType>()), Times.Once);
+
+        }
+
+        public static IEnumerable<object[]> UpdateIncorrectDepositTypes()
+        {
+            return new List<object[]>
+            {
+                new object[] { new DepositType() { DepositTypeId = -1, Name = "", InterestRate = 3, MinAmount = 10000, MinTerm = 5, CreatedAt = DateTime.Now} },
+                new object[] { new DepositType() { DepositTypeId = 2, Name = "", InterestRate = 3, MinAmount = -10000, MinTerm = 5, CreatedAt = DateTime.Now} },
+                new object[] { new DepositType() { DepositTypeId = 2, Name = "", InterestRate = -3, MinAmount = 10000, MinTerm = 5, CreatedAt = DateTime.Now} },
+                new object[] { new DepositType() { DepositTypeId = -1, Name = "", InterestRate = 3, MinAmount = 10000, MinTerm = -5, CreatedAt = DateTime.Now} }
+            };
+        }
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectDepositTypes))]
+        public async Task UpdateAsync_BadDeposit_ShouldThrowNullArgumentException(DepositType model)
+        {
+            var newDeposit = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newDeposit));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<DepositType>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task UpdateAsyncNullDepositShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<DepositType>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task UpdateAsyncNewDepositTypeShouldCreateNewDepositType()
+        {
+            var newDepositType = new DepositType()
+            {
+                DepositTypeId = 1,
+                Name = "Test",
+                InterestRate = 5,
+                MinAmount = 100,
+
+                MinTerm = 3,
+                CreatedAt = DateTime.Now
+            };
+            await service.Update(newDepositType);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<DepositType>()), Times.Once);
 
         }
 

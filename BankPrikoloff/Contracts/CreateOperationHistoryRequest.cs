@@ -2,7 +2,6 @@
 {
     public class CreateOperationHistoryRequest
     {
-        public string OperationId { get; set; } = null!;
         public string SenderAccountId { get; set; } = null!;
         public string? SenderCardId { get; set; }
         public string DestinationAccountId { get; set; } = null!;

@@ -32,7 +32,10 @@ namespace BusinessLogic.Tests
             {
                 new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "" } },
                 new object[] { new User() { ClientId = "", FirstName = "Test", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "" } },
-                new object[] { new User() { ClientId = "", FirstName = "Test", LastName = "Test", DateOfBirth = DateTime.Now, Login = "", Email = "", Password = "" } }
+                new object[] { new User() { ClientId = "", FirstName = "Test", LastName = "Test", DateOfBirth = DateTime.Now, Login = "", Email = "", Password = "" } },                new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "" } },
+                new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "Test", Email = "", Password = "" } },
+                new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "Test", Password = "" } },
+                new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "Test" } },
             };
         }
 
@@ -78,7 +81,67 @@ namespace BusinessLogic.Tests
             };
             await service.Create(newUser);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<User>()), Times.Once);
+        }
 
+        public static IEnumerable<object[]> UpdateIncorrectUsers()
+        {
+            return new List<object[]>
+            {
+                new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "" } },
+                new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "Test", Email = "", Password = "" } },
+                new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "Test", Password = "" } },
+                new object[] { new User() { ClientId = "", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "Test" } },
+                new object[] { new User() { ClientId = "", FirstName = "", LastName = "Test", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "" } },
+                new object[] { new User() { ClientId = "", FirstName = "Test", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "" } },
+                new object[] { new User() { ClientId = "YTest", FirstName = "", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "" } },
+                new object[] { new User() { ClientId = "Test", FirstName = "Test", LastName = "", DateOfBirth = DateTime.MaxValue, Login = "", Email = "", Password = "" } },
+                new object[] { new User() { ClientId = "", FirstName = "Test", LastName = "Test", DateOfBirth = DateTime.Now, Login = "", Email = "", Password = "" } }
+            };
+        }
+
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectUsers))]
+        public async Task UpdateAsync_BadUser_ShouldThrowNullArgumentException(User model)
+        {
+            var newUser = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Create(newUser));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Create(It.IsAny<User>()), Times.Never());
+        }
+
+        [Fact]
+        public async Task UpdateAsync_NullUser_ShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Create(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Create(It.IsAny<User>()), Times.Never());
+        }
+
+        [Fact]
+
+        public async Task UpdateAsyncNewUserShouldCreateNewUser()
+        {
+            var newUser = new User()
+            {
+                ClientId = "Test",
+                FirstName = "Test",
+                LastName = "Test",
+                Patronomic = "Test",
+                DateOfBirth = DateTime.ParseExact("22-01-2006", "dd-MM-yyyy", CultureInfo.InvariantCulture),
+                Email = "Test",
+                Login = "Test123441513412241",
+                Password = "Test",
+                SeriesPasport = 1111,
+                NumberPasport = 111111,
+                CreatedAt = DateTime.Now,
+                DeletedAt = DateTime.Now.AddDays(2),
+            };
+            await service.Create(newUser);
+            userRepositoryMoq.Verify(x => x.Create(It.IsAny<User>()), Times.Once);
         }
 
 

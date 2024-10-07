@@ -17,7 +17,7 @@ namespace BankPrikoloff
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<BankContext>(
-                optionsAction: options => options.UseSqlServer(connectionString: "Server = COMPUTER-2; Database = Bankirs; Integrated Security = True; TrustServerCertificate=True;"));
+                optionsAction: options => options.UseSqlServer(connectionString: "Server = COMPUTER-2; Database = Bank; Integrated Security = True; TrustServerCertificate=True;"));
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IFileService, FileService>();

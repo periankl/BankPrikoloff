@@ -5,7 +5,7 @@ namespace Domain.Models
 {
     public partial class OperationHistory
     {
-        public string OperationId { get; set; } = null!;
+        public string OperationId { get; set; } = Guid.NewGuid().ToString("N").Substring(0, 9);
         public string SenderAccountId { get; set; } = null!;
         public string? SenderCardId { get; set; }
         public string DestinationAccountId { get; set; } = null!;

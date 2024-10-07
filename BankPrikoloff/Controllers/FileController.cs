@@ -53,7 +53,6 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateFileRequest request)
         {
             var Dto = request.Adapt<Domain.Models.File>();
-            Dto.FileId = Guid.NewGuid().ToString("N").Substring(0, 9);
             Dto.ClientId = "qwerty";
             Dto.FilePath = $"File{Dto.FileId}";
             await _fileService.Create(Dto);

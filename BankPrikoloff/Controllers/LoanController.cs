@@ -55,7 +55,6 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateLoanRequest request)
         {
             var Dto = request.Adapt<Loan>();
-            Dto.LoanId = Guid.NewGuid().ToString("N").Substring(0, 9);
             Dto.StatusId = 1;
             Dto.RemarningAmount = 0;
             Dto.Document = new Document();

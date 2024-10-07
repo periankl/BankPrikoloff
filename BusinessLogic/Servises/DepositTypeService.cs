@@ -45,7 +45,7 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.Name));
             }
-            if (model.InterestRate < 0)
+            if (model.InterestRate <= 0)
             {
                 throw new ArgumentException(nameof(model.InterestRate));
             }
@@ -63,6 +63,26 @@ namespace BusinessLogic.Servises
 
         public async Task Update(DepositType model)
         {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                throw new ArgumentException(nameof(model.Name));
+            }
+            if (model.InterestRate <= 0)
+            {
+                throw new ArgumentException(nameof(model.InterestRate));
+            }
+            if (model.MinAmount < 0)
+            {
+                throw new ArgumentException(nameof(model.MinAmount));
+            }
+            if (model.MinTerm < 0)
+            {
+                throw new ArgumentException(nameof(model.MinTerm));
+            }
             _repositoryWrapper.DepositType.Update(model);
             _repositoryWrapper.Save();
         }

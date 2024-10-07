@@ -30,12 +30,7 @@ namespace BusinessLogic.Tests
         {
             return new List<object[]>
             {
-                new object[] { new File() {FileId = "", FilePath = "", ClientId = "", UploadAt = DateTime.MaxValue} },
-                new object[] { new File() {FileId = "Test", FilePath = "", ClientId = "", UploadAt = DateTime.MaxValue} },
-                new object[] { new File() {FileId = "", FilePath = "", ClientId = "Test", UploadAt = DateTime.MaxValue} },
-                new object[] { new File() {FileId = "", FilePath = "Test", ClientId = "", UploadAt = DateTime.MaxValue} },
-
-
+                new object[] { new File() {MessageId = -1} }
             };
         }
 
@@ -45,9 +40,9 @@ namespace BusinessLogic.Tests
         {
             var newFile = model;
 
-            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Create(newFile));
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Create(newFile));
 
-            Assert.IsType<ArgumentException>(ex);
+            Assert.IsType<ArgumentNullException>(ex);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<File>()), Times.Never());
         }
 
@@ -67,7 +62,53 @@ namespace BusinessLogic.Tests
         {
             var newFile = new File()
             {
-                FileId = "Test",
+                MessageId = 1,
+            };
+            await service.Create(newFile);
+            userRepositoryMoq.Verify(x => x.Create(It.IsAny<File>()), Times.Once);
+        }
+
+        public static IEnumerable<object[]> UpdateIncorrectFiles()
+        {
+            return new List<object[]>
+            {
+                new object[] { new File() {FileId = "", FilePath = "", ClientId = "", UploadAt = DateTime.MaxValue} },
+                new object[] { new File() {FileId = "Test", FilePath = "", ClientId = "", UploadAt = DateTime.MaxValue} },
+                new object[] { new File() {FileId = "", FilePath = "", ClientId = "Test", UploadAt = DateTime.MaxValue} },
+                new object[] { new File() {FileId = "", FilePath = "Test", ClientId = "", UploadAt = DateTime.MaxValue} },
+            };
+        }
+
+        [Theory]
+        [MemberData(nameof(UpdateIncorrectFiles))]
+        public async Task UpdateAsync_BadFile_ShouldThrowNullArgumentException(File model)
+        {
+            var newFile = model;
+
+            var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.Update(newFile));
+
+            Assert.IsType<ArgumentException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<File>()), Times.Never());
+            Assert.IsType<ArgumentException>(ex);
+
+        }
+
+        [Fact]
+        public async Task UpdateAsyncNullFileShouldThrowNullArgumentException()
+        {
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => service.Update(null));
+
+            Assert.IsType<ArgumentNullException>(ex);
+            userRepositoryMoq.Verify(x => x.Update(It.IsAny<File>()), Times.Never());
+            Assert.IsType<ArgumentNullException>(ex);
+
+        }
+
+        [Fact]
+        public async Task UploadAsyncNewFileShouldCreateNewFile()
+        {
+            var newFile = new File()
+            {
                 ClientId = "Test",
                 FilePath = "Test",
                 MessageId = 1,
@@ -75,9 +116,7 @@ namespace BusinessLogic.Tests
             };
             await service.Create(newFile);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<File>()), Times.Once);
-
         }
-
         [Fact]
         public async void GetByIdAsyncNullFileShouldThrowArgumentException()
         {
