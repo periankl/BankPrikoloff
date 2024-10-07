@@ -1,10 +1,12 @@
 ﻿using BankPrikoloff.Contracts;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Servises;
+using Domain.Interfaces;
 using Domain.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankPrikoloff.Controllers
 {
@@ -13,8 +15,10 @@ namespace BankPrikoloff.Controllers
     public class LoanController : ControllerBase
     {
         private ILoanService _loanService;
-        public LoanController(ILoanService loanService)
+        private BankContext _context;
+        public LoanController(BankContext context, ILoanService loanService)
         {
+            _context = context;
             _loanService = loanService;
         }
         /// <summary>
@@ -43,7 +47,6 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "loanId": "Qwerty",
         ///         "accountId": "Qwerty",
         ///         "loanTypeId": 1,
         ///         "amount": 3000,
@@ -55,17 +58,20 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateLoanRequest request)
         {
             var Dto = request.Adapt<Loan>();
-            Dto.StatusId = 1;
-            Dto.RemarningAmount = 0;
+            Dto.RemarningAmount = Dto.Amount;
             Dto.Document = new Document();
             Dto.Document.DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9);
-            Dto.Document.ClientId = "qwerty";
+            Dto.Document.ClientId = (await _context.Accounts.FirstOrDefaultAsync(x => x.AccountId == Dto.AccountId)).ClientId;
             Dto.Document.TypeId = 2;
             Dto.Document.Path = $"/document/{Dto.Document.DocumentId}";
             Dto.Document.Name = Dto.Document.DocumentId;
             Dto.DocumentId = Dto.Document.DocumentId;
-            await _loanService.Create(Dto);
+            _context.Loans.Add(Dto);
+            _context.Documents.Add(Dto.Document);
 
+            await _context.SaveChangesAsync();
+
+            await _loanService.Create(Dto);
             return Ok();
         }
         /// <summary>

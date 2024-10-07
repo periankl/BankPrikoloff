@@ -10,7 +10,7 @@ namespace Domain.Models
         public int? LoanTypeId { get; set; }
         public int StatusId { get; set; } = 1;
         public string DocumentId { get; set; } = null!;
-        public decimal Amount { get; set; } = 0;
+        public decimal Amount { get; set; }
         public decimal RemarningAmount { get; set; }
         public DateTime StartDate { get; set; } = DateTime.Now;
         public DateTime EndDate { get; set; }
