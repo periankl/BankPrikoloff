@@ -5,6 +5,7 @@ using Domain.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankPrikoloff.Controllers
 {
@@ -13,8 +14,10 @@ namespace BankPrikoloff.Controllers
     public class DepositController : ControllerBase
     {
         private IDepositService _depositService;
-        public DepositController(IDepositService depositService)
+        private BankContext _context;
+        public DepositController(BankContext context, IDepositService depositService)
         {
+            _context = context;
             _depositService = depositService;
         }
         /// <summary>
@@ -54,14 +57,16 @@ namespace BankPrikoloff.Controllers
             var Dto = request.Adapt<Deposit>();
             Dto.Document = new Document();
             Dto.Document.DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9);
-            Dto.Document.ClientId = "qwerty";
+            Dto.Document.ClientId = (await _context.Accounts.FirstOrDefaultAsync(x => x.AccountId == Dto.AccountId)).ClientId;
             Dto.DocumentId = Dto.Document.DocumentId;
             Dto.Document.TypeId = 1;
             Dto.Document.Name = Dto.Document.DocumentId;
             Dto.Document.Path = $"/document/{Dto.Document.DocumentId}";
             Dto.Document.CreatedAt = DateTime.Now;
             Dto.Name = $"{Dto.AccountId}Deposit";
-
+            _context.Deposits.Add(Dto);
+            _context.Documents.Add(Dto.Document);
+            await _context.SaveChangesAsync();
             await _depositService.Create(Dto);
             return Ok();
         }

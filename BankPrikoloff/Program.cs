@@ -17,7 +17,7 @@ namespace BankPrikoloff
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<BankContext>(
-                optionsAction: options => options.UseSqlServer(connectionString: "Server = COMPUTER-2; Database = Bank; Integrated Security = True;"));
+                options => options.UseSqlServer(builder.Configuration["ConnectionString"]));
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IFileService, FileService>();
@@ -42,7 +42,7 @@ namespace BankPrikoloff
                 {
                     Version = "v1",
                     Title = "Prikoloff API",
-                    Description = "API ��� ������ � ������ Prikoloff",
+                    Description = "API BankPrikoloff",
                     Contact = new OpenApiContact
                     {
                         Name = "�������",
@@ -64,6 +64,13 @@ namespace BankPrikoloff
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var sevices = scope.ServiceProvider;
+
+                var context = sevices.GetRequiredService<BankContext>();
+                context.Database.Migrate(); 
+            }
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
