@@ -69,8 +69,70 @@ namespace BankPrikoloff
                 var sevices = scope.ServiceProvider;
 
                 var context = sevices.GetRequiredService<BankContext>();
-                context.Database.Migrate(); 
+                context.Database.Migrate();
+
+                context.Database.EnsureCreated();
+
+                context.AccountStatuses.AddRange(
+                    new AccountStatus { Name = "ACTIVE" },
+                    new AccountStatus { Name = "CLOSED" },
+                    new AccountStatus { Name = "BLOCKED" }
+                );
+
+                context.DepositStatuses.AddRange(
+                    new DepositStatus { Name = "ACTIVE" },
+                    new DepositStatus { Name = "CLOSED" },
+                    new DepositStatus { Name = "PAUSED" },
+                    new DepositStatus { Name = "CANCELED" },
+                    new DepositStatus { Name = "EXPIRED" }
+                );
+
+                context.DocumentTypes.AddRange(
+                    new DocumentType { Name = "DEPOSITAGR" },
+                    new DocumentType { Name = "LOANAGR" },
+                    new DocumentType { Name = "CLIENTAGR" }
+                );
+
+                context.LoanStatuses.AddRange(
+                    new LoanStatus { Name = "ACTIVE" },
+                    new LoanStatus { Name = "CLOSED" },
+                    new LoanStatus { Name = "PAUSED" },
+                    new LoanStatus { Name = "CANCELED" },
+                    new LoanStatus { Name = "EXPIRED" }
+                );
+
+                context.MessageStatuses.AddRange(
+                    new MessageStatus { Name = "SENDED" },
+                    new MessageStatus { Name = "RECIVED" },
+                    new MessageStatus { Name = "READ" }
+                );
+
+                context.OperationTypes.AddRange(
+                    new Domain.Models.OperationType { Name = "BTWTHR" },
+                    new Domain.Models.OperationType { Name = "TRANS" },
+                    new Domain.Models.OperationType { Name = "RECIPT" },
+                    new Domain.Models.OperationType { Name = "ADMISSION" },
+                    new Domain.Models.OperationType { Name = "PURCHASE" },
+                    new Domain.Models.OperationType { Name = "RETURN" }
+
+                );
+
+                context.OperationStatuses.AddRange(
+                    new OperationStatus { Name = "PROCESSING" },
+                    new OperationStatus { Name = "SUCCESSFULL" },
+                    new OperationStatus { Name = "CANCELED" },
+                    new OperationStatus { Name = "REJECTED" }
+
+                );
+                context.Roles.AddRange(
+                    new Role { RoleName = "USER" },
+                    new Role { RoleName = "ADMIN" },
+                    new Role { RoleName = "SUPPORT" }
+                );
+
+                context.SaveChanges();
             }
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

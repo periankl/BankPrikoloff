@@ -101,6 +101,7 @@ namespace Domain.Models
                     .HasForeignKey(d => d.TypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Relationship49");
+
             });
 
             modelBuilder.Entity<AccountStatus>(entity =>
@@ -696,7 +697,14 @@ namespace Domain.Models
                 entity.Property(e => e.RoleName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+
             });
+
+            // modelBuilder.Entity<Role>().HasData(
+            //     new Role { RoleId = 1, RoleName = "USER" },
+            //     new Role { RoleId = 2, RoleName = "ADM" }
+            // );
 
             modelBuilder.Entity<Tred>(entity =>
             {
@@ -816,6 +824,7 @@ namespace Domain.Models
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Relationship3");
+
             });
 
             OnModelCreatingPartial(modelBuilder);

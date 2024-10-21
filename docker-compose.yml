@@ -9,7 +9,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:5000
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionString=Server=db;Database=BankTest;User=sa;Password=Your_password123;MultipleActiveResultSets=true
+      - ConnectionString=Server=db;Database=BankTestik;User=sa;Password=Your_password123;MultipleActiveResultSets=true
     ports:
       - "5000:5000"
     depends_on:

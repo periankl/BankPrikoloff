@@ -44,7 +44,6 @@ namespace BankPrikoloff.Controllers
         /// 
         ///     POST /Todo
         ///     {
-        ///         "clientId": "Qwerty12",
         ///         "login": "Login",
         ///         "password": "Password",
         ///         "firstName": "FName",
@@ -90,7 +89,6 @@ namespace BankPrikoloff.Controllers
         ///         "createdAt": "2024-09-14T21:12:40",
         ///         "deletedBy": null,
         ///         "deletedAt": null,
-        ///         "updatedAt": "2024-09-14T21:12:47"
         ///     }
         /// </remarks>
         /// <returns></returns>
@@ -99,6 +97,7 @@ namespace BankPrikoloff.Controllers
         {
             var Dto = request.Adapt<User>();
             await _userService.Update(Dto);
+            Dto.UpdatedAt = DateTime.Now;
             return Ok();
         }
         /// <summary>

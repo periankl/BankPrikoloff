@@ -140,14 +140,24 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.DateOfBirth));
             }
+            if (model.SeriesPasport < 0)
+            {
+                throw new ArgumentException(nameof(model.SeriesPasport));
+            }
+            if (model.NumberPasport < 0)
+            {
+                throw new ArgumentException(nameof(model.NumberPasport));
+            }
             var users = await _repositoryWrapper.User.FindByCondition(u => true);
             if (users == null)
             {
                 users = new List<User>();
             }
+
             var existingUser = users.FirstOrDefault(u =>
                 u.SeriesPasport == model.SeriesPasport &&
-                u.NumberPasport == model.NumberPasport);
+                u.NumberPasport == model.NumberPasport &&
+                u.ClientId != model.ClientId); // currentUserId - идентификатор текущего пользователя
 
             if (existingUser != null)
             {
