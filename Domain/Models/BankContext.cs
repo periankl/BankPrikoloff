@@ -114,7 +114,7 @@ namespace Domain.Models
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .IsUnicode(true);
             });
 
             modelBuilder.Entity<AccountType>(entity =>
@@ -542,7 +542,7 @@ namespace Domain.Models
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasMaxLength(1024)
-                    .IsUnicode(false);
+                    .IsUnicode(true);
 
                 entity.HasOne(d => d.Client)
                     .WithMany(p => p.Messages)
@@ -701,11 +701,6 @@ namespace Domain.Models
 
             });
 
-            // modelBuilder.Entity<Role>().HasData(
-            //     new Role { RoleId = 1, RoleName = "USER" },
-            //     new Role { RoleId = 2, RoleName = "ADM" }
-            // );
-
             modelBuilder.Entity<Tred>(entity =>
             {
                 entity.ToTable("Tred");
@@ -789,11 +784,11 @@ namespace Domain.Models
 
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .IsUnicode(true);
 
                 entity.Property(e => e.LastName)
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .IsUnicode(true);
 
                 entity.Property(e => e.Login)
                     .HasMaxLength(150)
@@ -805,7 +800,7 @@ namespace Domain.Models
 
                 entity.Property(e => e.Patronomic)
                     .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .IsUnicode(true);
 
                 entity.Property(e => e.RoleId).HasColumnName("RoleID");
 
