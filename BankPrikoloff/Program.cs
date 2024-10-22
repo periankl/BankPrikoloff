@@ -145,7 +145,9 @@ namespace BankPrikoloff
                 app.UseSwaggerUI();
             }
 
-            app.UseCors(builder => builder.WithOrigins(new[] { "https://localhost:7029", }).AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(builder => builder.WithOrigins(new[] { "https://localhost:7029", })
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
