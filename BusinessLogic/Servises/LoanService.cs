@@ -58,6 +58,29 @@ namespace BusinessLogic.Servises
                 throw new ArgumentException(nameof(model.StartDate));
             }
 
+            var accounts = await _repositoryWrapper.Account.FindByCondition(u => true);
+            if (accounts == null)
+            {
+                accounts = new List<Account>();
+            }
+
+            // Находим счет по AccountId
+            var account = accounts.FirstOrDefault(u => u.AccountId == model.AccountId);
+            if (account == null)
+            {
+                throw new ArgumentException("Account not found.", nameof(model.AccountId));
+            }
+
+            // Получаем все кредиты пользователя
+            var userLoans = await _repositoryWrapper.Loan.FindByCondition(l => l.AccountId == model.AccountId);
+
+            // Проверяем наличие активного кредита со статусом 1
+            if (userLoans.Any(l => l.StatusId == 1))
+            {
+                throw new ArgumentException("Active loan already exists for this account.", nameof(model.AccountId));
+            }
+
+
             await _repositoryWrapper.Loan.Create(model);
             _repositoryWrapper.Save();
         }

@@ -79,6 +79,11 @@ namespace BankPrikoloff
                     new AccountStatus { Name = "BLOCKED" }
                 );
 
+                context.AccountTypes.AddRange(
+                    new AccountType {Name = "DEBET"},
+                    new AccountType {Name = "LOAN"}
+                );
+                
                 context.DepositStatuses.AddRange(
                     new DepositStatus { Name = "ACTIVE" },
                     new DepositStatus { Name = "CLOSED" },
@@ -140,6 +145,7 @@ namespace BankPrikoloff
                 app.UseSwaggerUI();
             }
 
+            app.UseCors(builder => builder.WithOrigins(new[] { "https://localhost:7029", }).AllowAnyHeader().AllowAnyMethod());
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

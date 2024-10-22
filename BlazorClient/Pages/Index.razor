@@ -1,0 +1,42 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+
+<p>Текущая дата: @CurrentDate</p>
+<p>Текущее время: @CurrentTime</p>
+
+@code{
+
+
+    public class User
+    {
+        public string ClientId { get; set; } 
+        public int RoleId { get; set; }
+        public string Login { get; set; } 
+        public string Password { get; set; } 
+        public string FirstName { get; set; } 
+        public string LastName { get; set; } 
+        public string? Patronomic { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public int SeriesPasport { get; set; }
+        public int NumberPasport { get; set; }
+        public string Email { get; set; } 
+    }
+
+    public User[] result = new User[] { };
+
+    string CurrentDate;
+    string CurrentTime;
+
+    protected override async Task OnInitializedAsync(){
+        var date = DateTime.Now;
+        CurrentTime = date.ToShortTimeString();
+        CurrentDate = date.ToShortDateString();
+
+        var client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        result = await client.GetFromJsonAsync<User[]>("api/Users");
+
+        return;
+    }
+}
