@@ -37,7 +37,7 @@ body {
 }
 
 nav {
-    background-color: white;
+    background-color: mediumpurple;
 }
 
 .navbar-brand img {
@@ -63,8 +63,8 @@ nav ul li a {
 
 /* Styling for Hero Section */
 section {
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 45%;
+    padding-bottom: 60px;
 }
 
     section h1 {
@@ -72,23 +72,58 @@ section {
         font-weight: 900;
         color: #683aa4;
         text-align: left;
-        margin-bottom: 20px;
+        margin-bottom: 35px;
     }
+
+    section h2 {
+        text-transform: uppercase;
+        font-weight: 900;
+        color: #683aa4;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    section h4 {
+        text-transform: uppercase;
+        font-weight: 800;
+        color: black;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    section h5 {
+        text-transform: uppercase;
+        font-weight: 750;
+        color: #683aa4;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+
+    section h6 {
+        font-weight: 500;
+        color: #6b5d71;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
 
     section p {
         font-size: 16px;
-        font-weight: 300;
+        font-weight: 500;
+        text-align: left;
     }
 
 button {
-    max-width: 50%;
-    border-radius: 50px !important;
+    max-width: 100%;
+    border-radius: 10px !important;
 }
 
 #hero .col {
     justify-content: center;
     flex-direction: column;
     display: flex;
+    padding-bottom: 10%;
 }
 
 #hero .img-col {
@@ -136,4 +171,6 @@ button {
         text-align: center;
         color: white;
     }
+
+
 

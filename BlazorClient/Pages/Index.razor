@@ -1,56 +1,223 @@
 ﻿@page "/"
 
-    <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">Название</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Главная</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Мои проекты</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Контакты</a>
-                    </li>
-                </ul>
+<nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light">
+    <div class="container">
+        <a class="navbar-brand w-25 text-light" href="#">Банк Приколофф</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="navbar-nav ms-auto w-100 d-flex justify-content-end">
+                <div class="nav-item w-50 d-flex justify-content-end">
+                    <button type="button" class="btn btn-dark btn-lg">Войти в аккаунт</button>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
+<section id="hero">
+    <div class="container">
+        <div class="row h-100">
+            <div class="col d-flex justify-content-between">
+                <div class="d-flex flex-column justify-content-between">
 
-    @code{
-        public class User
-        {
-            public string ClientId { get; set; } 
-            public string Login { get; set; } 
-            public string Password { get; set; } 
-            public string FirstName { get; set; } 
-            public string LastName { get; set; } 
-            public string? Patronomic { get; set; }
-            public DateTime DateOfBirth { get; set; }
-            public int SeriesPasport { get; set; }
-            public int NumberPasport { get; set; }
-            public string Email { get; set; } 
-        }
+                    <h1>Банк «Приколофф» — <br> твой верный спутник в мире финансов!</h1>
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5" aria-label="Slide 6"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" data-bs-interval="5000">
+                            <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 20px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5>Выгода с первого взгляда:</h5>
+                                        <h6>Открывай счет и получай приветственный бонус – 1000 рублей на карту. Это отличная возможность начать управлять своими финансами с выгодой!</h6>
+                                    </div>
+                                    <i class="bi bi-cash-coin ms-auto" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item" data-bs-interval="5000">
+                            <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 20px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5>Проценты за тобой:</h5>
+                                        <h6>Наши ставки по вкладам — самые высокие на рынке. Получайте максимальный доход от своих сбережений с нашими привлекательными процентными ставками.</h6>
+                                    </div>
+                                    <i class="bi bi-percent ms-auto" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item" data-bs-interval="5000">
+                            <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 20px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5>Удобство в твоих руках:</h5>
+                                        <h6>Управляй своими финансами с удобного мобильного приложения. Операции по счету, переводы, оплата услуг — все это доступно в любое время и в любом месте.</h6>
+                                    </div>
+                                    <i class="bi bi-phone ms-auto" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item" data-bs-interval="5000">
+                            <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 20px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5>Поддержка 24/7:</h5>
+                                        <h6>Наши специалисты всегда готовы помочь тебе с любым вопросом. Получайте консультации и поддержку в любое время суток.</h6>
+                                    </div>
+                                    <i class="bi bi-headset ms-auto" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item" data-bs-interval="5000">
+                            <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 20px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5>Безопасность и надежность:</h5>
+                                        <h6>Мы гарантируем безопасность ваших средств и данных. Используем передовые технологии защиты и соблюдаем все стандарты безопасности.</h6>
+                                    </div>
+                                    <i class="bi bi-shield-check ms-auto" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item" data-bs-interval="5000">
+                            <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 20px;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5>Персональный финансовый консультант:</h5>
+                                        <h6>Получайте индивидуальные рекомендации и советы от наших экспертов. Оптимизируйте свои финансовые решения с помощью персонального консультанта.</h6>
+                                    </div>
+                                    <i class="bi bi-person-lines-fill ms-auto" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-10">
+                            <h2>
+                                Заполни заявку!
+                            </h2>
+                            <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
+                                <div class="card-body">
 
-        public User[] result = new User[] { };
+                                    <form>
+                                        <div class="form-group mb-4 text-start">
+                                            <label for="email"><b>Email</b></label>
+                                            <input type="email" class="form-control" id="email"
+                                                placeholder="Введите ваш email">
+                                        </div>
+                                        <div class="form-group mb-4  text-start">
+                                            <label for="firstName"><b>Имя</b></label>
+                                            <input type="text" class="form-control" id="firstName"
+                                                placeholder="Введите ваше имя">
+                                        </div>
+                                        <div class="form-group mb-4 text-start">
+                                            <label for="lastName"><b>Фамилия</b></label>
+                                            <input type="text" class="form-control" id="lastName"
+                                                placeholder="Введите вашу фамилию">
+                                        </div>
+                                        <div class="form-group mb-4 text-start">
+                                            <label for="lastName"><b>Отчество</b></label>
+                                            <input type="text" class="form-control" id="lastName"
+                                                placeholder="Введите ваше отчество">
+                                        </div>
+                                        <div class="form-check text-start mb-4">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                id="flexCheckDefault">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                Нет отчества
+                                            </label>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-center">
+                                            <button type="button" class="btn btn-dark btn-lg w-100">Стать
+                                                клиентом</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="bg-white text-dark py-4 border-top">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Адрес</h5>
+                <p>г. Москва, ул. Болотная набережная, д.15</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Информация</h5>
+                <p>Генеральная лицензия на осуществление банковских операций от 10 декабря 2024 года. Регистрационный номер — 1481</p>
+                <p>© 2024 — <span id="currentYear"></span> ПАО Приколофф</p>
+                <p>800 Для бесплатных звонков с мобильных на территории РФ</p>
+                <p>8 (800) 555 35-35 Для звонков из любой точки мира</p>
+            </div>
+        </div>
+    </div>
+</footer>
 
-        string CurrentDate;
-        string CurrentTime;
+<script>
+    // Получаем текущий год и вставляем его в элемент с id="currentYear"
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
 
-        protected override async Task OnInitializedAsync(){
-            var date = DateTime.Now;
-            CurrentTime = date.ToShortTimeString();
-            CurrentDate = date.ToShortDateString();
 
-            var client = new HttpClient();
-            client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
-            result = await client.GetFromJsonAsync<User[]>("api/User");
 
-            return;
-        }
+@code {
+    public class User
+    {
+        public string ClientId { get; set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string? Patronomic { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public int SeriesPasport { get; set; }
+        public int NumberPasport { get; set; }
+        public string Email { get; set; }
+    }
+
+    public User[] result = new User[] { };
+
+    string CurrentDate;
+    string CurrentTime;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var date = DateTime.Now;
+        CurrentTime = date.ToShortTimeString();
+        CurrentDate = date.ToShortDateString();
+
+        //var client = new HttpClient();
+        //client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        //result = await client.GetFromJsonAsync<User[]>("api/User");
+
+        return;
+    }
 }
