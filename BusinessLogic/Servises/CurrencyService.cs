@@ -42,7 +42,7 @@ namespace BusinessLogic.Servises
                 throw new ArgumentNullException(nameof(model));
             }
 
-            if (String.IsNullOrEmpty(model.Name) )
+            if (String.IsNullOrEmpty(model.Name))
             {
                 throw new ArgumentException(nameof(model.Name));
             }
@@ -51,7 +51,7 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.Course));
             }
-            
+
             await _repositoryWrapper.Currency.Create(model);
             await _repositoryWrapper.Save();
         }
