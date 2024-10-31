@@ -25,6 +25,8 @@ namespace DataAccess.Wrapper
         private IOperationHistoryRepository _operationHistory;
         private IAccountRepository _account;
         private ICardRepository _card;
+        private ICurrencyRepository _currency;
+
         public IUserRepository User
         {
             get
@@ -180,6 +182,18 @@ namespace DataAccess.Wrapper
                 return _card;
             }
         }
+        public ICurrencyRepository Currency
+        {
+            get
+            {
+                if (_currency == null)
+                {
+                    _currency = new CurrencyRepository(_repoContext);
+                }
+                return _currency;
+            }
+        }
+
         public RepositoryWrapper(BankContext repositoryContext)
         {
             _repoContext = repositoryContext;

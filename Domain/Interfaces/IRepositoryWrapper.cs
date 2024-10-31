@@ -21,6 +21,7 @@ namespace Domain.Interfaces
         IOperationHistoryRepository OperationHistory { get; }
         IAccountRepository Account { get; }
         ICardRepository Card { get; }
+        ICurrencyRepository Currency { get; }
         Task Save();
     }
 }

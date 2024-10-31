@@ -32,6 +32,7 @@ namespace BankPrikoloff
             builder.Services.AddScoped<IOperationHistoryService, OperationHistoryService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<ICardService, CardService>();
+            builder.Services.AddScoped<ICurrencyService, CurrencyService>();
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -80,10 +81,10 @@ namespace BankPrikoloff
                 );
 
                 context.AccountTypes.AddRange(
-                    new AccountType {Name = "DEBET"},
-                    new AccountType {Name = "LOAN"}
+                    new AccountType { Name = "DEBET" },
+                    new AccountType { Name = "LOAN" }
                 );
-                
+
                 context.DepositStatuses.AddRange(
                     new DepositStatus { Name = "ACTIVE" },
                     new DepositStatus { Name = "CLOSED" },

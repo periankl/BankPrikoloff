@@ -79,7 +79,7 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.CreatedAt));
             }
-            
+
             _repositoryWrapper.Tred.Update(model);
             _repositoryWrapper.Save();
         }

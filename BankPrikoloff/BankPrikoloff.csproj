@@ -29,4 +29,8 @@
     <EditorConfigFiles Remove="D:\GitHub\BankPrikoloff\BankPrikoloff\.editorconfig" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Unix'">
+    <Exec Command="cp $(OutDir)runtimes/unix/lib/netcoreapp3.1/Microsoft.Data.SqlClient.dll $(OutDir)" />
+  </Target>
+
 </Project>
