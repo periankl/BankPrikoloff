@@ -81,10 +81,10 @@ namespace BankPrikoloff
                 );
 
                 context.AccountTypes.AddRange(
-                    new AccountType {Name = "DEBET"},
-                    new AccountType {Name = "LOAN"}
+                    new AccountType { Name = "DEBET" },
+                    new AccountType { Name = "LOAN" }
                 );
-                
+
                 context.DepositStatuses.AddRange(
                     new DepositStatus { Name = "ACTIVE" },
                     new DepositStatus { Name = "CLOSED" },
