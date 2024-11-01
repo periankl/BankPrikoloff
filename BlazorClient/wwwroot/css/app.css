@@ -132,10 +132,9 @@ button {
 }
 
 #hero img {
-    max-width: 130%;
-    !important;
+    max-width: 130% !important;
     width: 130%;
-}
+}   
 
 /* Styling for the cards */
 #hero .card {
@@ -171,6 +170,42 @@ button {
         text-align: center;
         color: white;
     }
+
+@keyframes fall {
+        0% {
+            transform: translateY(-100%);
+        }
+        100% {
+            transform: translateY(100vh);
+        }
+    }
+    .money-background {
+        position: relative;
+        overflow: hidden;
+        height: 100vh;
+        background-color: #f8f9fa;
+    }
+
+    .money-background::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://www.transparenttextures.com/patterns/light-paper-fibers.png');
+        z-index: -1;
+    }
+
+    .money-background .money {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: url('https://www.transparenttextures.com/patterns/money.png');
+        background-size: cover;
+        animation: fall 5s linear infinite;
+    }
+
 
 
 

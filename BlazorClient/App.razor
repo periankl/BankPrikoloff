@@ -6,7 +6,20 @@
     <NotFound>
         <PageTitle>Not found</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+            <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;;">
+                <i style="font-size: 35px;" class="bi bi-emoji-frown"></i>
+            <p role="alert" style="text-align: center;">Не прикольно получилось... <br> Такую страницу мы не нашли(</p> 
+            <button style="background-color: black; color:white" onclick="window.history.back()">Вернуться назад</button>
+
+            </div>
+
+            <script>
+            function goBack() {
+                window.history.back();
+            }
+            </script>
+
+            
         </LayoutView>
     </NotFound>
 </Router>
