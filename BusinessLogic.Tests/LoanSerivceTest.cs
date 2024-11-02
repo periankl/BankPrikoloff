@@ -15,10 +15,11 @@ namespace BusinessLogic.Tests
     {
         private readonly LoanService service;
         private readonly Mock<ILoanRepository> userRepositoryMoq;
+        private readonly Mock<IRepositoryWrapper> repositoryWrapperMoq;
 
         public LoanSerivceTest()
         {
-            var repositoryWrapperMoq = new Mock<IRepositoryWrapper>();
+            repositoryWrapperMoq = new Mock<IRepositoryWrapper>();
             userRepositoryMoq = new Mock<ILoanRepository>();
 
             repositoryWrapperMoq.Setup(x => x.Loan).Returns(userRepositoryMoq.Object);
@@ -60,13 +61,32 @@ namespace BusinessLogic.Tests
 
         public async Task CreateAsyncNewLoanShouldCreateNewLoan()
         {
-            var newLoan = new Loan()
+            var newLoan = new Loan
             {
                 LoanTypeId = 1,
                 AccountId = "Qwerty",
-                Amount = 10000,
-                EndDate = DateTime.Now.AddYears(5)
+                Amount = 1000,
+                EndDate = DateTime.Now.AddYears(5),
+                StartDate = DateTime.Now,
+                LoanId = Guid.NewGuid().ToString("N").Substring(0, 9),
+                DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9),
             };
+
+            var loanType = new LoanType { LoanTypeId = 1, MaxLoanAmount = 10000 };
+            var account = new Account { AccountId = "Qwerty", ClientId = "Client123" };
+            var user = new User { ClientId = "Client123" };
+
+            repositoryWrapperMoq.Setup(x => x.LoanType.FindByCondition(It.IsAny<Expression<Func<LoanType, bool>>>()))
+                                  .ReturnsAsync(new List<LoanType> { loanType });
+
+            repositoryWrapperMoq.Setup(x => x.Account.FindByCondition(It.IsAny<Expression<Func<Account, bool>>>()))
+                                  .ReturnsAsync(new List<Account> { account });
+
+            repositoryWrapperMoq.Setup(x => x.User.FindByCondition(It.IsAny<Expression<Func<User, bool>>>()))
+                                  .ReturnsAsync(new List<User> { user });
+
+
+            // Act
             await service.Create(newLoan);
             userRepositoryMoq.Verify(x => x.Create(It.IsAny<Loan>()), Times.Once);
         }
