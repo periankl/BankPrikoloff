@@ -1,0 +1,136 @@
+@page "/registration"
+@inject IJSRuntime JSRuntime
+
+<nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="background-color: white;">
+    <div class="container">
+        <div style="width: 50%;">
+            <i class="bi bi-cash-coin" style="padding-right: 1%;"></i>
+            <a class="navbar-brand w-25 text-dark" href="#">Банк Приколофф</a>
+        </div>
+    </div>
+</nav>
+<section id="hero">
+    <div class="container">
+        <div class="row h-100 justify-content-center align-items-center">
+            @if(step == 0){
+                <div class="col-md-6" style="width:100%">
+                    <h2 class="text-left">
+                        Подтверждение почты
+                    </h2>
+                    <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-group mb-4 text-start">
+                                        <label for="email"><b>Код подтверждения</b></label>
+                                        @if(sendCode == true){
+                                            <input type="text" class="form-control" @bind="fieldCode"
+                                            placeholder="Введите код подверждения">
+                                        }
+                                    </div>
+                                    @if(error != false){
+                                        <p style="color: red;">Неверный код</p>
+                                    }
+                                    @if(sendCode == false){
+                                        <div class="w-100 d-flex justify-content-center">
+                                            <button type="button" @onclick="ShowNotification" class="btn btn-dark btn-lg w-100">Отправить код</button>
+                                        </div>
+                                    }
+                                    else{
+                                        <div class="w-100 d-flex justify-content-center">
+                                            <button type="button" @onclick="CheckEmail" class="btn btn-dark btn-lg w-100">Подтвердить</button>
+                                        </div>
+                                        if(error != false){
+                                            <div class="w-100 d-flex justify-content-center" style="padding-top: 10%;">
+                                                <button type="button" @onclick="ShowNotification" style="background-color: white; border:white;">Отправить код заново</button>
+                                            </div>
+                                            error = false;
+                                        }
+                                    }
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            }
+            @if(step == 1){
+                <div class="col-md-6" style="width:100%">
+                    <h2 class="text-left">
+                        Регистрация аккаунта
+                    </h2>
+                    <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group mb-4 text-start">
+                                    <div style="padding-bottom: 10px;">
+                                        <label for="email"><b>Дата рождения</b></label>
+                                        <input type="date" class="form-control" id="birthday"/>
+                                    </div>
+                                    <div style="padding-bottom: 10px;">
+                                        <label for="phone"><b>Номер телефона</b></label>
+                                        <input type="phone" class="form-control" id="birthday"/>
+                                    </div>
+                                    <div style="display: flex; flex-direction: row; gap:10px; padding-bottom: 10px">
+                                        <div style="display:flex; flex-direction: column;">
+                                            <label for="email"><b>Серия паспорта</b></label>
+                                            <input type="text" class="form-control" id="series" placeholder="ХХ ХХ">
+                                        </div>
+                                        <div style="display: flex; flex-direction: column;">
+                                            <label><b>Номер паспорта</b></label>
+                                            <input type="text" class="form-control" id="number" placeholder="XXX XXX">
+                                        </div>
+                                    </div>
+                                    <div style="padding-bottom: 10px;">
+                                        <label for="phone"><b>Логин</b></label>
+                                        <input type="text" class="form-control" id="Login"/>
+                                    </div>
+                                    <div style="padding-bottom: 10px;">
+                                        <label for="phone"><b>Пароль</b></label>
+                                        <input type="password" class="form-control" id="Login"/>
+                                    </div>
+                                </div>
+                                <div class="w-100 d-flex justify-content-center">
+                                    <button type="button" class="btn btn-dark btn-lg w-100">Зарегистрироваться</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@code{
+    public string fieldCode { get; set; }
+
+    Random random = new Random();
+    int step = 0;
+    int code;
+    
+    bool sendCode = false;
+    bool error = false;
+    protected override void OnInitialized()
+    {
+        code = random.Next(1111, 9999);
+    }
+    private async Task ShowNotification()
+    {
+        var title = "Уведомление";
+        var options = new
+        {
+            body = $"Ваш код подтверждения: {code}",
+        };
+
+        await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
+        sendCode = true;
+    }
+    private void CheckEmail(){
+        if (int.TryParse(fieldCode, out int parsedCode) && parsedCode == code)
+        {
+            step = 1;
+        }
+        else{
+            error = true;
+        }
+    }
+}
