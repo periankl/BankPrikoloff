@@ -1,5 +1,7 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
+@inject BlazorUser BlazorUser
+@inject BlazorUser User
 
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light">
     <div class="container">
@@ -226,9 +228,7 @@
 </script>
 
 
-
 @code {
-
     public string ClientId { get; set; }
     public string Login { get; set; }
     public string Password { get; set; }
@@ -242,6 +242,8 @@
     private bool ShowLastNameMessage { get; set; }
     private bool ShowPatronomicMessage { get; set; }
     private bool ShowInvalidEmailMessage { get; set; }
+
+User user = new User();
 
 private void ValidatePatronymic()
 {
@@ -257,6 +259,11 @@ private void CheckFields()
 
         if (!ShowEmailMessage && !ShowFirstNameMessage && !ShowLastNameMessage && !ShowPatronomicMessage && !ShowInvalidEmailMessage)
         {
+            user.Email = Email;
+            user.FirstName = FirstName;
+            user.LastName = LastName;
+            user.Patronomic = Patronomic;
+            BlazorUser.User = user;
             NavigationManager.NavigateTo("/registration");
         }
     }
@@ -276,22 +283,6 @@ private void CheckFields()
         {
             return false;
         }
-    }
-
-        
-    
-    public class User
-    {
-        public string ClientId { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string? Patronomic { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public int SeriesPasport { get; set; }
-        public int NumberPasport { get; set; }
-        public string? Email { get; set; }
     }
 
 
