@@ -148,7 +148,8 @@ namespace BankPrikoloff
 
             app.UseCors(builder => builder.WithOrigins(new[] { "https://bankprikoloff.onrender.com/", })
                     .AllowAnyHeader()
-                    .AllowAnyMethod());
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin());
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

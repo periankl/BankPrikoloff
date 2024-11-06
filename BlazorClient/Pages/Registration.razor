@@ -113,7 +113,7 @@
     Random random = new Random();
     int step = 0;
     int code;
-    bool suc = false
+    bool suc = false;
     bool sendCode = false;
     bool error = false;
     protected override void OnInitialized()
@@ -131,7 +131,7 @@
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("Пользователь успешно создан.");
-            sex = true;
+            suc = true;
         }
         else
         {
