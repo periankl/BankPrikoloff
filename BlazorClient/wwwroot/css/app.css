@@ -231,5 +231,69 @@ button {
     }
 
 
+.scroll-container {
+    width: 100%; 
+    overflow-x: auto; 
+    white-space: nowrap; 
+    padding-bottom: 3%;
+    border-bottom: 1px solid #ccc; /* Добавляем тонкую нижнюю границу */
+    margin-bottom: 3%;
+}
 
+.scroll-card {
+    display: inline-block; 
+    width: 300px;
+    height: 150px; 
+    border-radius: 10px;
+    margin-right: 10px; 
+    perspective: 1000px; 
+    cursor: pointer; 
+}
 
+.scroll-card:hover .card {
+    transform: rotateY(180deg); 
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+    border-radius: 10px;
+}
+
+.front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    padding: 35px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.front {
+    background-color: #6f42c1;
+}
+
+.back {
+    background-color: #343a40;
+    transform: rotateY(180deg); /* Задняя сторона по умолчанию перевернута */
+}
+
+.scroll-item {
+    display: inline-block; 
+    width: 300px;
+    height: 150px; 
+    border-radius: 10px;
+    margin-right: 10px; 
+    background-color: #ffb700; 
+    color: white;
+    padding: 35px;
+
+}

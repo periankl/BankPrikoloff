@@ -24,7 +24,7 @@
                     <div class="card-body" style="padding-bottom: 0%;">
                         <form>
                             <div class="form-group mb-4 text-start">
-                                <label for="email"><b>Код подверждения</b></label>
+                                <label for="email"><b>Почта</b></label>
                                 @if(!sendCode){
                                     <div>
                                         <input type="text" class="form-control" @bind="fieldEmail"
@@ -103,7 +103,7 @@
 
     protected override void OnInitialized()
     {
-        code = random.Next(1111, 9999);
+        code = random.Next(11111, 99999);
     }
     private async Task ShowNotification()
     {
@@ -134,6 +134,7 @@
         await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
         sendCode = true;
     }
+
 
     private async Task UserEnter()
     {
