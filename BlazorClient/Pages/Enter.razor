@@ -1,3 +1,7 @@
+@inject IJSRuntime JSRuntime
+@inject BlazorUser BlazorUser
+@inject BlazorUser User
+
 @page "/enter"
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="background-color: white;">
     <div class="container">
@@ -10,26 +14,120 @@
 <section id="hero">
     <div class="container">
         <div class="row h-100 justify-content-center align-items-center">
+        @if(step == 0){ 
             <div class="col-md-6" style="width:100%">
                 <h2 class="text-left">
                     Вход в аккаунт
                 </h2>
                 <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
-                    <div class="card-body">
-
+                    <div class="card-body" style="padding-bottom: 0%;">
                         <form>
                             <div class="form-group mb-4 text-start">
-                                <label for="email"><b>Email</b></label>
-                                <input type="email" class="form-control" id="email"
-                                       placeholder="Введите ваш email">
+                                <label for="email"><b>Код подверждения</b></label>
+                                @if(!sendCode){
+                                    <div>
+                                        <input type="text" class="form-control" @bind="fieldEmail"
+                                            placeholder="Введите Email">
+                                        @if(error){
+                                            <p style="color: red;">Введите почту</p>
+                                        }
+                                        <button style="margin-top: 20px;" type="button" @onclick="ShowNotification" class="btn btn-dark btn-lg w-100">Отправить код</button>
+
+                                    </div>
+
+                                }
+                                else{
+                                    <div>
+                                        <input type="text" class="form-control" @bind="fieldCode"
+                                            placeholder="Введите код">
+                                    </div>
+                                    @if(error != false){
+                                        <p style="color: red;">Неверный код</p>
+                                    }
+                                    <button style="margin-top: 20px;" type="button" @onclick="CheckEmail" class="btn btn-dark btn-lg w-100">Отправить код</button>
+                                }
                             </div>
-                            <div class="w-100 d-flex justify-content-center">
-                                <button type="button" class="btn btn-dark btn-lg w-100">Войти</button>
-                            </div>
+
+
                         </form>
                     </div>
                 </div>
             </div>
+        }
+        @if(step == 1){
+            <div class="col-md-6" style="width:100%">
+                    <h2 class="text-left">
+                        Вход в аккаунт
+                    </h2>
+                    <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group mb-4 text-start">    
+                                    <div style="padding-bottom: 10px;">
+                                        <label for="phone"><b>Логин</b></label>
+                                        <input type="text" class="form-control" id="Login"/>
+                                    </div>
+                                    <div style="padding-bottom: 10px;">
+                                        <label for="phone"><b>Пароль</b></label>
+                                        <input type="password" class="form-control" id="Password"/>
+                                    </div>
+                                </div>
+                                <div class="w-100 d-flex justify-content-center">
+                                    <button type="button" class="btn btn-dark btn-lg w-100">Войти</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        }
         </div>
     </div>
 </section>
+
+@code{
+    User user;
+    int code;
+    Random random = new Random();
+    int step = 0;
+    bool sendCode = false;
+    bool error = false;
+
+    public string fieldCode { get; set; }
+    
+    public string fieldEmail { get; set; }
+
+
+
+    protected override void OnInitialized()
+    {
+        user = BlazorUser.User;
+        code = random.Next(1111, 9999);
+    }
+    private async Task ShowNotification()
+    {
+        error = false;
+        if(string.IsNullOrEmpty(fieldEmail)){
+            error = true;
+            return;
+        }
+        var title = "Уведомление";
+        var options = new
+        {
+            body = $"Ваш код подтверждения: {code}",
+        };
+
+        await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
+        sendCode = true;
+    
+    }
+    private void CheckEmail(){
+        error = false;
+        if (int.TryParse(fieldCode, out int parsedCode) && parsedCode == code)
+        {
+            step = 1;
+        }
+        else{
+            error = true;
+        }   
+    }
+}
