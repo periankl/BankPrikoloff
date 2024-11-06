@@ -33,9 +33,22 @@ namespace BankPrikoloff.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var Dto = await _userService.GetAll();
+            var Dto = await _userService.GetById(id);
             return Ok(Dto.Adapt<GetUserRequest>());
         }
+
+        /// <summary>
+        /// Получение пользователя по логину и паролю
+        /// </summary>
+        /// <param name="login">Login</param>
+        /// <param name="password">Password</param>
+        [HttpGet("{login}/{password}")]
+        public async Task<IActionResult> GetByLogin(string login, string password)
+        {
+            var Dto = await _userService.GetByLogin(login, password);
+            return Ok(Dto.Adapt<GetUserRequest>());
+        }
+
         /// <summary>
         /// Создание нового пользователя
         /// </summary>

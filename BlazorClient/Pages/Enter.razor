@@ -1,6 +1,7 @@
 @inject IJSRuntime JSRuntime
 @inject BlazorUser BlazorUser
 @inject BlazorUser User
+@inject NavigationManager NavigationManager
 
 @page "/enter"
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="background-color: white;">
@@ -65,15 +66,15 @@
                                 <div class="form-group mb-4 text-start">    
                                     <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Логин</b></label>
-                                        <input type="text" class="form-control" id="Login"/>
+                                        <input type="text" class="form-control" id="Login" @bind="login"/>
                                     </div>
                                     <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Пароль</b></label>
-                                        <input type="password" class="form-control" id="Password"/>
+                                        <input type="password" class="form-control" id="Password" @bind="password"/>
                                     </div>
                                 </div>
                                 <div class="w-100 d-flex justify-content-center">
-                                    <button type="button" class="btn btn-dark btn-lg w-100">Войти</button>
+                                    <button type="button" @onclick="UserEnter" class="btn btn-dark btn-lg w-100">Войти</button>
                                 </div>
                             </form>
                         </div>
@@ -96,11 +97,12 @@
     
     public string fieldEmail { get; set; }
 
+    public string login = "";
+    public string password = "";
 
 
     protected override void OnInitialized()
     {
-        user = BlazorUser.User;
         code = random.Next(1111, 9999);
     }
     private async Task ShowNotification()
@@ -120,6 +122,39 @@
         sendCode = true;
     
     }
+
+    private async Task ShowStatus(HttpResponseMessage response)
+    {
+        var title = "Уведомление";
+        var options = new
+        {
+            body = $"Ответ сервера: {response.StatusCode}",
+        };
+
+        await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
+        sendCode = true;
+    }
+
+    private async Task UserEnter()
+    {
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        
+        if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+        {
+            throw new ArgumentException("Login or password is empty");
+        }
+
+        HttpResponseMessage response = await client.GetAsync($"api/User/{login}/{password}");
+
+        ShowStatus(response);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/personal");
+        }
+    }
+
     private void CheckEmail(){
         error = false;
         if (int.TryParse(fieldCode, out int parsedCode) && parsedCode == code)
