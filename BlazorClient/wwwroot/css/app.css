@@ -159,6 +159,30 @@ button {
     margin-bottom: 50px;
 }
 
+@media (max-width: 992px) {
+    .main{
+        flex-direction: column;
+    }
+}
+
+@media (min-height: 600px) {
+    .heroSec {
+        padding-top: 15%;
+    }
+}
+
+@media (min-height: 800px) {
+    .heroSec {
+        padding-top: 20%;
+    }
+}
+
+@media (min-height: 1000px) {
+    .heroSec {
+        padding-top: 25%;
+    }
+}
+
 /* contact section styling */
 #contact {
     text-align: center;
