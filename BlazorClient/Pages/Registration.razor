@@ -65,33 +65,36 @@
                                 <div class="form-group mb-4 text-start">
                                     <div style="padding-bottom: 10px;">
                                         <label for="email"><b>Дата рождения</b></label>
-                                        <input type="date" class="form-control" id="birthday"/>
+                                        <input type="date" class="form-control" id="birthday" @bind="user.DateOfBirth"/>
                                     </div>
                                     <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Номер телефона</b></label>
-                                        <input type="phone" class="form-control" id="birthday"/>
+                                        <input type="phone" class="form-control" id="number"/>
                                     </div>
                                     <div style="display: flex; flex-direction: row; gap:10px; padding-bottom: 10px">
                                         <div style="display:flex; flex-direction: column;">
                                             <label for="email"><b>Серия паспорта</b></label>
-                                            <input type="text" class="form-control" id="series" placeholder="ХХ ХХ">
+                                            <input type="text" class="form-control" id="series" placeholder="ХХ ХХ" @bind="user.SeriesPasport">
                                         </div>
                                         <div style="display: flex; flex-direction: column;">
                                             <label><b>Номер паспорта</b></label>
-                                            <input type="text" class="form-control" id="number" placeholder="XXX XXX">
+                                            <input type="text" class="form-control" id="number" placeholder="XXX XXX" @bind="user.NumberPasport">
                                         </div>
                                     </div>
                                     <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Логин</b></label>
-                                        <input type="text" class="form-control" id="Login"/>
+                                        <input type="text" class="form-control" id="Login" @bind="user.Login"/>
                                     </div>
                                     <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Пароль</b></label>
-                                        <input type="password" class="form-control" id="Login"/>
+                                        <input type="password" class="form-control" id="Password" @bind="user.Password"/>
                                     </div>
                                 </div>
                                 <div class="w-100 d-flex justify-content-center">
-                                    <button type="button" class="btn btn-dark btn-lg w-100">Зарегистрироваться</button>
+                                    <button type="button" class="btn btn-dark btn-lg w-100" @onclick="RegistrateUser">Зарегистрироваться</button>
+                                    @if(suc){
+                                        <p>Юзер жив</p>
+                                    }
                                 </div>
                             </form>
                         </div>
@@ -105,13 +108,12 @@
 @code{
 
     User user;
-
     public string fieldCode { get; set; }
 
     Random random = new Random();
     int step = 0;
     int code;
-    
+    bool suc = false
     bool sendCode = false;
     bool error = false;
     protected override void OnInitialized()
@@ -119,6 +121,24 @@
         user = BlazorUser.User;
         code = random.Next(1111, 9999);
     }
+
+    private async Task RegistrateUser()
+    {
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        HttpResponseMessage response = await client.PostAsJsonAsync("api/User", user);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Пользователь успешно создан.");
+            sex = true;
+        }
+        else
+        {
+            Console.WriteLine($"Ошибка при создании пользователя: {response.StatusCode}");
+        }
+    }
+
     private async Task ShowNotification()
     {
         var title = "Уведомление";
