@@ -11,6 +11,7 @@ namespace Domain.Interfaces
     {
         Task<List<User>> GetAll();
         Task<User> GetById(string id);
+        Task<User> GetByLogin(string login, string password);
         Task Create(User model);
         Task Update(User model);
         Task Delete(string id);

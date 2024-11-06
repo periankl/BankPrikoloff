@@ -150,6 +150,14 @@ namespace BankPrikoloff
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowAnyOrigin());
+
+
+            //CORS для локальной разработки
+            /*             app.UseCors(builder => builder.WithOrigins(new[] { "http://localhost:7269/", })
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                                .AllowAnyOrigin());
+             */
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
