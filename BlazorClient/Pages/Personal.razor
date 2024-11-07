@@ -27,7 +27,7 @@
             <div class="col d-flex justify-content-between">
                 <div class="d-flex flex-column justify-content-between">
                     <div>
-                        <h1>Добро пожаловать,(Имя)</h1>
+                        <h1>Добро пожаловать, @user.FirstName</h1>
                         <h4>Ваши карты</h4>
                             <div class="scroll-container">
                                 <div class="scroll-card">
@@ -38,7 +38,7 @@
                                             </div>
                                             <div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 20%">
                                                 <div>
-                                                    NAME SURNAME
+                                                    @user.FirstName @user.LastName
                                                 </div>
                                                 <div>
                                                     01/01
@@ -119,28 +119,17 @@
     private bool ShowPatronomicMessage { get; set; }
     private bool ShowInvalidEmailMessage { get; set; }
 
-User user = new User();
+    User user = new User();
 
-private void ValidatePatronymic()
-{
-    ShowPatronomicMessage = string.IsNullOrWhiteSpace(Patronomic) && !NoPatronymic;
-}
-private void CheckFields()
+    protected override void OnInitialized()
     {
-        ShowEmailMessage = string.IsNullOrEmpty(Email);
-        ShowFirstNameMessage = string.IsNullOrEmpty(FirstName);
-        ShowLastNameMessage = string.IsNullOrEmpty(LastName);
-        ShowPatronomicMessage = !NoPatronymic && string.IsNullOrEmpty(Patronomic);
-        ShowInvalidEmailMessage = !IsValidEmail(Email);
-
-        if (!ShowEmailMessage && !ShowFirstNameMessage && !ShowLastNameMessage && !ShowPatronomicMessage && !ShowInvalidEmailMessage)
+        if (BlazorUser.User == null)
         {
-            user.Email = Email;
-            user.FirstName = FirstName;
-            user.LastName = LastName;
-            user.Patronomic = Patronomic;
-            BlazorUser.User = user;
-            NavigationManager.NavigateTo("/registration");
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            user = BlazorUser.User;
         }
     }
 
