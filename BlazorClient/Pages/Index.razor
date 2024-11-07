@@ -269,6 +269,11 @@ private void CheckFields()
         }
     }
 
+    protected override void OnInitialized()
+    {
+        BlazorUser.User = new User();
+    }
+
     private bool IsValidEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
