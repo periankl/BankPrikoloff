@@ -38,6 +38,8 @@ body {
 
 nav {
     background-color: mediumpurple;
+    display: flex;
+    flex-direction: column;
 }
 
 .navbar-brand img {
@@ -238,6 +240,7 @@ button {
     padding-bottom: 3%;
     border-bottom: 1px solid #ccc; /* Добавляем тонкую нижнюю границу */
     margin-bottom: 3%;
+    padding-top: 15px;
 }
 
 .scroll-card {
@@ -283,7 +286,7 @@ button {
 
 .back {
     background-color: #343a40;
-    transform: rotateY(180deg); /* Задняя сторона по умолчанию перевернута */
+    transform: rotateY(180deg); 
 }
 
 .scroll-item {
@@ -296,4 +299,28 @@ button {
     color: white;
     padding: 35px;
 
+}
+
+.marquee-container {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 2px solid #333;
+    background-color: #000; 
+    color: #fff; 
+}
+
+.marquee {
+    display: inline-block;
+    padding-left: 100%; 
+    animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }

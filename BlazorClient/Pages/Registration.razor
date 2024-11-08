@@ -148,6 +148,7 @@
 
     private async Task RegistrateUser()
     {
+        
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
         HttpResponseMessage response = await client.PostAsJsonAsync("api/User", user);
