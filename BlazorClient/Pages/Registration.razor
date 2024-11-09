@@ -29,6 +29,9 @@
                                             placeholder="Введите код подверждения">
                                         }
                                     </div>
+                                    @if(codeNull){
+                                        <p style="color: red;">Введите код</p>
+                                    }
                                     @if(error != false){
                                         <p style="color: red;">Неверный код</p>
                                     }
@@ -88,7 +91,7 @@
                                     </div>
                                 </div>
                                 <div class="w-100 d-flex justify-content-center">
-                                    <button type="button" class="btn btn-dark btn-lg w-100" @onclick="RegistrateUser">Зарегистрироваться</button>
+                                    <button type="button" class="btn btn-dark btn-lg w-100" @onclick="RegistrateUser" disabled="@isButtonDisabled">Зарегистрироваться</button>
                                     @if(suc){
                                         <p>Юзер жив</p>
                                     }
@@ -132,6 +135,7 @@
     User user;
 
     public string fieldCode { get; set; }
+    private bool isButtonDisabled = false;
 
     Random random = new Random();
     int step = 0;
@@ -139,6 +143,7 @@
     bool suc = false;
     bool sendCode = false;
     bool error = false;
+    bool codeNull = false;
     protected override void OnInitialized()
     {
         user = BlazorUser.User;
@@ -148,19 +153,19 @@
 
     private async Task RegistrateUser()
     {
-        
+        isButtonDisabled = true;
+
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
         HttpResponseMessage response = await client.PostAsJsonAsync("api/User", user);
 
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("Пользователь успешно создан.");
             step = 2;
         }
         else
         {
-            Console.WriteLine($"Ошибка при создании пользователя: {response.StatusCode}");
+            isButtonDisabled = false;
         }
     }
 
@@ -176,6 +181,9 @@
         sendCode = true;
     }
     private void CheckEmail(){
+        if(string.IsNullOrEmpty(fieldCode)){
+            codeNull = true;
+        }
         if (int.TryParse(fieldCode, out int parsedCode) && parsedCode == code)
         {
             step = 1;
