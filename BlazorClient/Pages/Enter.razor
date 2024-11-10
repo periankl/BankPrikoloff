@@ -122,7 +122,7 @@
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
 
-        HttpResponseMessage response = await client.GetAsync($"api/User/{fieldEmail}");
+        HttpResponseMessage response = await client.GetAsync($"api/User/email/{fieldEmail}");
 
         ShowStatus(response); //Для отладки
 
@@ -169,7 +169,7 @@
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
 
-        HttpResponseMessage response = await client.GetAsync($"api/User/{login}/{password}");
+        HttpResponseMessage response = await client.GetAsync($"api/User/logpas/{login}/{password}");
 
         ShowStatus(response);
 

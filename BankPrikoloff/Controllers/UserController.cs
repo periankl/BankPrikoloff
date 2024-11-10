@@ -30,7 +30,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение пользователя по ID
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<IActionResult> GetById(string id)
         {
             var Dto = await _userService.GetById(id);
@@ -42,19 +42,19 @@ namespace BankPrikoloff.Controllers
         /// </summary>
         /// <param name="login">Login</param>
         /// <param name="password">Password</param>
-        [HttpGet("{login}/{password}")]
+        [HttpGet("logpas/{login}/{password}")]
         public async Task<IActionResult> GetByLogin(string login, string password)
         {
             var Dto = await _userService.GetByLogin(login, password);
             return Ok(Dto.Adapt<GetUserRequest>());
         }
 
-        [HttpGet("{email}")]
+        [HttpGet("email/{email}")]
         public async Task<IActionResult> GetByEmail(string email)
         {
             var Dto = await _userService.GetByEmail(email);
             return Ok(Dto.Adapt<GetUserRequest>());
-        }   
+        }
 
 
         /// <summary>
