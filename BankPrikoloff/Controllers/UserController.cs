@@ -49,6 +49,14 @@ namespace BankPrikoloff.Controllers
             return Ok(Dto.Adapt<GetUserRequest>());
         }
 
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            var Dto = await _userService.GetByEmail(email);
+            return Ok(Dto.Adapt<GetUserRequest>());
+        }   
+
+
         /// <summary>
         /// Создание нового пользователя
         /// </summary>

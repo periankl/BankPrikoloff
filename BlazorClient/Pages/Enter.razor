@@ -30,7 +30,7 @@
                                         <input type="text" class="form-control" @bind="fieldEmail"
                                             placeholder="Введите Email">
                                         @if(error){
-                                            <p style="color: red;">Введите почту</p>
+                                            <p style="color: red;">@message</p>
                                         }
                                         <button style="margin-top: 20px;" type="button" @onclick="ShowNotification" class="btn btn-dark btn-lg w-100">Отправить код</button>
 
@@ -100,6 +100,8 @@
     public string login = "";
     public string password = "";
 
+    public string message = "";
+
 
     protected override void OnInitialized()
     {
@@ -108,19 +110,39 @@
     }
     private async Task ShowNotification()
     {
-        error = false;
-        if(string.IsNullOrEmpty(fieldEmail)){
-            error = true;
-            return;
-        }
-        var title = "Уведомление";
-        var options = new
-        {
-            body = $"Ваш код подтверждения: {code}",
-        };
 
-        await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
-        sendCode = true;
+        if (!IsValidEmail(fieldEmail)) //Если почта не соевый нормис, а шиз
+        {
+            error = true;
+            message = "Некорректный формат почты";
+            return;  
+        } 
+           
+        error = false;
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+
+        HttpResponseMessage response = await client.GetAsync($"api/User/{fieldEmail}");
+
+        ShowStatus(response); //Для отладки
+
+        if (response.IsSuccessStatusCode)
+        {
+            error = false;
+            var title = "Уведомление";
+            var options = new
+            {
+                body = $"Ваш код подтверждения: {code}",
+            };
+
+            await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
+            sendCode = true;
+        }
+        else
+        {
+            error = true;
+            message = "Пользователь не найден";
+        }
     
     }
 
@@ -133,19 +155,19 @@
         };
 
         await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
-        sendCode = true;
     }
 
 
     private async Task UserEnter()
     {
-        HttpClient client = new HttpClient();
-        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
 
         if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
         {
             throw new ArgumentException("Login or password is empty");
         }
+
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
 
         HttpResponseMessage response = await client.GetAsync($"api/User/{login}/{password}");
 
@@ -158,13 +180,33 @@
         }
     }
 
-    private void CheckEmail(){
+
+    private bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task CheckEmail()
+    {
         error = false;
+
         if (int.TryParse(fieldCode, out int parsedCode) && parsedCode == code)
         {
             step = 1;
         }
-        else{
+        else
+        {
             error = true;
         }   
     }

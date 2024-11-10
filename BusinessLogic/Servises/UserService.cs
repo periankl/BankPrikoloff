@@ -49,6 +49,17 @@ namespace BusinessLogic.Servises
             return model.First();
         }
 
+        public async Task<User> GetByEmail(string email)
+        {
+            var model = await _repositoryWrapper.User
+                .FindByCondition(x => x.Email == email);
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Email not registered");
+            }
+            return model.First();
+        }
+
         public async Task Create(User model)
         {
             if (model == null)
