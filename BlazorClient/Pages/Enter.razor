@@ -2,6 +2,7 @@
 @inject BlazorUser BlazorUser
 @inject BlazorUser User
 @inject NavigationManager NavigationManager
+@inject IToastService ToastService
 
 @page "/enter"
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="background-color: white;">
@@ -114,6 +115,7 @@
         if (!IsValidEmail(fieldEmail)) //Если почта не соевый нормис, а шиз
         {
             error = true;
+            ToastService.ShowError("Плохой почта, плохой");
             message = "Некорректный формат почты";
             return;  
         } 

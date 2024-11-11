@@ -2,6 +2,8 @@
 @inject IJSRuntime JSRuntime
 @inject BlazorUser BlazorUser
 @inject BlazorUser User
+@inject IToastService ToastService
+
 
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="background-color: white;">
     <div class="container">
@@ -148,7 +150,7 @@
     {
         user = BlazorUser.User;
         user.DateOfBirth = DateTime.Now.AddYears(-20);
-        code = random.Next(1111, 9999);
+        code = random.Next(11111, 99999);
     }
 
     private async Task RegistrateUser()
@@ -161,11 +163,12 @@
 
         if (response.IsSuccessStatusCode)
         {
-            step = 2;
-        }
+            step = 2;        }
         else
         {
             isButtonDisabled = false;
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            ToastService.ShowError(errorMessage);
         }
     }
 
