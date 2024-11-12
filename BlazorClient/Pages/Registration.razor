@@ -76,11 +76,11 @@
                                     <div style="display: flex; flex-direction: row; gap:10px; padding-bottom: 10px">
                                         <div style="display:flex; flex-direction: column;">
                                             <label for="email"><b>Серия паспорта</b></label>
-                                            <input type="text" class="form-control" id="series" placeholder="ХХ ХХ" @bind="user.SeriesPasport">
+                                            <input type="text" class="form-control" id="series" placeholder="ХХ ХХ" maxlength="4" pattern="[0-9]*" inputmode="numeric" @bind="user.SeriesPasport">
                                         </div>
                                         <div style="display: flex; flex-direction: column;">
                                             <label><b>Номер паспорта</b></label>
-                                            <input type="text" class="form-control" id="number" placeholder="XXX XXX" @bind="user.NumberPasport">
+                                            <input type="text" class="form-control" id="number" placeholder="XXX XXX" maxlength="6" pattern="[0-9]*" inputmode="numeric" @bind="user.NumberPasport">
                                         </div>
                                     </div>
                                     <div style="padding-bottom: 10px;">
@@ -90,6 +90,9 @@
                                     <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Пароль</b></label>
                                         <input type="password" class="form-control" id="Password" @bind="user.Password"/>
+                                    </div>
+                                    <div style="padding-bottom: 10px;">
+                                        <input type="text" id="inputmask"/>
                                     </div>
                                 </div>
                                 <div class="w-100 d-flex justify-content-center">
@@ -167,8 +170,8 @@
         else
         {
             isButtonDisabled = false;
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            ToastService.ShowError(errorMessage);
+            //var errorMessage = await response.Content.ReadAsStringAsync(); не работает, надо что то придумать
+            ToastService.ShowError("Все сломалось");
         }
     }
 
