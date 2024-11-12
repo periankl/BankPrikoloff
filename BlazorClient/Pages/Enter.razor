@@ -23,17 +23,17 @@
                 </h2>
                 <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
                     <div class="card-body" style="padding-bottom: 0%;">
-                        <form>
+                        
                             <div class="form-group mb-4 text-start">
                                 <label for="email"><b>Почта</b></label>
                                 @if(!sendCode){
                                     <div>
-                                        <input type="text" class="form-control" @bind="fieldEmail"
+                                        <input type="text" class="form-control" @bind="fieldEmail" 
                                             placeholder="Введите Email">
                                         @if(error){
                                             <p style="color: red;">@message</p>
                                         }
-                                        <button style="margin-top: 20px;" type="button" @onclick="ShowNotification" class="btn btn-dark btn-lg w-100">Отправить код</button>
+                                        <button style="margin-top: 20px;" type="button" @onclick="ShowNotification" disabled="@isButtonDisabled" class="btn btn-dark btn-lg w-100">Отправить код</button>
 
                                     </div>
 
@@ -51,7 +51,7 @@
                             </div>
 
 
-                        </form>
+                        
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                                     </div>
                                 </div>
                                 <div class="w-100 d-flex justify-content-center">
-                                    <button type="button" @onclick="UserEnter" class="btn btn-dark btn-lg w-100">Войти</button>
+                                    <button type="button" @onclick="UserEnter" disabled="@isButtonDisabled" class="btn btn-dark btn-lg w-100">Войти</button>
                                 </div>
                             </form>
                         </div>
@@ -103,6 +103,25 @@
 
     public string message = "";
 
+    public bool isButtonDisabled = false;
+
+@*     public void EnterKeyEventFieldEmail(KeyboardEventArgs e)
+    {
+        if ((e.Code == "Enter" || e.Code == "NumEnter") && !isButtonDisabled )
+            ShowNotification();
+    }
+
+    public void EnterKeyEventFieldCode(KeyboardEventArgs e)
+    {
+        if ((e.Code == "Enter" || e.Code == "NumEnter") && !isButtonDisabled )
+            CheckEmail();
+    }
+
+    public void EnterKeyEventLogin(KeyboardEventArgs e)
+    {
+        if ((e.Code == "Enter" || e.Code == "NumEnter") && !isButtonDisabled )
+            UserEnter();
+    } *@
 
     protected override void OnInitialized()
     {
@@ -119,6 +138,8 @@
             message = "Некорректный формат почты";
             return;  
         } 
+
+        isButtonDisabled = true;
            
         error = false;
         HttpClient client = new HttpClient();
@@ -145,6 +166,7 @@
             error = true;
             message = "Пользователь не найден";
         }
+        isButtonDisabled = false;
     
     }
 
@@ -165,8 +187,12 @@
 
         if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
         {
-            throw new ArgumentException("Login or password is empty");
+            ToastService.ShowError("Не видишь, логин пустой. Или пароль. Я уведомление, а не окулист");
+            return;
         }
+
+        isButtonDisabled = true;
+
 
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
@@ -180,12 +206,14 @@
             BlazorUser.User = await response.Content.ReadFromJsonAsync<User>();
             NavigationManager.NavigateTo("/personal");
         }
+        else
+            isButtonDisabled = false;
     }
 
 
     private bool IsValidEmail(string email)
     {
-        if (string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrEmpty(email))
             return false;
 
         try
