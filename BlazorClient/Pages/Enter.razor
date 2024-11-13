@@ -147,7 +147,7 @@
 
         HttpResponseMessage response = await client.GetAsync($"api/User/email/{fieldEmail}");
 
-        ShowStatus(response); //Для отладки
+        //ShowStatus(response); //Для отладки
 
         if (response.IsSuccessStatusCode)
         {
@@ -199,11 +199,17 @@
 
         HttpResponseMessage response = await client.GetAsync($"api/User/logpas/{login}/{password}");
 
-        ShowStatus(response);
+        //ShowStatus(response);
 
         if (response.IsSuccessStatusCode)
         {
             BlazorUser.User = await response.Content.ReadFromJsonAsync<User>();
+            if (BlazorUser.User.Email != fieldEmail)
+            {
+                ToastService.ShowError("Неправильные логин или пароль");
+                isButtonDisabled = false;
+                return;
+            }
             NavigationManager.NavigateTo("/personal");
         }
         else
