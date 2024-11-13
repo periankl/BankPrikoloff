@@ -2,6 +2,8 @@
 @inject NavigationManager NavigationManager
 @inject BlazorUser BlazorUser
 @inject BlazorUser User
+@inject IToastService ToastService
+@using System.Text.RegularExpressions;
 
 <nav class="navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="padding-bottom: 0px; padding-top: 15px;">
     <div class="container" style="margin-bottom: 15px;">
@@ -49,6 +51,8 @@
                         <b>Почему именно мы?</b></h4>
                     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
+    using System.ComponentModel.DataAnnotations;
+    using System.Text.RegularExpressions;
                             <div class="carousel-item active" data-bs-interval="2000">
                                 <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 20px;">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -253,14 +257,15 @@
     private bool ShowPatronomicMessage { get; set; }
     private bool ShowInvalidEmailMessage { get; set; }
 
-User user = new User();
+    User user = new User();
 
-private void ValidatePatronymic()
-{
-    ShowPatronomicMessage = string.IsNullOrWhiteSpace(Patronomic) && !NoPatronymic;
-}
-    private void CheckFields()
+    private void ValidatePatronymic()
     {
+        ShowPatronomicMessage = string.IsNullOrWhiteSpace(Patronomic) && !NoPatronymic;
+    }
+    private async Task CheckFields()
+    {
+     
         ShowEmailMessage = string.IsNullOrEmpty(Email);
         ShowFirstNameMessage = string.IsNullOrEmpty(FirstName);
         ShowLastNameMessage = string.IsNullOrEmpty(LastName);
@@ -269,17 +274,48 @@ private void ValidatePatronymic()
 
         if (!ShowEmailMessage && !ShowFirstNameMessage && !ShowLastNameMessage && !ShowPatronomicMessage && !ShowInvalidEmailMessage)
         {
-            user.Email = Email;
-            user.FirstName = FirstName;
-            user.LastName = LastName;
-            user.Patronomic = Patronomic;
-            BlazorUser.User = user;
-            NavigationManager.NavigateTo("/registration");
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+
+            HttpResponseMessage response = await client.GetAsync($"api/User/email/{Email}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                ToastService.ShowError("Данная почта уже занята");
+                return;
+            }
+            else
+            {
+                var errorResponse = await response.Content.ReadAsStringAsync();
+
+                var shortErrorResponse = errorResponse.Split('\n')[0];
+
+                if (errorResponse != null && !string.IsNullOrEmpty(errorResponse) && shortErrorResponse  == "System.ArgumentException: Email not registered")
+                {
+                    user.Email = Email;
+                    user.FirstName = FirstName;
+                    user.LastName = LastName;
+                    user.Patronomic = Patronomic;
+                    BlazorUser.User = user;
+                    NavigationManager.NavigateTo("/registration");
+                }
+                else 
+                {
+                    ToastService.ShowError(shortErrorResponse);
+                }
+            }
+
         }
     }
     protected override void OnInitialized()
     {
         BlazorUser.User = new User();
+    }
+
+    public class ErrorResponse
+    {
+        public string Error { get; set; }
     }
 
     private bool IsValidEmail(string email)
