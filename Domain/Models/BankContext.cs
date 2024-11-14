@@ -138,8 +138,6 @@ namespace Domain.Models
 
                 entity.HasIndex(e => e.TypeId, "IX_Relationship2");
 
-                entity.HasIndex(e => e.CurrencyId, "IX_Relationship4");
-
                 entity.HasIndex(e => e.AccountId, "IX_Relationship50");
 
                 entity.Property(e => e.CardId)
@@ -152,8 +150,6 @@ namespace Domain.Models
                     .IsUnicode(false)
                     .HasColumnName("AccountID");
 
-                entity.Property(e => e.Balance).HasColumnType("decimal(10, 2)");
-
                 entity.Property(e => e.BlockedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("Blocked_at");
@@ -165,8 +161,6 @@ namespace Domain.Models
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("Created_at");
-
-                entity.Property(e => e.CurrencyId).HasColumnName("CurrencyID");
 
                 entity.Property(e => e.Cvv)
                     .HasMaxLength(3)
@@ -186,12 +180,6 @@ namespace Domain.Models
                     .HasForeignKey(d => d.AccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Relationship50");
-
-                entity.HasOne(d => d.Currency)
-                    .WithMany(p => p.Cards)
-                    .HasForeignKey(d => d.CurrencyId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Relationship4");
 
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.Cards)

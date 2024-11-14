@@ -13,19 +13,16 @@ namespace Domain.Models
 
         public string CardId { get; set; } = null!;
         public int TypeId { get; set; }
-        public int CurrencyId { get; set; }
         public string AccountId { get; set; } = null!;
         public string CardNumber { get; set; } = null!;
         public DateTime ExpDate { get; set; }
         public string Cvv { get; set; } = null!;
         public string OwnerName { get; set; } = null!;
-        public decimal Balance { get; set; } = 0;
         public bool Blocked { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? BlockedAt { get; set; }
 
         public virtual Account? Account { get; set; } = null!;
-        public virtual Currency? Currency { get; set; } = null!;
         public virtual TypeOfCard? Type { get; set; } = null!;
         public virtual ICollection<OperationHistory>? OperationHistoryDestinationCards { get; set; }
         public virtual ICollection<OperationHistory>? OperationHistorySenderCards { get; set; }
