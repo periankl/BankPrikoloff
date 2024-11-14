@@ -29,10 +29,10 @@ namespace BusinessLogic.Tests
         {
             return new List<object[]>
             {
-                new object[] { new Card() {CardId = "", AccountId = "", CurrencyId = 1, CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", Balance = 0} },
-                new object[] { new Card() {CardId = "Test", AccountId = "", CurrencyId = 1, CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", Balance = 0} },
-                new object[] { new Card() {CardId = "", AccountId = "Test", CurrencyId = 1, CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", Balance = 0} },
-                new object[] { new Card() {CardId = "Test", AccountId = "Test", CurrencyId = 1, CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", Balance = 0} },
+                new object[] { new Card() {CardId = "", AccountId = "",  CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", } },
+                new object[] { new Card() {CardId = "Test", AccountId = "",  CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", } },
+                new object[] { new Card() {CardId = "", AccountId = "Test",  CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", } },
+                new object[] { new Card() {CardId = "Test", AccountId = "Test",  CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", } },
             };
         }
 
@@ -66,7 +66,7 @@ namespace BusinessLogic.Tests
             {
                 CardId = "Test",
                 TypeId = 1,
-                CurrencyId = 1,
+
                 AccountId = "Test",
                 OwnerName = "Test",
             };
@@ -80,10 +80,10 @@ namespace BusinessLogic.Tests
         {
             return new List<object[]>
             {
-                new object[] { new Card() {CardId = "", AccountId = "", CurrencyId = 1, CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", Balance = 0} },
-                new object[] { new Card() {CardId = "Test", AccountId = "", CurrencyId = 1, CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", Balance = 0} },
-                new object[] { new Card() {CardId = "", AccountId = "Test", CurrencyId = 1, CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", Balance = 0} },
-                new object[] { new Card() {CardId = "Test", AccountId = "Test", CurrencyId = 1, CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", Balance = 0} },
+                new object[] { new Card() {CardId = "", AccountId = "",  CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", } },
+                new object[] { new Card() {CardId = "Test", AccountId = "",  CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", } },
+                new object[] { new Card() {CardId = "", AccountId = "Test",  CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", } },
+                new object[] { new Card() {CardId = "Test", AccountId = "Test",  CardNumber = "", ExpDate = DateTime.MinValue, Cvv = "", OwnerName = "", } },
             };
         }
 
@@ -120,13 +120,11 @@ namespace BusinessLogic.Tests
             {
                 CardId = "Test",
                 TypeId = 1,
-                CurrencyId = 1,
                 AccountId = "Test",
                 CardNumber = "Test",
                 ExpDate = DateTime.Now.AddYears(3),
                 Cvv = "Test",
                 OwnerName = "Test",
-                Balance = 1,
                 Blocked = false,
                 CreatedAt = DateTime.Now
             };

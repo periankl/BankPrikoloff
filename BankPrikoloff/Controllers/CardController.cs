@@ -34,6 +34,17 @@ namespace BankPrikoloff.Controllers
             var card = await _cardService.GetById(id);
             return Ok(card.Adapt<GetCardRequest>());
         }
+
+        /// <summary>
+        /// Получение карты по ID
+        /// </summary>
+        [HttpGet("account/{accountId}")]
+        public async Task<IActionResult> GetByAccount(string accountId)
+        {
+            var card = await _cardService.GetByAccountId(accountId);
+            return Ok(card.Adapt<GetCardRequest>());
+        }
+
         /// <summary>
         /// Получение карты по номеру
         /// </summary>

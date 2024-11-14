@@ -11,6 +11,7 @@ namespace BusinessLogic.Interfaces
     {
         Task<List<Card>> GetAll();
         Task<Card> GetById(string id);
+        Task<List<Card>> GetByAccountId(string accountId);
         Task<Card> GetByCardNumber(string number);
         Task Create(Card model);
         Task Update(Card model);

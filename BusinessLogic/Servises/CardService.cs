@@ -24,6 +24,17 @@ namespace BusinessLogic.Servises
             return await _repositoryWrapper.Card.FindAll();
         }
 
+        public async Task<List<Card>> GetByAccountId(string accountId)
+        {
+            var model = await _repositoryWrapper.Card
+                .FindByCondition(x => x.AccountId == accountId);
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model;
+        }
+
         public async Task<Card> GetById(string id)
         {
             var model = await _repositoryWrapper.Card
