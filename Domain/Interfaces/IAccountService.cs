@@ -11,6 +11,7 @@ namespace BusinessLogic.Interfaces
     {
         Task<List<Account>> GetAll();
         Task<Account> GetById(string id);
+        Task<List<Account>> GetUserAccounts(string clientId);
         Task Create(Account model);
         Task Update(Account model);
         Task Delete(string id);
