@@ -40,7 +40,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение информации о счете по ClientID
         /// </summary>
-        [HttpGet("client/{id}")]
+        [HttpGet("client/{clientId}")]
         public async Task<IActionResult> GetByClientId(string clientId)
         {
             var account = await _accountService.GetUserAccounts(clientId);
