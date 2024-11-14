@@ -15,6 +15,5 @@ namespace Domain.Models
         public decimal Course { get; set; }
 
         public virtual ICollection<Account> Accounts { get; set; }
-        public virtual ICollection<Card> Cards { get; set; }
     }
 }
