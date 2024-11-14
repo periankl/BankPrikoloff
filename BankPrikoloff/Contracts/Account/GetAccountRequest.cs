@@ -9,5 +9,6 @@
         public int StatusId { get; set; }
         public decimal Balance { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public int AccountNumber { get; set; }
     }
 }

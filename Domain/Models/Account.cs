@@ -22,6 +22,7 @@ namespace Domain.Models
         public int StatusId { get; set; } = 1;
         public decimal Balance { get; set; } = 0;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public int AccountNumber { get; set; }
 
         public virtual User Client { get; set; } = null!;
         public virtual Currency Currency { get; set; } = null!;

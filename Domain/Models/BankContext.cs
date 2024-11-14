@@ -61,13 +61,15 @@ namespace Domain.Models
                     .IsUnicode(false)
                     .HasColumnName("AccountID");
 
-                entity.Property(e => e.Balance).HasColumnType("decimal(10, 2)");
+                entity.Property(e => e.Balance).HasColumnType("decimal(10, 2)").HasColumnName("Balance");
 
                 entity.Property(e => e.ClientId)
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("ClientID");
 
+                entity.Property(e => e.AccountNumber).HasColumnName("AccountNumber");
+                
                 entity.Property(e => e.CurrencyId).HasColumnName("CurrencyID");
 
                 entity.Property(e => e.StatusId).HasColumnName("StatusID");
