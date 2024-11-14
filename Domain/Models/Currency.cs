@@ -8,7 +8,6 @@ namespace Domain.Models
         public Currency()
         {
             Accounts = new HashSet<Account>();
-            Cards = new HashSet<Card>();
         }
 
         public int CurrencyId { get; set; }
