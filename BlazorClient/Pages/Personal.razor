@@ -55,12 +55,12 @@
                                     <div class="modal-body">
                                         <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Имя на карте</b></label>
-                                        <input type="text" class="form-control" id="Login" placeholder="IVANOV IVAN"/>
+                                        <input type="text" class="form-control" id="Login" bind="@ownerName" placeholder="IVANOV IVAN"/>
                                     </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" @onclick="HideModal">Отменить</button>
-                                        <button type="button" class="btn btn-dark">Оформить карту</button>
+                                        <button type="button" class="btn btn-primary">Оформить карту</button>
                                     </div>
                                 </div>
                             </div>
@@ -177,6 +177,60 @@
         {
             return false;
         }
+    }
+
+
+    public class Card
+    {
+        public string CardId { get; set; } = null!; //Gen
+        public int TypeId { get; set; } //Self
+        public string AccountId { get; set; } = null!; //Self
+        public string CardNumber { get; set; } = null!; //Gen
+        public DateTime ExpDate { get; set; } //Gen
+        public string Cvv { get; set; } = null!; //Gen
+        public string OwnerName { get; set; } = null!; //Self
+        public bool Blocked { get; set; } = false; //Gen
+        public DateTime CreatedAt { get; set; } = DateTime.Now; //Gen
+        public DateTime? BlockedAt { get; set; } //No need
+
+
+        public Card(int typeId, string accountId, string ownerName)
+        {
+            TypeId = typeId;
+            AccountId = accountId;
+            OwnerName = ownerName;
+        }
+    }
+
+    public class Account
+    {
+        public string AccountId { get; set; } = null!;
+        public string ClientId { get; set; } = null!;
+        public int TypeId { get; set; }
+        public int CurrencyId { get; set; }
+        public int StatusId { get; set; } = 1;
+        public decimal Balance { get; set; } = 0;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public int AccountNumber { get; set; }
+
+        public Account(string clientId, int typeId, int currencyId)
+        {
+            ClientId = clientId;
+            TypeId = typeId;
+            CurrencyId = currencyId;
+        }
+    }
+
+
+    public string ownerName = "";
+    public async Task AddCard()
+    {
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        var account = new Account(BlazorUser.User.ClientId, 1, 1);
+        var card = new Card(1, "", ownerName);
+        HttpResponseMessage response = await client.PostAsJsonAsync("api/Account", account);
+        return;
     }
 
 

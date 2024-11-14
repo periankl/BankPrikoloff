@@ -35,6 +35,17 @@ namespace BusinessLogic.Servises
             return model.First();
         }
 
+        public async Task<List<Account>> GetUserAccounts(string clientId)
+        {
+            var model = await _repositoryWrapper.Account
+                .FindByCondition(x => x.ClientId == clientId);
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model;
+        }
+
 
         public async Task Create(Account model)
         {

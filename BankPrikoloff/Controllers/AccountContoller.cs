@@ -30,12 +30,24 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение информации о счете по ID
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<IActionResult> GetById(string id)
         {
             var account = await _accountService.GetById(id);
             return Ok(account.Adapt<GetAccountRequest>());
         }
+
+        /// <summary>
+        /// Получение информации о счете по ClientID
+        /// </summary>
+        [HttpGet("client/{id}")]
+        public async Task<IActionResult> GetByClientId(string clientId)
+        {
+            var account = await _accountService.GetUserAccounts(clientId);
+            return Ok(account.Adapt<List<GetAccountRequest>>());
+        }
+
+
 
         /// <summary>
         /// Создание нового счета
