@@ -68,8 +68,8 @@ namespace Domain.Models
                     .IsUnicode(false)
                     .HasColumnName("ClientID");
 
-                entity.Property(e => e.AccountNumber).HasColumnName("AccountNumber");
-                
+                entity.Property(e => e.AccountNumber).HasColumnName("AccountNumber").ValueGeneratedOnAdd();
+
                 entity.Property(e => e.CurrencyId).HasColumnName("CurrencyID");
 
                 entity.Property(e => e.StatusId).HasColumnName("StatusID");

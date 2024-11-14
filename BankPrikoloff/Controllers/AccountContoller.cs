@@ -34,7 +34,7 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             var account = await _accountService.GetById(id);
-            return Ok(account.Adapt<GetCardRequest>());
+            return Ok(account.Adapt<GetAccountRequest>());
         }
 
         /// <summary>
