@@ -343,7 +343,7 @@
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
         var account = new Account(BlazorUser.User.ClientId, 1, 1);
-        account.Balance += 1000;
+        //account.Balance += 1000;
         HttpResponseMessage responseAccountToPost = await client.PostAsJsonAsync($"api/Account", account);
 
         if (responseAccountToPost.IsSuccessStatusCode)
