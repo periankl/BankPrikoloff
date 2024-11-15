@@ -197,6 +197,8 @@
     bool sendCode = false;
     bool error = false;
     bool codeNull = false;
+    string ser; //Для проверки длины строки
+    string num;
     protected override void OnInitialized()
     {
         user = BlazorUser.User;
@@ -207,12 +209,29 @@
 
     private async Task RegistrateUser()
     {
+        
+        string ser = user.SeriesPasport.ToString();
+        string num = user.NumberPasport.ToString();
+
+        if (ser == null || ser.Length < 4)
+        {
+            ToastService.ShowError("Пожалуйста, укажите в профиле корректные паспортные данные");
+            return;
+        }
+
+        if (num == null || num.Length < 6)
+        {
+            ToastService.ShowError("Неверный номер паспорта");
+            return;
+        }
+
         isButtonDisabled = true;
 
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
         HttpResponseMessage response = await client.PostAsJsonAsync("api/User", user);
 
+        
         if (response.IsSuccessStatusCode)
         {
             step = 2;

@@ -160,7 +160,6 @@
 </footer>
 
 
-
 <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 </script>
@@ -182,6 +181,19 @@
     private bool ShowInvalidEmailMessage { get; set; }
     private bool isModalVisible = false;
 
+    public bool isUserHaveAccount = false;
+
+
+    public bool isAddingCard = false;
+
+    public List<Account> accounts = new List<Account>();
+
+    public List<Card> cards = new List<Card>();
+    
+    public string ser;
+    public string num;
+
+
     private void ShowModal()
     {
         isModalVisible = true;
@@ -191,18 +203,9 @@
     {
         isModalVisible = false;
     }
+
     User user = new User();
 
-    public bool isUserHaveAccount = false;
-
-    public bool isLoading = true;
-
-    public bool isAddingCard = false;
-
-    public List<Account> accounts = new List<Account>();
-
-    public List<Card> cards = new List<Card>();
-    
     protected override async Task OnInitializedAsync()
     {
 
@@ -218,6 +221,13 @@
         {
             user = BlazorUser.User;
             await LoadCards();
+        }
+
+        ser = user.SeriesPasport.ToString();
+        num = user.NumberPasport.ToString();
+
+        if(ser == null || ser.Length < 4 || num == null || num.Length < 6){
+            ToastService.ShowWarning("Пожалуйста, исправьте паспортную информацию в профиле");
         }
     }
 
