@@ -30,7 +30,7 @@
         </div>
     </div>
 </nav>
-<section class="heroSec" id="hero" style="padding-top: 40%;">
+<section class="heroSec" id="hero" style="padding-top: 50%; position: sticky;">
     <div class="container">
         <div class="main" style="display: flex; height: 100%;">
             <div class="col d-flex justify-content-between">
@@ -73,6 +73,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModal">Хотите оформить?</button>                                            
                                             </div>
                                             }
                                         }
@@ -183,6 +186,7 @@
 
     public bool isUserHaveAccount = false;
 
+    public bool isLoading = true;
 
     public bool isAddingCard = false;
 
@@ -257,7 +261,7 @@
                         if (responseCard.IsSuccessStatusCode)
                         {
                             //ToastService.ShowSuccess("No error while loading card");
-                            var card = (await responseCard.Content.ReadFromJsonAsync<List<Card>>()).First();
+                            var card = (await responseCard.Content.ReadFromJsonAsync<Card>());
                             card.Balance = a.Balance;
                             cards.Add(card);
                         }
