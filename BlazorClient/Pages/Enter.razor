@@ -3,8 +3,12 @@
 @inject BlazorUser User
 @inject NavigationManager NavigationManager
 @inject IToastService ToastService
+@inject System.Net.Mail.MailAddress MailAddress
+@inject System.Net.Mail.SmtpClient SmtpClient
 
 @page "/enter"
+@using System.Net.Mail
+@using System.Net
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="background-color: white;">
     <div class="container">
         <div style="width: 50%;">
@@ -16,77 +20,85 @@
 <section id="hero">
     <div class="container">
         <div class="row h-100 justify-content-center align-items-center">
-        @if(step == 0){ 
-            <div class="col-md-6" style="width:100%">
-                <h2 class="text-left">
-                    Вход в аккаунт
-                </h2>
-                <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
-                    <div class="card-body" style="padding-bottom: 0%;">
-                        
+            @if (step == 0)
+            {
+                <div class="col-md-6" style="width:100%">
+                    <h2 class="text-left">
+                        Вход в аккаунт
+                    </h2>
+                    <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
+                        <div class="card-body" style="padding-bottom: 0%;">
+
                             <div class="form-group mb-4 text-start">
                                 <label for="email"><b>Почта</b></label>
-                                @if(!sendCode){
+                                @if (!sendCode)
+                                {
                                     <div>
-                                        <input type="text" class="form-control" @bind="fieldEmail" 
-                                            placeholder="Введите Email">
-                                        @if(error){
+                                        <input type="text" class="form-control" @bind="fieldEmail" placeholder="Введите Email">
+                                        @if (error)
+                                        {
                                             <p style="color: red;">@message</p>
                                         }
-                                        <button style="margin-top: 20px;" type="button" @onclick="ShowNotification" disabled="@isButtonDisabled" class="btn btn-dark btn-lg w-100">Отправить код</button>
+                                        <button style="margin-top: 20px;" type="button" @onclick="ShowNotification"
+                                            disabled="@isButtonDisabled" class="btn btn-dark btn-lg w-100">Отправить
+                                            код</button>
 
                                     </div>
 
                                 }
-                                else{
+                                else
+                                {
                                     <div>
-                                        <input type="text" class="form-control" @bind="fieldCode"
-                                            placeholder="Введите код">
+                                        <input type="text" class="form-control" @bind="fieldCode" placeholder="Введите код">
                                     </div>
-                                    @if(error != false){
+                                    @if (error != false)
+                                    {
                                         <p style="color: red;">Неверный код</p>
                                     }
-                                    <button style="margin-top: 20px;" type="button" @onclick="CheckEmail" class="btn btn-dark btn-lg w-100">Отправить код</button>
+                                    <button style="margin-top: 20px;" type="button" @onclick="CheckEmail"
+                                        class="btn btn-dark btn-lg w-100">Отправить код</button>
                                 }
                             </div>
 
 
-                        
+
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-        @if(step == 1){
-            <div class="col-md-6" style="width:100%">
+            }
+            @if (step == 1)
+            {
+                <div class="col-md-6" style="width:100%">
                     <h2 class="text-left">
                         Вход в аккаунт
                     </h2>
                     <div class="card border shadow p-3 mb-5 bg-white" style="border-radius: 15px;">
                         <div class="card-body">
                             <form>
-                                <div class="form-group mb-4 text-start">    
+                                <div class="form-group mb-4 text-start">
                                     <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Логин</b></label>
-                                        <input type="text" class="form-control" id="Login" @bind="login"/>
+                                        <input type="text" class="form-control" id="Login" @bind="login" />
                                     </div>
                                     <div style="padding-bottom: 10px;">
                                         <label for="phone"><b>Пароль</b></label>
-                                        <input type="password" class="form-control" id="Password" @bind="password"/>
+                                        <input type="password" class="form-control" id="Password" @bind="password" />
                                     </div>
                                 </div>
                                 <div class="w-100 d-flex justify-content-center">
-                                    <button type="button" @onclick="UserEnter" disabled="@isButtonDisabled" class="btn btn-dark btn-lg w-100">Войти</button>
+                                    <button type="button" @onclick="UserEnter" disabled="@isButtonDisabled"
+                                        class="btn btn-dark btn-lg w-100">Войти</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-        }
+            }
         </div>
     </div>
 </section>
 
-@code{
+@code {
     User user;
     int code;
     Random random = new Random();
@@ -95,7 +107,7 @@
     bool error = false;
 
     public string fieldCode { get; set; }
-    
+
     public string fieldEmail { get; set; }
 
     public string login = "";
@@ -105,7 +117,7 @@
 
     public bool isButtonDisabled = false;
 
-@*     public void EnterKeyEventFieldEmail(KeyboardEventArgs e)
+    @*     public void EnterKeyEventFieldEmail(KeyboardEventArgs e)
     {
         if ((e.Code == "Enter" || e.Code == "NumEnter") && !isButtonDisabled )
             ShowNotification();
@@ -136,11 +148,11 @@
             error = true;
             ToastService.ShowError("Плохой почта, плохой");
             message = "Некорректный формат почты";
-            return;  
-        } 
+            return;
+        }
 
         isButtonDisabled = true;
-           
+
         error = false;
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
@@ -151,14 +163,25 @@
 
         if (response.IsSuccessStatusCode)
         {
-            error = false;
-            var title = "Уведомление";
-            var options = new
+            MailAddress from = new MailAddress("ben@contoso.com");
+            MailAddress to = new MailAddress("Jane@contoso.com");
+            MailMessage message = new MailMessage(from, to);
+            message.Subject = "Using the SmtpClient class.";
+            message.Body = $@"Using this feature, you can send an email message from an application very easily. code {code}";
+            SmtpClient mailClient = new SmtpClient("smtp.yandex.ru");
+            mailClient.Port = 465;
+            mailClient.Credentials = new NetworkCredential("support@bankprikoloff.ru", "kvhnhnmjwztmnswi");
+            Console.WriteLine("Sending an email message to {0} by using SMTP host {1} port {2}.",
+            to.ToString(), mailClient.Host, mailClient.Port);
+            try
             {
-                body = $"Ваш код подтверждения: {code}",
-            };
+                mailClient.Send(message);
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowError(ex.Message);
+            }
 
-            await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
             sendCode = true;
         }
         else
@@ -167,7 +190,7 @@
             message = "Пользователь не найден";
         }
         isButtonDisabled = false;
-    
+
     }
 
     private async Task ShowStatus(HttpResponseMessage response)
@@ -244,6 +267,6 @@
         else
         {
             error = true;
-        }   
+        }
     }
 }
