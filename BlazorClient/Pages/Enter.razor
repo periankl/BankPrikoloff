@@ -169,7 +169,14 @@
             EmailRequest emailRequest = new EmailRequest();
             emailRequest.To = fieldEmail;
             emailRequest.Subject = "Подтверждение почты";
-            emailRequest.Body = $"Ваш код подтверждения: {code}";
+            emailRequest.Body = "<html><body><br><img src=\"https://www.cyberforum.ru/images/cyberforum_logo.jpg\" alt=\"Super Game!\">" +@" 
+                <br>Здравствуйте!
+                <br>Вы получили это письмо, потому что вы зарегистрировались на http://www.supergame.ru или сменили e-mail в профиле.
+                <br>Высылаем Вам секретный код для активации вашего профиля.
+                <br>                                                                                              
+                <br>Код активации:       <b>" + code + @"</b>
+                <br>
+                <br>Мы будем рады видеть Вас на нашем сайте и желаем Вам приятой игры!</body></html>";
             HttpResponseMessage responseSendEmail = await client.PostAsJsonAsync($"api/Email/send", emailRequest);
 
             if (responseSendEmail.IsSuccessStatusCode)

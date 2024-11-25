@@ -23,6 +23,7 @@ namespace BankPrikoloff.Controllers
             MailAddress from = new MailAddress("support@bank-prikoloff.ru");
             MailAddress to = new MailAddress(request.To);
             MailMessage message = new MailMessage(from, to);
+            message.IsBodyHtml = true;
             message.Subject = request.Subject;
             message.Body = request.Body;
 
