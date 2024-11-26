@@ -169,14 +169,50 @@
             EmailRequest emailRequest = new EmailRequest();
             emailRequest.To = fieldEmail;
             emailRequest.Subject = "Подтверждение почты";
-            emailRequest.Body = "<html><body><br><img src=\"https://www.cyberforum.ru/images/cyberforum_logo.jpg\" alt=\"Super Game!\">" +@" 
-                <br>Здравствуйте!
-                <br>Вы получили это письмо, потому что вы зарегистрировались на http://www.supergame.ru или сменили e-mail в профиле.
-                <br>Высылаем Вам секретный код для активации вашего профиля.
-                <br>                                                                                              
-                <br>Код активации:       <b>" + code + @"</b>
-                <br>
-                <br>Мы будем рады видеть Вас на нашем сайте и желаем Вам приятой игры!</body></html>";
+            emailRequest.Body = @"
+            <!DOCTYPE html>
+            <html lang=""ru"">
+            <head>
+                <meta charset=""UTF-8"">
+                <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                <title>Подтверждение кода</title>
+            </head>
+            <body style=""font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;"">
+                <table align=""center"" cellpadding=""0"" cellspacing=""0"" width=""600"" style=""border-collapse: collapse; background-color: #ffffff; margin: 20px auto; border: 1px solid #e0e0e0;"">
+                    <tr>
+                        <td align=""center"" style=""padding: 20px 0;"">
+                            <h1 style=""color: mediumpurple; font-size: 24px; margin-bottom: 20px;"">Подтверждение кода</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style=""padding: 20px;"">
+                            <p style=""font-size: 16px; line-height: 1.5; color: #333333;"">
+                                Здравствуйте!<br><br>
+                                Вы получили это письмо, потому что вы зарегистрировались в системе Приколофф Банка или сменили e-mail в профиле.<br><br>
+                                Высылаем Вам секретный код для активации вашего профиля.
+                            </p>
+                            <div style=""background-color: #f9f9f9; border: 1px solid #e0e0e0; padding: 15px; text-align: center; margin: 20px 0;"">
+                                <span style=""font-size: 36px; font-weight: bold; color: mediumpurple;"">" + code + @"</span>
+                            </div>
+                            <p style=""font-size: 16px; line-height: 1.5; color: #333333;"">
+                                Пожалуйста, используйте этот код для завершения процедуры входа. Код действителен в течение 10 минут.
+                            </p>
+                            <p style=""font-size: 16px; line-height: 1.5; color: #333333;"">
+                                Если вы не запрашивали этот код, проигнорируйте это письмо.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align=""center"" style=""padding: 20px; background-color: #f4f4f4;"">
+                            <p style=""font-size: 14px; color: #777777;"">
+                                С уважением,<br>
+                                Команда Приколофф Банка
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>";
             HttpResponseMessage responseSendEmail = await client.PostAsJsonAsync($"api/Email/send", emailRequest);
 
             if (responseSendEmail.IsSuccessStatusCode)
