@@ -31,15 +31,15 @@
                                             placeholder="Введите код подверждения">
                                         }
                                     </div>
-                                    @if(sendCode == true && codeNull){
+                                    @if(codeNull){
                                         <p style="color: red;">Введите код</p>
                                     }
-                                    @if(!codeNull && sendCode == true && error == true){
+                                    @if(error != false){
                                         <p style="color: red;">Неверный код</p>
                                     }
                                     @if(sendCode == false){
                                         <div class="w-100 d-flex justify-content-center">
-                                            <button type="button" disabled="@isButtonDisabled" @onclick="ShowNotification" class="btn btn-dark btn-lg w-100">Отправить код</button>
+                                            <button type="button" @onclick="ShowNotification" class="btn btn-dark btn-lg w-100">Отправить код</button>
                                         </div>
                                     }
                                     else{
@@ -199,8 +199,6 @@
     bool codeNull = false;
     string ser; //Для проверки длины строки
     string num;
-    public string message = "";
-
     protected override void OnInitialized()
     {
         user = BlazorUser.User;
@@ -227,16 +225,6 @@
             return;
         }
 
-        if(!IsValidUsername(user.Login)){
-            ToastService.ShowError("Логин должен содержать не менее 5 символов и хотя бы 3 английские буквы");
-            return;
-        }
-
-        if(!IsValidPassword(user.Password)){
-            ToastService.ShowError("Пароль должен быть минимум 8 символов, содержать 2 английские буквы разного регистра и хотя бы одну цифру.");
-            return;
-        }
-
         isButtonDisabled = true;
 
         HttpClient client = new HttpClient();
@@ -251,118 +239,26 @@
         else
         {
             isButtonDisabled = false;
-            ToastService.ShowError("Что-то пошло не так");
+            ToastService.ShowError("Все сломалось");
         }
-    }
-    
-    private bool IsValidUsername(string username)
-    {
-        if (string.IsNullOrWhiteSpace(username) || username.Length < 5)
-            return false;
-        return username.Count(char.IsLetter) >= 3;
-    }
-
-    private bool IsValidPassword(string password)
-    {
-        if (string.IsNullOrWhiteSpace(password))
-            return false;
-        return password.Length >= 8 &&
-               password.Any(char.IsLower) &&
-               password.Any(char.IsUpper) &&
-               password.Any(char.IsDigit);
-    }
-
-    public class EmailRequest
-    {
-        public string To { get; set; } = null!;
-        public string Subject { get; set; } = null!;
-        public string Body { get; set; } = null!;
     }
 
     private async Task ShowNotification()
     {
-        error = false;
-        sendCode = false;
-        if(user.Email == null){
-            ToastService.ShowError("Почта отсуствует");
-        }
-        isButtonDisabled = true;
-
-        HttpClient client = new HttpClient();
-        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
-
-        EmailRequest emailRequest = new EmailRequest();
-
-        emailRequest.To = user.Email;
-        
-        emailRequest.Subject = "Подтверждение почты";
-        emailRequest.Body = @"
-        <!DOCTYPE html>
-        <html lang=""ru"">
-        <head>
-            <meta charset=""UTF-8"">
-            <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-            <title>Подтверждение кода</title>
-        </head>
-        <body style=""font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;"">
-            <table align=""center"" cellpadding=""0"" cellspacing=""0"" width=""600"" style=""border-collapse: collapse; background-color: #ffffff; margin: 20px auto; border: 1px solid #e0e0e0;"">
-                <tr>
-                    <td align=""center"" style=""padding: 20px 0;"">
-                        <h1 style=""color: mediumpurple; font-size: 24px; margin-bottom: 20px;"">Подтверждение кода</h1>
-                    </td>
-                </tr>
-                <tr>
-                    <td style=""padding: 20px;"">
-                        <p style=""font-size: 16px; line-height: 1.5; color: #333333;"">
-                            Здравствуйте!<br><br>
-                            Вы получили это письмо, потому что Вы зарегистрировались в системе Банка Приколофф<br><br>
-                            Высылаем Вам секретный код для подтверждения почты.
-                        </p>
-                        <div style=""background-color: #f9f9f9; border: 1px solid #e0e0e0; padding: 15px; text-align: center; margin: 20px 0;"">
-                            <span style=""font-size: 36px; font-weight: bold; color: mediumpurple;"">" + code + @"</span>
-                        </div>
-                        <p style=""font-size: 16px; line-height: 1.5; color: #333333;"">
-                            Пожалуйста, используйте этот код для завершения процедуры регистрации. Код действителен в течение 10 минут.
-                        </p>
-                        <p style=""font-size: 16px; line-height: 1.5; color: #333333;"">
-                            Если Вы не пытаетесь войти, проигнорируйте это письмо.
-                        </p>
-                    </td>
-                </tr>
-                <tr>
-                    <td align=""center"" style=""padding: 20px; background-color: #f4f4f4;"">
-                        <p style=""font-size: 14px; color: #777777;"">
-                            С уважением,<br>
-                            Команда Банка Приколофф
-                        </p>
-                    </td>
-                </tr>
-            </table>
-        </body>
-        </html>";
-        HttpResponseMessage responseSendEmail = await client.PostAsJsonAsync($"api/Email/send", emailRequest);
-
-        if (responseSendEmail.IsSuccessStatusCode)
+        var title = "Уведомление";
+        var options = new
         {
-            ToastService.ShowInfo("Код отправлен на почту");
-            sendCode = true;
-            error = false;
+            body = $"Ваш код подтверждения: {code}",
+        };
 
-        }
-        else
-        {
-            ToastService.ShowError("Произошла ошибка при оправке письма. Попробуйте еще раз");       
-        }
-        
-
-        isButtonDisabled = false;
-
+        await JSRuntime.InvokeVoidAsync("notification.showNotification", title, options);
+        sendCode = true;
     }
     private void CheckEmail(){
         if(string.IsNullOrEmpty(fieldCode)){
             codeNull = true;
         }
-        if (int.TryParse(fieldCode, out int parsedCode) && (parsedCode == code || parsedCode == 228337))
+        if (int.TryParse(fieldCode, out int parsedCode) && parsedCode == code)
         {
             step = 1;
         }
