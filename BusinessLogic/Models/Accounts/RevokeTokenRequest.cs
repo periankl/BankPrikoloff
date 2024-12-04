@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Models.Accounts
 {
-    internal class RevokeTokenRequest
+    public class RevokeTokenRequest
     {
+        public string Token { get; set; }
     }
 }
