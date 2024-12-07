@@ -75,10 +75,16 @@
                                                     </div>
                                                     <div class="back">
                                                         <div style="display: flex; flex-direction: column; justify-content: end; align-items: center; height: 100%; gap: 10%">
-                                                            <div>cvv: @card.Cvv Баланс: @card.Balance</div>   
-                                                            <button class="btn btn-dark btn-sm w-100">Показать Информацию</button>                                                       
-                                                            <button class="btn btn-dark btn-sm w-100">Заблокировать</button>                                                       
-
+                                                            <div>cvv: @card.Cvv Баланс: @card.Balance</div>
+                                                            @if (card.Blocked)
+                                                            {
+                                                                <div>Карта заблокирована</div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <button class="btn btn-dark btn-sm w-100">Показать Информацию</button>                                                       
+                                                                <button class="btn btn-dark btn-sm w-100" @onclick="() => BlockCard(card.CardId)">Заблокировать</button>                                                       
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>
@@ -126,25 +132,46 @@
                             <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalDeposit">Хотите оформить?</button>                                                       
                         </div>
                         <div class="scroll-container">
-                            <h6>Вклады отсутствуют</h6> 
-                            <i style="font-size: 35px;" class="bi bi-emoji-frown"></i>
-                            <div class="scroll-deposite">
-                                <div>
-                                    Тип вклада:
-                                </div>
-                                <div>
-                                    Сумма: 70 000₽
-                                </div>
-                                <div>
-                                    Процент: 10%
-                                </div>
-                                <div>
-                                    Дата открытия: 01.02.2024
-                                </div>
-                                <div>
-                                    Дата закрытия: 01.02.2025
-                                </div>
-                            </div>
+                            @if (deposits is null || deposits.Count == 0)
+                            {
+                                <h6>Вклады отсутствуют</h6> 
+                            }
+                            else 
+                            {
+                                foreach (var d in deposits)
+                                {
+                                    <i style="font-size: 35px;" class="bi bi-emoji-frown"></i>
+                                    <div class="scroll-deposite">
+                                        <div>
+                                            Тип вклада: @d.DepositTypeId
+                                        </div>
+                                        <div>
+                                            Сумма: счет
+                                        </div>
+                                        <div>
+                                            Процент: тип депозита
+                                        </div>
+                                        <div>
+                                            Дата открытия: @d.StartDate.ToShortDateString()
+                                        </div>
+                                        
+                                            @if (@d.EndDate is not null) 
+                                            {
+                                                <div>
+                                                    Дата закрытия: @Convert.ToDateTime(d.EndDate).ToShortDateString();
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div>
+                                                    Бессрочный
+                                                </div>
+                                            }
+                                        
+                                    </div>
+                                }
+                            }
+                            
                         </div>
                     </div>   
                     @if (isModalDepositVisible)
@@ -164,16 +191,24 @@
                                                 Выберите тип вклада
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <li><a class="dropdown-item" href="#">Тип 1</a></li>
-                                                <li><a class="dropdown-item" href="#">Тип2</a></li>
-                                                <li><a class="dropdown-item" href="#">Тип 3</a></li>
+                                                <li><a class="dropdown-item">Тип 1</a></li>
+                                                <li><a class="dropdown-item">Тип2</a></li>
+                                                <li><a class="dropdown-item">Тип 3</a></li>
                                             </ul>
                                             </div>
                                     </div>
+                                        <div style="padding-bottom: 10px;">
+                                            <label for="email"><b>Дата возврата</b></label>
+                                            <input type="date" class="form-control" @bind="depositEndTime" disabled="@(!IsDepositHaveEnd)"/>
+                                        </div>
+                                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                                            Бессрочный
+                                            <input type="checkbox" @onclick="ChangeDepositEnd">
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" @onclick="HideModalDeposit">Отменить</button>
-                                        <button type="button" class="btn btn-primary" disabled="@isAddingCard">Оформить вклад</button>
+                                        <button type="button" class="btn btn-primary" disabled="@isAddingCard" @onclick="AddDeposit">Оформить вклад</button>
                                     </div>
                                 </div>
                             </div>
@@ -233,7 +268,7 @@
                                             </div>
                                             <div style="padding-bottom: 10px;">
                                                 <label for="email"><b>Дата возврата</b></label>
-                                                <input type="date" class="form-control" id="birthday" @bind="user.DateOfBirth"/>
+                                                <input id="depositEndTime" type="date" class="form-control" @bind="depositEndTime"/>
                                             </div>
                                     </div>
                                     </div>
@@ -302,7 +337,7 @@
 
     public List<Account> accounts = new List<Account>();
 
-    public List<Card> cards = new List<Card>();
+    public List<CardWithBalance> cards = new List<CardWithBalance>();
     
     public string ser;
     public string num;
@@ -341,13 +376,14 @@
     {
 
         var date = DateTime.Now;
+        depositEndTime = DateTime.Now.AddMonths(6);
         CurrentTime = date.ToShortTimeString();
         CurrentDate = date.ToShortDateString();
 
-        if (!string.IsNullOrEmpty(BlazorUser.User.ClientId))
+        if (BlazorUser.User is not null && !string.IsNullOrEmpty(BlazorUser.User.ClientId))
         {
             user = BlazorUser.User;
-            await LoadCards();
+            await LoadAccounts();
         }
         else
         {
@@ -361,23 +397,19 @@
                 BlazorUser.User = await response.Content.ReadFromJsonAsync<User>();
                 if (BlazorUser.User is null)
                 {
-                    ToastService.ShowInfo("ГДЕ ЮЗЕР");
                     NavigationManager.NavigateTo("/");
                 }
                 user = BlazorUser.User;
-                await LoadCards();
-                ToastService.ShowInfo("ЮЗЕР ЖИВ");
+                await LoadAccounts();
             }
             else
             {
-                ToastService.ShowInfo("ГДЕ ЮЗЕР");
                 NavigationManager.NavigateTo("/");
                 return;
             }
         }
 
         await JSRuntime.InvokeVoidAsync("localStorage.setItem", "ClientId", BlazorUser.User.ClientId);
-        ToastService.ShowInfo("Я ТЕБЯ ЗАПОМНИЛ");
 
         ser = user.SeriesPasport.ToString();
         num = user.NumberPasport.ToString();
@@ -385,55 +417,12 @@
         if(ser == null || ser.Length < 4 || num == null || num.Length < 6){
             ToastService.ShowWarning("Пожалуйста, исправьте паспортную информацию в профиле");
         }
+
+        await LoadCards();
+        await LoadDeposits();
     }
 
-    public async Task LoadCards()
-    {
-        isLoading = true;
-        accounts = new List<Account>();
-        cards = new List<Card>();
-        HttpClient client = new HttpClient();
-        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
-        HttpResponseMessage responseAccount = await client.GetAsync($"api/Account/client/{user.ClientId}");
 
-        if (responseAccount.IsSuccessStatusCode)
-        {
-            accounts = await responseAccount.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>();
-
-            if (accounts is not null || accounts.Count != 0)
-            {
-                isUserHaveAccount = true;
-                //ToastService.ShowSuccess("No error");
-                try 
-                {
-                    foreach (var a in accounts)
-                    {
-                        Console.WriteLine(a.AccountId);
-                        HttpResponseMessage responseCard = await client.GetAsync($"api/Card/account/{a.AccountId}");
-                        if (responseCard.IsSuccessStatusCode)
-                        {
-                            //ToastService.ShowSuccess("No error while loading card");
-                            var card = (await responseCard.Content.ReadFromJsonAsync<Card>());
-                            card.Balance = a.Balance;
-                            cards.Add(card);
-                        }
-                        else
-                        {
-                            //ToastService.ShowError("Response error");
-                            //var s = await responseCard.Content.ReadAsStringAsync();
-                            //Console.WriteLine(s);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ToastService.ShowError("It`s morbin time");
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
-        isLoading = false;
-    }
 
     private bool IsValidEmail(string email)
     {
@@ -452,10 +441,8 @@
         }
     }
 
-
     public class Card
     {
-
         public string CardId { get; set; }
         public int TypeId { get; set; }
         public string AccountId { get; set; }
@@ -467,14 +454,23 @@
         public DateTime CreatedAt { get; set; }
         public DateTime? BlockedAt { get; set; }
 
-        public decimal Balance {get;set;}
-
 
         public Card(int typeId, string accountId, string ownerName)
         {
             TypeId = typeId;
             AccountId = accountId;
             OwnerName = ownerName;
+        }
+    }
+
+    public class CardWithBalance : Card
+    {
+        public decimal Balance {get;set;}
+
+        public CardWithBalance(int typeId, string accountId, string ownerName)
+            : base(typeId, accountId, ownerName)
+        {
+            
         }
     }
 
@@ -495,6 +491,156 @@
             TypeId = typeId;
             CurrencyId = currencyId;
         }
+    }
+
+
+    public async Task LoadAccounts()
+    {
+        accounts = new List<Account>();
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        accounts = await client.GetFromJsonAsync<List<Account>>($"api/Account/client/{user.ClientId}") ?? new List<Account>();
+    }
+
+
+    public DateTime depositEndTime;
+    public bool IsDepositHaveEnd = true;
+
+    public class CreateDepositRequest
+    {
+        public int DepositTypeId { get; set; }
+        public string AccountId { get; set; } = null!;
+        public DateTime? EndDate { get; set; }
+    }
+
+    public class GetDepositRequest
+    {
+        public string DepositId { get; set; } = null!;
+        public int DepositTypeId { get; set; }
+        public int StatusId { get; set; }
+        public string DocumentId { get; set; } = null!;
+        public string AccountId { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
+
+    public void ChangeDepositEnd()
+    {
+        IsDepositHaveEnd = !IsDepositHaveEnd;
+    }
+
+    public async Task AddDeposit()
+    {
+        isAddingCard = true;
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        var account = new Account(BlazorUser.User.ClientId, 1, 1);
+        HttpResponseMessage responseAccountToPost = await client.PostAsJsonAsync($"api/Account", account);
+
+        if (responseAccountToPost.IsSuccessStatusCode)
+        {
+            HttpResponseMessage responseAccountToGet = await client.GetAsync($"api/Account/client/{user.ClientId}");
+            if (responseAccountToGet.IsSuccessStatusCode)
+            {
+                List<Account> userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList();
+                if (userAccount is not null || userAccount.Count != 0)
+                {
+                    var userDeposit = new CreateDepositRequest{ DepositTypeId = 1,AccountId = userAccount.First().AccountId, EndDate = IsDepositHaveEnd ? depositEndTime : null};
+                    HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Deposit", userDeposit);
+                    if (responseCardToPost.IsSuccessStatusCode)
+                    {
+                        ToastService.ShowSuccess("Депозит создан");
+                        await LoadCards();
+                    } else { ToastService.ShowError("Error in responseCardToPost"); }
+                } else { ToastService.ShowError("Error in userAccount"); }
+            } else { ToastService.ShowError("Error in responseAccountToGet"); }
+        } else { ToastService.ShowError("Error in responseAccountToPost"); }
+        isAddingCard = false;
+        HideModal();
+        return;
+    }
+
+    public List<GetDepositRequest> deposits; 
+    public async Task LoadDeposits()
+    {
+        isLoading = true;
+        deposits = new List<GetDepositRequest>();
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+
+        if (accounts is not null || accounts.Count != 0)
+        {
+            isUserHaveAccount = true;
+            try 
+            {
+                foreach (var a in accounts)
+                {
+                    var deposit = await client.GetFromJsonAsync<GetDepositRequest>($"api/Deposit/account/{a.AccountId}");
+                    deposits.Add(deposit);
+                }
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowError("It`s morbin time");
+                Console.WriteLine(ex.Message);
+            }
+        }
+        isLoading = false;
+    }
+
+
+    public async Task LoadCards()
+    {
+        isLoading = true;
+        cards = new List<CardWithBalance>();
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+
+        if (accounts is not null || accounts.Count != 0)
+        {
+            isUserHaveAccount = true;
+            try 
+            {
+                foreach (var a in accounts)
+                {
+                    var card = await client.GetFromJsonAsync<CardWithBalance>($"api/Card/account/{a.AccountId}");
+                    card.Balance = a.Balance;
+                    cards.Add(card);
+                }
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowError("It`s morbin time");
+                Console.WriteLine(ex.Message);
+            }
+        }
+        isLoading = false;
+    }
+
+    public async Task BlockCard(string cardId)
+    {
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+
+        var cardToBlock = await client.GetFromJsonAsync<Card>($"api/Card/{cardId}");
+
+        if (cardToBlock is null)
+        {
+            ToastService.ShowError("Карта не найдена");
+            return;
+        }
+
+        cardToBlock.Blocked = true;
+        cardToBlock.BlockedAt = DateTime.Now;
+
+        var responseToBlock = await client.PutAsJsonAsync<Card>($"api/Card", cardToBlock);
+        if (responseToBlock.IsSuccessStatusCode)
+            ToastService.ShowInfo("Карта заблокирована");
+        else
+            ToastService.ShowInfo("Карта не заблокирована");
+        await LoadCards();
+        return;
     }
 
     public string ownerName = "";
@@ -524,7 +670,7 @@
                     HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Card", userCard);
                     if (responseCardToPost.IsSuccessStatusCode)
                     {
-                        ToastService.ShowSuccess("You get a card");
+                        ToastService.ShowSuccess("Карта создана");
                         await LoadCards();
                     } else { ToastService.ShowError("Error in responseCardToPost"); }
                 } else { ToastService.ShowError("Error in userAccount"); }
@@ -532,8 +678,10 @@
         } else { ToastService.ShowError("Error in responseAccountToPost"); }
         isAddingCard = false;
         HideModal();
+        ownerName = "";
         return;
     }
+
 
 
     public User[] result = new User[] { };

@@ -11,6 +11,7 @@ namespace BusinessLogic.Interfaces
     {
         Task<List<Deposit>> GetAll();
         Task<Deposit> GetById(string id);
+        Task<Deposit> GetByAccountId(string accountId);
         Task Create(Deposit model);
         Task Update(Deposit model);
         Task Delete(string id);
