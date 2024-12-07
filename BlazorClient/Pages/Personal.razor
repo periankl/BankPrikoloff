@@ -35,12 +35,15 @@
 </nav>
 <section class="heroSec @((isLoading) ? "loading" : "loaded")" id="hero" style="position: sticky;">
     <div class="container">
-        <div class="main" style="display: flex; height: 100%;">
+        <div class="main" style="display-flex; height: 100%;">
             <div class="col d-flex justify-content-between">
                 <div class="d-flex flex-column justify-content-between">
                     <div>
                         <h1>Добро пожаловать, @user.FirstName</h1>
-                        <h4>Ваши карты</h4>
+                        <div style="display: flex; flex-direction: row">
+                            <h4>Ваши карты</h4>
+                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModal">Хотите оформить?</button>                                                       
+                        </div>
                         <button class="btn btn-dark btn-sm" @onclick="LoadCards" disabled="@isLoading">Обновить</button>
                             <div class="scroll-container">
                                 @if (isLoading)
@@ -71,8 +74,11 @@
                                                         </div>
                                                     </div>
                                                     <div class="back">
-                                                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
-                                                            <div>cvv: @card.Cvv Баланс: @card.Balance</div>         
+                                                        <div style="display: flex; flex-direction: column; justify-content: end; align-items: center; height: 100%; gap: 10%">
+                                                            <div>cvv: @card.Cvv Баланс: @card.Balance</div>   
+                                                            <button class="btn btn-dark btn-sm w-100">Показать Информацию</button>                                                       
+                                                            <button class="btn btn-dark btn-sm w-100">Заблокировать</button>                                                       
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -87,7 +93,6 @@
                                     }
                                 }
                                 <div>
-                                    <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModal">Хотите оформить?</button>                                            
                                 </div>
                             </div>
                     </div>
@@ -103,9 +108,9 @@
                                     </div>
                                     <div class="modal-body">
                                         <div style="padding-bottom: 10px;">
-                                        <label for="phone"><b>Имя на карте</b></label>
-                                        <input type="text" class="form-control" id="Login" @bind="ownerName" placeholder="IVANOV IVAN"/>
-                                    </div>
+                                            <label for="phone"><b>Имя на карте</b></label>
+                                            <input type="text" class="form-control" id="Login" @bind="ownerName" placeholder="IVANOV IVAN"/>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" @onclick="HideModal">Отменить</button>
@@ -116,16 +121,75 @@
                         </div>
                     }
                     <div>
-                        <h4>Ваши вклады</h4>
+                        <div style="display: flex; flex-direction: row">
+                            <h4>Ваши вклады</h4>
+                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalDeposit">Хотите оформить?</button>                                                       
+                        </div>
                         <div class="scroll-container">
                             <h6>Вклады отсутствуют</h6> 
                             <i style="font-size: 35px;" class="bi bi-emoji-frown"></i>
+                            <div class="scroll-deposite">
+                                <div>
+                                    Тип вклада:
+                                </div>
+                                <div>
+                                    Сумма: 70 000₽
+                                </div>
+                                <div>
+                                    Процент: 10%
+                                </div>
+                                <div>
+                                    Дата открытия: 01.02.2024
+                                </div>
+                                <div>
+                                    Дата закрытия: 01.02.2025
+                                </div>
+                            </div>
                         </div>
                     </div>   
+                    @if (isModalDepositVisible)
+                    {
+                        <div class="modal-overlay" @onclick="HideModalDeposit"></div>
+                        <div class="modal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalBasicLabel">Оформление вклада</h5>
+                                        <button type="button" class="btn-close" aria-label="Закрыть" @onclick="HideModalDeposit"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div style="padding-bottom: 10px;">
+                                            <div class="dropdown">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Выберите тип вклада
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li><a class="dropdown-item" href="#">Тип 1</a></li>
+                                                <li><a class="dropdown-item" href="#">Тип2</a></li>
+                                                <li><a class="dropdown-item" href="#">Тип 3</a></li>
+                                            </ul>
+                                            </div>
+                                    </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" @onclick="HideModalDeposit">Отменить</button>
+                                        <button type="button" class="btn btn-primary" disabled="@isAddingCard">Оформить вклад</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
                     <div>
-                        <h4>Ваши кредиты</h4>
+                        <div style="display: flex; flex-direction: row">
+                            <h4>Ваши кредиты</h4>
+                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalLoan">Хотите оформить?</button>                                                       
+                        </div>
                         <div class="scroll-container">
-                            <div class="scroll-item">
+                            <div class="scroll-loan">
+                                <div>
+                                    Тип кредита:
+                                </div>
                                 <div>
                                     Сумма: 70 000₽
                                 </div>
@@ -141,6 +205,46 @@
                             </div>
                         </div>
                     </div>
+                    @if (isModalLoanVisible)
+                    {
+                        <div class="modal-overlay" @onclick="HideModalLoan"></div>
+                        <div class="modal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalBasicLabel">Оформление кредита</h5>
+                                        <button type="button" class="btn-close" aria-label="Закрыть" @onclick="HideModalLoan"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div style="padding-bottom: 10px;">
+                                            <div class="dropdown" style="padding-bottom: 10px;">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Выберите тип кредита
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li><a class="dropdown-item" href="#">Тип 1</a></li>
+                                                <li><a class="dropdown-item" href="#">Тип2</a></li>
+                                                <li><a class="dropdown-item" href="#">Тип 3</a></li>
+                                            </ul>
+                                            </div>
+                                            <div style="padding-bottom: 10px;">
+                                                <label for="phone"><b>Сумма</b></label>
+                                                <input type="text" class="form-control"/>
+                                            </div>
+                                            <div style="padding-bottom: 10px;">
+                                                <label for="email"><b>Дата возврата</b></label>
+                                                <input type="date" class="form-control" id="birthday" @bind="user.DateOfBirth"/>
+                                            </div>
+                                    </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" @onclick="HideModalLoan">Отменить</button>
+                                        <button type="button" class="btn btn-primary" disabled="@isAddingCard">Оформить кредит</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -186,6 +290,9 @@
     private bool ShowPatronomicMessage { get; set; }
     private bool ShowInvalidEmailMessage { get; set; }
     private bool isModalVisible = false;
+    private bool isModalDepositVisible = false;
+    private bool isModalLoanVisible = false;
+
 
     public bool isUserHaveAccount = false;
 
@@ -211,6 +318,23 @@
         isModalVisible = false;
     }
 
+    private void ShowModalDeposit()
+    {
+        isModalDepositVisible = true;
+    }
+    private void HideModalDeposit()
+    {
+        isModalDepositVisible = false;
+    }
+
+    private void ShowModalLoan()
+    {
+        isModalLoanVisible = true;
+    }
+    private void HideModalLoan()
+    {
+        isModalLoanVisible = false;
+    }
     User user = new User();
 
     protected override async Task OnInitializedAsync()

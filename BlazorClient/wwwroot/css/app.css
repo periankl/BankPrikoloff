@@ -217,7 +217,7 @@ button {
 
 
 .scroll-container {
-    width: 80%; 
+    width: 90%; 
     overflow-x: auto; 
     white-space: nowrap; 
     padding-bottom: 3%;
@@ -270,9 +270,14 @@ button {
 .back {
     background-color: #343a40;
     transform: rotateY(180deg); 
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+    gap: 10%;
 }
 
-.scroll-item {
+.scroll-loan {
     display: inline-block; 
     width: 300px;
     height: 150px; 
@@ -280,8 +285,19 @@ button {
     margin-right: 10px; 
     background-color: #ffb700; 
     color: white;
-    padding: 35px;
+    padding: 20px;
+}
 
+.scroll-deposite {
+    display: inline-block; 
+    width: 300px;
+    height: 150px; 
+    border-radius: 10px;
+    margin-right: 10px; 
+    background-color: #739D00; 
+    color: white;
+    padding: 20px;
+    
 }
 
 .marquee-container {
@@ -341,5 +357,5 @@ button {
 }
 
 .heroSec.loaded {
-    padding-top: 60%; /* Возвращаем к исходному значению после загрузки */
+    padding-top: 55%; /* Возвращаем к исходному значению после загрузки */
 }
