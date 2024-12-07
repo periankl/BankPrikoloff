@@ -220,7 +220,7 @@
         CurrentTime = date.ToShortTimeString();
         CurrentDate = date.ToShortDateString();
 
-        if (BlazorUser.User != null)
+        if (!string.IsNullOrEmpty(BlazorUser.User.ClientId))
         {
             user = BlazorUser.User;
             await LoadCards();
@@ -235,7 +235,7 @@
                 HttpResponseMessage response = await client.GetAsync($"api/User/id/{clientId}");
 
                 BlazorUser.User = await response.Content.ReadFromJsonAsync<User>();
-                if (BlazorUser.User == null)
+                if (BlazorUser.User is null)
                 {
                     ToastService.ShowInfo("ГДЕ ЮЗЕР");
                     NavigationManager.NavigateTo("/");
@@ -248,6 +248,7 @@
             {
                 ToastService.ShowInfo("ГДЕ ЮЗЕР");
                 NavigationManager.NavigateTo("/");
+                return;
             }
         }
 
