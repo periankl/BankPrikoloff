@@ -3,7 +3,9 @@
 @inject BlazorUser BlazorUser
 @inject BlazorUser User
 @inject IToastService ToastService
+@inject IJSRuntime JSRuntime
 @using System.Text.RegularExpressions;
+@using System.Text.Json;
 
 <nav class="navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="padding-bottom: 0px; padding-top: 15px;">
     <div class="container" style="margin-bottom: 15px;">
@@ -19,7 +21,14 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="navbar-nav ms-auto w-100 d-flex justify-content-end">
                 <div class="nav-item w-50 d-flex justify-content-end">
-                    <a href="Enter" class="btn btn-dark btn-lg">Войти в аккаунт</a>
+                    @if (BlazorUser.User is null)
+                    {
+                        <a href="Enter" class="btn btn-dark btn-lg">Войти в аккаунт</a>
+                    }
+                    else
+                    {
+                        <a href="Personal" class="btn btn-dark btn-lg">Личный кабинет</a>
+                    }
                 </div>
             </div>
         </div>
@@ -350,9 +359,31 @@
             }
         }
     }
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        BlazorUser.User = new User();
+        var date = DateTime.Now;
+        CurrentTime = date.ToShortTimeString();
+        CurrentDate = date.ToShortDateString();
+        // Восстановление состояния из PersistentState
+        
+        var clientId = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "ClientId");
+        if (!string.IsNullOrEmpty(clientId))
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+            Console.WriteLine(clientId);
+            BlazorUser.User = await client.GetFromJsonAsync<User>($"api/User/id/{clientId}");
+            
+            if (BlazorUser.User == null)
+            {
+                ToastService.ShowInfo("ГДЕ ЮЗЕР");
+                return;
+            }
+            ToastService.ShowInfo("ЮЗЕР ЖИВ");
+        }
+        else
+            ToastService.ShowInfo("ГДЕ ЮЗЕР");
+        return; 
     }
 
     public class ErrorResponse
@@ -360,18 +391,9 @@
         public string Error { get; set; }
     }
 
-
-
     public User[] result = new User[] { };
 
     string CurrentDate;
     string CurrentTime;
 
-    protected override async Task OnInitializedAsync()
-    {
-        var date = DateTime.Now;
-        CurrentTime = date.ToShortTimeString();
-        CurrentDate = date.ToShortDateString();
-        return;
-    }
 }

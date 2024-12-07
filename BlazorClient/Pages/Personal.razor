@@ -3,6 +3,9 @@
 @inject BlazorUser BlazorUser
 @inject BlazorUser User
 @inject IToastService ToastService
+@inject IJSRuntime JSRuntime
+@using System.Text.RegularExpressions;
+@using System.Text.Json;
 
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light">
     <div class="container">
@@ -74,9 +77,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModal">Хотите оформить?</button>                                            
-                                            </div>
                                             }
                                         }
                                     }
@@ -86,6 +86,9 @@
                                         <i style="font-size: 35px;" class="bi bi-emoji-frown"></i>
                                     }
                                 }
+                                <div>
+                                    <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModal">Хотите оформить?</button>                                            
+                                </div>
                             </div>
                     </div>
                     @if (isModalVisible)
@@ -217,15 +220,39 @@
         CurrentTime = date.ToShortTimeString();
         CurrentDate = date.ToShortDateString();
 
-        if (BlazorUser.User == null)
-        {
-            NavigationManager.NavigateTo("/");
-        }
-        else
+        if (BlazorUser.User != null)
         {
             user = BlazorUser.User;
             await LoadCards();
         }
+        else
+        {
+            var clientId = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "ClientId");
+            if (!string.IsNullOrEmpty(clientId))
+            {
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+                HttpResponseMessage response = await client.GetAsync($"api/User/id/{clientId}");
+
+                BlazorUser.User = await response.Content.ReadFromJsonAsync<User>();
+                if (BlazorUser.User == null)
+                {
+                    ToastService.ShowInfo("ГДЕ ЮЗЕР");
+                    NavigationManager.NavigateTo("/");
+                }
+                user = BlazorUser.User;
+                await LoadCards();
+                ToastService.ShowInfo("ЮЗЕР ЖИВ");
+            }
+            else
+            {
+                ToastService.ShowInfo("ГДЕ ЮЗЕР");
+                NavigationManager.NavigateTo("/");
+            }
+        }
+
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "ClientId", BlazorUser.User.ClientId);
+        ToastService.ShowInfo("Я ТЕБЯ ЗАПОМНИЛ");
 
         ser = user.SeriesPasport.ToString();
         num = user.NumberPasport.ToString();
@@ -234,7 +261,6 @@
             ToastService.ShowWarning("Пожалуйста, исправьте паспортную информацию в профиле");
         }
     }
-
 
     public async Task LoadCards()
     {
@@ -257,6 +283,7 @@
                 {
                     foreach (var a in accounts)
                     {
+                        Console.WriteLine(a.AccountId);
                         HttpResponseMessage responseCard = await client.GetAsync($"api/Card/account/{a.AccountId}");
                         if (responseCard.IsSuccessStatusCode)
                         {
@@ -365,8 +392,8 @@
             HttpResponseMessage responseAccountToGet = await client.GetAsync($"api/Account/client/{user.ClientId}");
             if (responseAccountToGet.IsSuccessStatusCode)
             {
-                List<Account> userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>()).OrderBy(a => a.UpdatedAt).ToList();
-                if ( userAccount is not null || userAccount.Count != 0)
+                List<Account> userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList();
+                if (userAccount is not null || userAccount.Count != 0)
                 {
                     var userCard = new Card(1, userAccount.First().AccountId, ownerName);
                     HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Card", userCard);
