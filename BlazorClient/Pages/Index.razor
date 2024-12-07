@@ -371,7 +371,7 @@
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
-            Console.WriteLine(clientId);
+            //Console.WriteLine(clientId);
             BlazorUser.User = await client.GetFromJsonAsync<User>($"api/User/id/{clientId}");
             
             if (BlazorUser.User == null)

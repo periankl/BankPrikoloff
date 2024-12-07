@@ -38,6 +38,13 @@ namespace BankPrikoloff.Controllers
             var dto = await _depositService.GetById(id);
             return Ok(dto.Adapt<GetDepositRequest>());
         }
+
+        [HttpGet("account/{accountId}")]
+        public async Task<IActionResult> GetByAccount(string accountId)
+        {
+            var card = await _depositService.GetByAccountId(accountId);
+            return Ok(card.Adapt<GetCardRequest>());
+        }
         /// <summary>
         /// Создание нового вклада
         /// </summary>
