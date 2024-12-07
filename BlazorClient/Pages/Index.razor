@@ -21,7 +21,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="navbar-nav ms-auto w-100 d-flex justify-content-end">
                 <div class="nav-item w-50 d-flex justify-content-end">
-                    @if (BlazorUser.User is null)
+                    @if (BlazorUser.User is null || string.IsNullOrEmpty(BlazorUser.User.ClientId))
                     {
                         <a href="Enter" class="btn btn-dark btn-lg">Войти в аккаунт</a>
                     }
@@ -376,7 +376,7 @@
             
             if (BlazorUser.User == null)
             {
-                ToastService.ShowInfo("ГДЕ ЮЗЕР");
+                ToastService.ShowInfo("Нет пользователя с таким идентификатором");
                 return;
             }
             ToastService.ShowInfo("ЮЗЕР ЖИВ");
