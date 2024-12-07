@@ -94,12 +94,15 @@
                                             Показать пароль
                                             <input type="checkbox" id="showPassword" onclick="togglePasswordVisibility()">
                                         </div>
-
                                     </div>
-
                                 </div>
-                                <div class="w-100 d-flex justify-content-center">
-                                    <button type="button" class="btn btn-dark btn-lg w-100" @onclick="RegistrateUser" disabled="@isButtonDisabled">Зарегистрироваться</button>
+                                <div class="w-100" style="display: flex; justify-items: center; align-items: center; flex-direction:column;" >
+                                    <button type="button" class="btn btn-dark btn-lg w-100" style="margin-bottom: 5%;" @onclick="RegistrateUser" disabled="@isButtonDisabled">Зарегистрироваться</button>
+                                    <div>
+                                        <p style="text-align: center; font-size: smaller;">
+                                            Нажимая "Зарегистрироваться" вы соглашаетесь с <br> Условиями использования сервиса 
+                                        </p>
+                                    </div>
                                     @if(suc){
                                         <p>Юзер жив</p>
                                     }

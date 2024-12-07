@@ -1,4 +1,4 @@
-﻿@page "/personal"
+﻿    @page "/personal"
 @inject NavigationManager NavigationManager
 @inject BlazorUser BlazorUser
 @inject BlazorUser User
@@ -33,7 +33,7 @@
         </div>
     </div>
 </nav>
-<section class="heroSec" id="hero" style="padding-top: 50%; position: sticky;">
+<section class="heroSec @((isLoading) ? "loading" : "loaded")" id="hero" style="position: sticky;">
     <div class="container">
         <div class="main" style="display: flex; height: 100%;">
             <div class="col d-flex justify-content-between">

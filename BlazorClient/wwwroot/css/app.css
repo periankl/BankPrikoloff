@@ -167,23 +167,6 @@ button {
     }
 }
 
-@media (min-height: 600px) {
-    .heroSec {
-        padding-top: 15%;
-    }
-}
-
-@media (min-height: 800px) {
-    .heroSec {
-        padding-top: 20%;
-    }
-}
-
-@media (min-height: 1000px) {
-    .heroSec {
-        padding-top: 25%;
-    }
-}
 
 /* contact section styling */
 #contact {
@@ -234,7 +217,7 @@ button {
 
 
 .scroll-container {
-    width: 100%; 
+    width: 80%; 
     overflow-x: auto; 
     white-space: nowrap; 
     padding-bottom: 3%;
@@ -343,4 +326,20 @@ button {
     height: 50% !important;
     transform: translate(-50%, -50%) !important;
     display: block !important;
+}
+
+.heroSec {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 50%;
+    transition: padding-top 0.5s ease;
+}
+.heroSec.loading {
+    padding-top: 50%; /* Увеличиваем padding-top при загрузке */
+}
+
+.heroSec.loaded {
+    padding-top: 60%; /* Возвращаем к исходному значению после загрузки */
 }
