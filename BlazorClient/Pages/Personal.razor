@@ -42,7 +42,7 @@
                         <h1>Добро пожаловать, @user.FirstName</h1>
                         <div style="display: flex; flex-direction: row">
                             <h4>Ваши карты</h4>
-                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModal">Хотите оформить?</button>                                                       
+                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModal" disabled="@isLoading">Хотите оформить?</button>                                                       
                         </div>
                         <button class="btn btn-dark btn-sm" @onclick="LoadCards" disabled="@isLoading">Обновить</button>
                             <div class="scroll-container">
@@ -129,51 +129,58 @@
                     <div>
                         <div style="display: flex; flex-direction: row">
                             <h4>Ваши вклады</h4>
-                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalDeposit">Хотите оформить?</button>                                                       
+                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalDeposit" disabled="@IsDepositLoading">Хотите оформить?</button>                                                       
                         </div>
+                        <button class="btn btn-dark btn-sm" @onclick="LoadDeposits" disabled="@IsDepositLoading">Обновить</button>
                         <div class="scroll-container">
-                            @if (deposits is null || deposits.Count == 0)
+                            @if (IsDepositLoading)
                             {
-                                <h6>Вклады отсутствуют</h6> 
+                                <h6>Информация загружается...</h6>
                             }
                             else 
                             {
-                                foreach (var d in deposits)
+                                @if (deposits is null || deposits.Count == 0)
                                 {
                                     <i style="font-size: 35px;" class="bi bi-emoji-frown"></i>
-                                    <div class="scroll-deposite">
-                                        <div>
-                                            Тип вклада: @d.DepositTypeId
+                                    <h6>Вклады отсутствуют</h6> 
+                                }
+                                else 
+                                {
+                                    foreach (var d in deposits)
+                                    {
+                                        <div class="scroll-deposite">
+                                            <div>
+                                                Тип вклада: @d.TypeName
+                                            </div>
+                                            <div>
+                                                Сумма: @d.Balance
+                                            </div>
+                                            <div>
+                                                Процент: @d.IncreasestRate %
+                                            </div>
+                                            <div>
+                                                Дата открытия: @d.StartDate.ToShortDateString()
+                                            </div>
+                                            
+                                                @if (@d.EndDate is not null) 
+                                                {
+                                                    <div>
+                                                        Дата закрытия: @Convert.ToDateTime(d.EndDate).ToShortDateString();
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        Бессрочный
+                                                    </div>
+                                                }
+                                            
                                         </div>
-                                        <div>
-                                            Сумма: счет
-                                        </div>
-                                        <div>
-                                            Процент: тип депозита
-                                        </div>
-                                        <div>
-                                            Дата открытия: @d.StartDate.ToShortDateString()
-                                        </div>
-                                        
-                                            @if (@d.EndDate is not null) 
-                                            {
-                                                <div>
-                                                    Дата закрытия: @Convert.ToDateTime(d.EndDate).ToShortDateString();
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div>
-                                                    Бессрочный
-                                                </div>
-                                            }
-                                        
-                                    </div>
+                                    }
                                 }
                             }
-                            
                         </div>
-                    </div>   
+                    </div>  
                     @if (isModalDepositVisible)
                     {
                         <div class="modal-overlay" @onclick="HideModalDeposit"></div>
@@ -208,7 +215,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" @onclick="HideModalDeposit">Отменить</button>
-                                        <button type="button" class="btn btn-primary" disabled="@isAddingCard" @onclick="AddDeposit">Оформить вклад</button>
+                                        <button type="button" class="btn btn-primary" disabled="@isLoading" @onclick="AddDeposit">Оформить вклад</button>
                                     </div>
                                 </div>
                             </div>
@@ -506,6 +513,8 @@
     public DateTime depositEndTime;
     public bool IsDepositHaveEnd = true;
 
+    public bool IsDepositLoading = true;
+
     public class CreateDepositRequest
     {
         public int DepositTypeId { get; set; }
@@ -525,6 +534,27 @@
         public DateTime? EndDate { get; set; }
     }
 
+    public class GetDepositTypeRequest
+    {
+        public int DepositTypeId { get; set; }
+        public string Name { get; set; } = null!;
+        public decimal InterestRate { get; set; }
+        public decimal? MinAmount { get; set; }
+        public int? MinTerm { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
+    }
+
+    public class DepositInfo
+    {
+        public string TypeName {get; set;}
+        public decimal Balance {get;set;}
+        public decimal IncreasestRate {get; set;}
+
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
+
     public void ChangeDepositEnd()
     {
         IsDepositHaveEnd = !IsDepositHaveEnd;
@@ -532,7 +562,7 @@
 
     public async Task AddDeposit()
     {
-        isAddingCard = true;
+        IsDepositLoading = true;
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
         var account = new Account(BlazorUser.User.ClientId, 1, 1);
@@ -543,41 +573,52 @@
             HttpResponseMessage responseAccountToGet = await client.GetAsync($"api/Account/client/{user.ClientId}");
             if (responseAccountToGet.IsSuccessStatusCode)
             {
-                List<Account> userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList();
-                if (userAccount is not null || userAccount.Count != 0)
+                Account userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList().First();
+                if (userAccount is not null)
                 {
-                    var userDeposit = new CreateDepositRequest{ DepositTypeId = 1,AccountId = userAccount.First().AccountId, EndDate = IsDepositHaveEnd ? depositEndTime : null};
+                    accounts.Add(userAccount);
+                    var userDeposit = new CreateDepositRequest{ DepositTypeId = 1,AccountId = userAccount.AccountId, EndDate = IsDepositHaveEnd ? depositEndTime : null};
                     HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Deposit", userDeposit);
                     if (responseCardToPost.IsSuccessStatusCode)
                     {
+                        HideModalDeposit();
                         ToastService.ShowSuccess("Депозит создан");
                         await LoadDeposits();
                     } else { ToastService.ShowError("Error in responseCardToPost"); }
                 } else { ToastService.ShowError("Error in userAccount"); }
             } else { ToastService.ShowError("Error in responseAccountToGet"); }
         } else { ToastService.ShowError("Error in responseAccountToPost"); }
-        isAddingCard = false;
-        HideModal();
+        IsDepositLoading = false;
         return;
     }
 
-    public List<GetDepositRequest> deposits; 
+    public List<DepositInfo> deposits; 
     public async Task LoadDeposits()
     {
-        isLoading = true;
-        deposits = new List<GetDepositRequest>();
+        IsDepositLoading = true;
+        deposits = new List<DepositInfo>();
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
 
         if (accounts is not null || accounts.Count != 0)
         {
-            isUserHaveAccount = true;
             foreach (var a in accounts)
             {
                 try 
                 {
                     var deposit = await client.GetFromJsonAsync<GetDepositRequest>($"api/Deposit/account/{a.AccountId}");
-                    deposits.Add(deposit);
+                    var depositType = await client.GetFromJsonAsync<GetDepositTypeRequest>($"api/DepositType/{deposit.DepositTypeId}");
+
+                    DepositInfo depositInfo = new DepositInfo
+                    {
+                        TypeName = depositType.Name,
+                        Balance = a.Balance,
+                        IncreasestRate = depositType.InterestRate,
+                        StartDate = deposit.StartDate,
+                        EndDate = deposit.EndDate
+                    };
+
+                    deposits.Add(depositInfo);
                 }
                 catch (Exception ex)
                 {
@@ -585,7 +626,7 @@
                 }
             }
         }
-        isLoading = false;
+        IsDepositLoading = false;
     }
 
 
@@ -609,7 +650,6 @@
                 }
                 catch (Exception ex)
                 {
-                    ToastService.ShowError("It`s morbin time");
                     Console.WriteLine(ex.Message);
                 }
             }
@@ -654,7 +694,6 @@
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
         var account = new Account(BlazorUser.User.ClientId, 1, 1);
-        //account.Balance += 1000;
         HttpResponseMessage responseAccountToPost = await client.PostAsJsonAsync($"api/Account", account);
 
         if (responseAccountToPost.IsSuccessStatusCode)
@@ -662,13 +701,15 @@
             HttpResponseMessage responseAccountToGet = await client.GetAsync($"api/Account/client/{user.ClientId}");
             if (responseAccountToGet.IsSuccessStatusCode)
             {
-                List<Account> userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList();
-                if (userAccount is not null || userAccount.Count != 0)
+                Account userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList().First();
+                if (userAccount is not null)
                 {
-                    var userCard = new Card(1, userAccount.First().AccountId, ownerName);
+                    accounts.Add(userAccount);
+                    var userCard = new Card(1, userAccount.AccountId, ownerName);
                     HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Card", userCard);
                     if (responseCardToPost.IsSuccessStatusCode)
                     {
+                        HideModal();
                         ToastService.ShowSuccess("Карта создана");
                         await LoadCards();
                     } else { ToastService.ShowError("Error in responseCardToPost"); }
@@ -676,7 +717,6 @@
             } else { ToastService.ShowError("Error in responseAccountToGet"); }
         } else { ToastService.ShowError("Error in responseAccountToPost"); }
         isAddingCard = false;
-        HideModal();
         ownerName = "";
         return;
     }
