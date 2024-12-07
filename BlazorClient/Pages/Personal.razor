@@ -551,7 +551,7 @@
                     if (responseCardToPost.IsSuccessStatusCode)
                     {
                         ToastService.ShowSuccess("Депозит создан");
-                        await LoadCards();
+                        await LoadDeposits();
                     } else { ToastService.ShowError("Error in responseCardToPost"); }
                 } else { ToastService.ShowError("Error in userAccount"); }
             } else { ToastService.ShowError("Error in responseAccountToGet"); }
@@ -572,18 +572,17 @@
         if (accounts is not null || accounts.Count != 0)
         {
             isUserHaveAccount = true;
-            try 
+            foreach (var a in accounts)
             {
-                foreach (var a in accounts)
+                try 
                 {
                     var deposit = await client.GetFromJsonAsync<GetDepositRequest>($"api/Deposit/account/{a.AccountId}");
                     deposits.Add(deposit);
                 }
-            }
-            catch (Exception ex)
-            {
-                ToastService.ShowError("It`s morbin time");
-                Console.WriteLine(ex.Message);
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
         isLoading = false;
@@ -600,19 +599,19 @@
         if (accounts is not null || accounts.Count != 0)
         {
             isUserHaveAccount = true;
-            try 
+            foreach (var a in accounts)
             {
-                foreach (var a in accounts)
+                try 
                 {
                     var card = await client.GetFromJsonAsync<CardWithBalance>($"api/Card/account/{a.AccountId}");
                     card.Balance = a.Balance;
                     cards.Add(card);
                 }
-            }
-            catch (Exception ex)
-            {
-                ToastService.ShowError("It`s morbin time");
-                Console.WriteLine(ex.Message);
+                catch (Exception ex)
+                {
+                    ToastService.ShowError("It`s morbin time");
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
         isLoading = false;
