@@ -581,13 +581,13 @@
                     HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Deposit", userDeposit);
                     if (responseCardToPost.IsSuccessStatusCode)
                     {
-                        HideModalDeposit();
+                        isModalDepositVisible = false;
                         ToastService.ShowSuccess("Депозит создан");
-                        await LoadDeposits();
                     } else { ToastService.ShowError("Error in responseCardToPost"); }
                 } else { ToastService.ShowError("Error in userAccount"); }
             } else { ToastService.ShowError("Error in responseAccountToGet"); }
         } else { ToastService.ShowError("Error in responseAccountToPost"); }
+        await LoadDeposits();
         IsDepositLoading = false;
         return;
     }
@@ -600,11 +600,11 @@
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
 
-        if (accounts is not null || accounts.Count != 0)
+        if (accounts != null && accounts.Count != 0)
         {
-            foreach (var a in accounts)
+            var tasks = accounts.Select(async a =>
             {
-                try 
+                try
                 {
                     var deposit = await client.GetFromJsonAsync<GetDepositRequest>($"api/Deposit/account/{a.AccountId}");
                     var depositType = await client.GetFromJsonAsync<GetDepositTypeRequest>($"api/DepositType/{deposit.DepositTypeId}");
@@ -618,14 +618,20 @@
                         EndDate = deposit.EndDate
                     };
 
-                    deposits.Add(depositInfo);
+                    return depositInfo;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    return null;
                 }
-            }
+            }).ToList();
+
+            var results = await Task.WhenAll(tasks);
+
+            deposits.AddRange(results.Where(d => d != null));
         }
+
         IsDepositLoading = false;
     }
 
