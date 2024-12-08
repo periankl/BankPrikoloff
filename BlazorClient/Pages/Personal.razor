@@ -954,7 +954,10 @@
         var userAccount = account is null ? await AddAccount() : account;
         if (userAccount is not null)
         {
-            accounts.Add(userAccount);
+            if (account is not null)
+            {
+                accounts.Add(userAccount);
+            }
             var userCard = new Card(typeId, userAccount.AccountId, ownerName.ToUpper());
             HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Card", userCard);
             if (responseCardToPost.IsSuccessStatusCode)
