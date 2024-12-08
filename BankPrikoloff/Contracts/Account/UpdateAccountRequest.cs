@@ -1,6 +1,6 @@
 ﻿namespace BankPrikoloff.Contracts
 {
-    public class GetAccountRequest
+    public class UpdateAccountRequest
     {
         public string AccountId { get; set; } = null!;
         public string ClientId { get; set; } = null!;
