@@ -94,8 +94,14 @@ namespace BankPrikoloff.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateAccountRequest request)
         {
-
+            var existingAccount = await _accountService.GetById(request.AccountId);
+            if (existingAccount == null)
+            {
+                return NotFound();
+            }
             var Dto = request.Adapt<Account>();
+
+            Dto.AccountNumber = existingAccount.AccountNumber;
 
             await _accountService.Update(Dto);
             return Ok();
