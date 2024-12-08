@@ -86,9 +86,9 @@
                                                             }
                                                             else
                                                             {
-                                                                <button class="btn btn-dark btn-sm w-100" @onclick="ShowInfo">Показать Информацию</button>                                                       
-                                                                <button class="btn btn-dark btn-sm w-100" disabled="@isCardBlockLoad" @onclick="() => BlockCard(card.CardId)">Заблокировать</button> 
-                                                                <button class="btn btn-dark btn-sm w-100" @onclick="ShowInfo">Перевести деньги</button>                                                       
+                                                                <button class="btn btn-dark btn-sm w-100" @onclick="ShowInfo">Показать информацию</button>           
+                                                                <button class="btn btn-success btn-sm w-100" @onclick="ShowTransactionModal">Перевести деньги</button>                                                       
+                                                                <button class="btn btn-danger btn-sm w-100" disabled="@isCardBlockLoad" @onclick="() => BlockCard(card.CardId)">Заблокировать</button> 
                                                       
                                                             }
                                                         </div>
@@ -108,6 +108,34 @@
                                 </div>
                             </div>
                     </div>
+                    @if (isTransactionVisible)
+                    {
+                        <div class="modal-overlay" @onclick="HideTransactionModal"></div>
+                        <div class="modal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalBasicLabel">Перевести деньги</h5>
+                                        <button type="button" class="btn-close" aria-label="Закрыть" @onclick="HideTransactionModal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div style="padding-bottom: 10px;">
+                                            <label for="phone"><b>Номер карты получателя</b></label>
+                                            <input type="text" class="form-control" placeholder="2222 2222 2222 2222"/>
+                                        </div>
+                                        <div style="padding-bottom: 10px;">
+                                            <label for="phone"><b>Сумма</b></label>
+                                            <input type="text" class="form-control" placeholder=""/>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" @onclick="HideTransactionModal">Отменить</button>
+                                        <button type="button" class="btn btn-primary" disabled="@isAddingCard">Выполнить перевод</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     @if (isModalVisible)
                     {
                         <div class="modal-overlay" @onclick="HideModal"></div>
@@ -369,7 +397,7 @@
     private bool isModalVisible = false;
     private bool isModalDepositVisible = false;
     private bool isModalLoanVisible = false;
-
+    private bool isTransactionVisible = false;
     public bool isCardBlockLoad = false;
     public bool isUserHaveAccount = false;
     public string cvvCode;
@@ -433,6 +461,13 @@
         IsShowInfo = !IsShowInfo;
     }
 
+    private void ShowTransactionModal(){
+        isTransactionVisible = true;
+    }
+
+    private void HideTransactionModal(){
+        isTransactionVisible = false;
+    }
     User user = new User();
 
 
