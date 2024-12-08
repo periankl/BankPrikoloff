@@ -228,8 +228,8 @@ button {
 
 .scroll-card {
     display: inline-block; 
-    width: 300px;
-    height: 150px; 
+    width: 370px;
+    height: 200px; 
     border-radius: 10px;
     margin-right: 10px; 
     perspective: 1000px; 
@@ -264,7 +264,21 @@ button {
 }
 
 .front {
-    background-color: #6f42c1;
+    background: linear-gradient(45deg, #e61eea 0%, #8656e5 50%, #255ec2 100%);
+    background-size: 200% 200%;
+    animation: gradientAnimation 5s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .back {

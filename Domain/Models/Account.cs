@@ -20,7 +20,7 @@ namespace Domain.Models
         public int TypeId { get; set; }
         public int CurrencyId { get; set; }
         public int StatusId { get; set; } = 1;
-        public decimal Balance { get; set; } = 0;
+        public decimal Balance { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public int AccountNumber { get; set; }
 
