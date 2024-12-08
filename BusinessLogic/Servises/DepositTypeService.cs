@@ -58,7 +58,7 @@ namespace BusinessLogic.Servises
                 throw new ArgumentException(nameof(model.MinTerm));
             }
             await _repositoryWrapper.DepositType.Create(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Save();
         }
 
         public async Task Update(DepositType model)
@@ -83,8 +83,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.MinTerm));
             }
-            _repositoryWrapper.DepositType.Update(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.DepositType.Update(model);
+            await _repositoryWrapper.Save();
         }
 
         public async Task Delete(int id)
@@ -95,8 +95,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Not found");
             }
-            _repositoryWrapper.DepositType.Delete(model.First());
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.DepositType.Delete(model.First());
+            await _repositoryWrapper.Save();
         }
     }
 }

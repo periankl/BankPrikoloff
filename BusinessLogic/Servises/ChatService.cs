@@ -43,7 +43,7 @@ namespace BusinessLogic.Servises
             }
             await _repositoryWrapper.Chat.Create(model);
             model.CreatedAt = DateTime.Now;
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Save();
         }
 
         public async Task Update(Chat model)
@@ -52,8 +52,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentNullException(nameof(model));
             }
-            _repositoryWrapper.Chat.Update(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Chat.Update(model);
+            await _repositoryWrapper.Save();
         }
 
         public async Task Delete(int id)
@@ -64,8 +64,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Not found");
             }
-            _repositoryWrapper.Chat.Delete(model.First());
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Chat.Delete(model.First());
+            await _repositoryWrapper.Save();
         }
     }
 }

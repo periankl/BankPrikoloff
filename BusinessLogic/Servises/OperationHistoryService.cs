@@ -54,7 +54,7 @@ namespace BusinessLogic.Servises
                 throw new ArgumentException(nameof(model.SenderCard));
             }
             await _repositoryWrapper.OperationHistory.Create(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Save();
         }
 
         public async Task Update(OperationHistory model)
@@ -79,8 +79,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.SenderCard));
             }
-            _repositoryWrapper.OperationHistory.Update(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.OperationHistory.Update(model);
+            await _repositoryWrapper.Save();
         }
 
         public async Task Delete(string id)
@@ -91,8 +91,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Not found");
             }
-            _repositoryWrapper.OperationHistory.Delete(model.First());
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.OperationHistory.Delete(model.First());
+            await _repositoryWrapper.Save();
         }
     }
 }

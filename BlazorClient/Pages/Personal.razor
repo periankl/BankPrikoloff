@@ -6,6 +6,7 @@
 @inject IJSRuntime JSRuntime
 @using System.Text.RegularExpressions;
 @using System.Text.Json;
+@using System.Numerics;
 
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light">
     <div class="container">
@@ -87,7 +88,7 @@
                                                             else
                                                             {
                                                                 <button class="btn btn-dark btn-sm w-100" @onclick="ShowInfo">Показать информацию</button>           
-                                                                <button class="btn btn-success btn-sm w-100" @onclick="ShowTransactionModal">Перевести деньги</button>                                                       
+                                                                <button class="btn btn-success btn-sm w-100" @onclick="() => ShowTransactionModal(card)">Перевести деньги</button>                                                       
                                                                 <button class="btn btn-danger btn-sm w-100" disabled="@isCardBlockLoad" @onclick="() => BlockCard(card.CardId)">Заблокировать</button> 
                                                       
                                                             }
@@ -121,16 +122,16 @@
                                     <div class="modal-body">
                                         <div style="padding-bottom: 10px;">
                                             <label for="phone"><b>Номер карты получателя</b></label>
-                                            <input type="text" class="form-control" placeholder="2222 2222 2222 2222"/>
+                                            <input type="text" class="form-control" placeholder="2222 2222 2222 2222" @bind="cardToTransact"/>
                                         </div>
                                         <div style="padding-bottom: 10px;">
                                             <label for="phone"><b>Сумма</b></label>
-                                            <input type="text" class="form-control" placeholder=""/>
+                                            <input type="text" class="form-control" placeholder="" @bind="TransactionAmount"/>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" @onclick="HideTransactionModal">Отменить</button>
-                                        <button type="button" class="btn btn-primary" disabled="@isAddingCard">Выполнить перевод</button>
+                                        <button type="button" class="btn btn-primary" disabled="@isTransaction" @onclick="TransactionBetweenCards">Выполнить перевод</button>
                                     </div>
                                 </div>
                             </div>
@@ -461,8 +462,10 @@
         IsShowInfo = !IsShowInfo;
     }
 
-    private void ShowTransactionModal(){
+    public Card? selectedCard;
+    private void ShowTransactionModal(Card card){
         isTransactionVisible = true;
+        selectedCard = card;
     }
 
     private void HideTransactionModal(){
@@ -1007,6 +1010,91 @@
         return;
     }
 
+
+    public bool isTransaction = false;
+    public string cardToTransact = "";
+    public decimal TransactionAmount = 100;
+    public async Task TransactionBetweenCards()
+    {
+        isTransaction = true;
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        if (selectedCard == null || string.IsNullOrEmpty(cardToTransact) || TransactionAmount <= 0 || cardToTransact.Count() != 16 || !cardToTransact.All(char.IsDigit))
+        {
+            ToastService.ShowError("Некорректные данные для перевода");
+            isTransaction = false;
+            return;
+        }
+
+        Account? accountFrom;
+        try
+        {
+            accountFrom = await client.GetFromJsonAsync<Account>($"api/Account/id/{selectedCard.AccountId}");
+        }
+        catch
+        {
+            ToastService.ShowError("Счет отправителя не найден");
+            isTransaction = false;
+            return;
+        }
+
+        Card? cardTo;
+        try
+        {
+            cardTo = await client.GetFromJsonAsync<Card>($"api/Card/by-number/{cardToTransact}");
+        }
+        catch
+        {
+            ToastService.ShowError("Карта получателя не найдена");
+            isTransaction = false;
+            return;
+        }
+
+        Account? accountTo;
+        try
+        {
+            accountTo = await client.GetFromJsonAsync<Account>($"api/Account/id/{cardTo.AccountId}");
+        }
+        catch
+        {
+            ToastService.ShowError("Счет получателя не найден");
+            isTransaction = false;
+            return;
+        }
+
+        if (accountFrom.Balance < TransactionAmount)
+        {
+            ToastService.ShowError("Недостаточно средств на счете отправителя");
+            isTransaction = false;
+            return;
+        }
+
+        accountFrom.Balance -= TransactionAmount;
+        accountTo.Balance += TransactionAmount;
+
+        var responseFrom = await client.PutAsJsonAsync("api/Account", accountFrom);
+        if (!responseFrom.IsSuccessStatusCode)
+        {
+            ToastService.ShowError("Ошибка при обновлении баланса отправителя");
+            isTransaction = false;
+            return;
+        }
+
+        var responseTo = await client.PutAsJsonAsync("api/Account", accountTo);
+        if (!responseTo.IsSuccessStatusCode)
+        {
+            ToastService.ShowError("Ошибка при обновлении баланса получателя");
+            isTransaction = false;
+            return;
+        }
+
+        ToastService.ShowSuccess("Перевод успешен");
+        isTransactionVisible = false;
+        isTransaction = false;
+        cardToTransact = "";
+        await LoadAccounts();
+        await LoadCards();
+    }
 
     public User[] result = new User[] { };
 
