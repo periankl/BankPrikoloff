@@ -77,7 +77,7 @@ namespace BusinessLogic.Servises
             }
 
             await _repositoryWrapper.Card.Create(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Save();
         }
 
         public async Task Update(Card model)
@@ -110,8 +110,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.CreatedAt));
             }
-            _repositoryWrapper.Card.Update(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Card.Update(model);
+            await _repositoryWrapper.Save();
         }
 
         public async Task Delete(string id)
@@ -122,8 +122,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Not found");
             }
-            _repositoryWrapper.Card.Delete(model.First());
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Card.Delete(model.First());
+            await _repositoryWrapper.Save();
         }
     }
 }

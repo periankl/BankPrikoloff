@@ -128,7 +128,7 @@ namespace BusinessLogic.Servises
             }
             await _repositoryWrapper.User.Create(model);
 
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Save();
         }
 
         public async Task Update(User model)
@@ -202,8 +202,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Email is taken by another user");
             }
-            _repositoryWrapper.User.Update(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.User.Update(model);
+            await _repositoryWrapper.Save();
         }
 
         public async Task Delete(string id)
@@ -214,8 +214,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Not found");
             }
-            _repositoryWrapper.User.Delete(model.First());
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.User.Delete(model.First());
+            await _repositoryWrapper.Save();
         }
     }
 }

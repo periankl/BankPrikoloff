@@ -69,7 +69,7 @@ namespace BusinessLogic.Servises
             model.AccountId = Guid.NewGuid().ToString("N").Substring(0, 9);
 
             await _repositoryWrapper.Account.Create(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Save();
         }
 
         public async Task Update(Account model)
@@ -87,8 +87,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.AccountId));
             }
-            _repositoryWrapper.Account.Update(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Account.Update(model);
+            await _repositoryWrapper.Save();
         }
 
         public async Task Delete(string id)
@@ -100,8 +100,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Not found");
             }
-            _repositoryWrapper.Account.Delete(model.First());
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Account.Delete(model.First());
+            await _repositoryWrapper.Save();
         }
     }
 }

@@ -70,7 +70,7 @@ namespace BusinessLogic.Servises
                 throw new ArgumentException(nameof(model.StartDate));
             }
             await _repositoryWrapper.Deposit.Create(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Save();
         }
 
         public async Task Update(Deposit model)
@@ -99,8 +99,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.StartDate));
             }
-            _repositoryWrapper.Deposit.Update(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Deposit.Update(model);
+            await _repositoryWrapper.Save();
         }
 
         public async Task Delete(string id)
@@ -111,8 +111,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Not found");
             }
-            _repositoryWrapper.Deposit.Delete(model.First());
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Deposit.Delete(model.First());
+            await _repositoryWrapper.Save();
         }
     }
 }

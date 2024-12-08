@@ -54,7 +54,7 @@ namespace BusinessLogic.Servises
                 throw new ArgumentException(nameof(model.MaxLoanAmount));
             }
             await _repositoryWrapper.LoanType.Create(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.Save();
         }
 
         public async Task Update(LoanType model)
@@ -75,8 +75,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException(nameof(model.MaxLoanAmount));
             }
-            _repositoryWrapper.LoanType.Update(model);
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.LoanType.Update(model);
+            await _repositoryWrapper.Save();
         }
 
         public async Task Delete(int id)
@@ -87,8 +87,8 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentException("Not found");
             }
-            _repositoryWrapper.LoanType.Delete(model.First());
-            _repositoryWrapper.Save();
+            await _repositoryWrapper.LoanType.Delete(model.First());
+            await _repositoryWrapper.Save();
         }
     }
 }
