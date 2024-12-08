@@ -11,6 +11,7 @@ namespace BusinessLogic.Interfaces
     {
         Task<List<Loan>> GetAll();
         Task<Loan> GetById(string id);
+        Task<Loan> GetByAccountId(string accountId);
         Task Create(Loan model);
         Task Update(Loan model);
         Task Delete(string id);

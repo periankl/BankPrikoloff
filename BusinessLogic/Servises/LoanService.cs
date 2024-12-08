@@ -35,6 +35,16 @@ namespace BusinessLogic.Servises
             return model.First();
         }
 
+        public async Task<Loan> GetByAccountId(string accountId)
+        {
+            var model = await _repositoryWrapper.Loan
+                .FindByCondition(x => x.AccountId == accountId);
+            if (model is null || model.Count == 0)
+            {
+                throw new ArgumentException("Not found");
+            }
+            return model.First();
+        }
         public async Task Create(Loan model)
         {
             if (model == null)

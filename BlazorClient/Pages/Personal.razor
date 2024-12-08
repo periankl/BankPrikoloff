@@ -143,7 +143,12 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="modalBasicLabel">Оформление карты</h5>
+                                        @if (IsAddingLoan){
+                                            <h5 class="modal-title" id="modalBasicLabel">Оформление кредитной карты</h5>
+                                        }
+                                        else {
+                                            <h5 class="modal-title" id="modalBasicLabel">Оформление карты</h5>
+                                        }
                                         <button type="button" class="btn-close" aria-label="Закрыть" @onclick="HideModal"></button>
                                     </div>
                                     <div class="modal-body">
@@ -154,7 +159,12 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" @onclick="HideModal">Отменить</button>
-                                        <button type="button" class="btn btn-primary" @onclick="AddCard" disabled="@isAddingCard">Оформить карту</button>
+                                        @if (IsAddingLoan){
+                                            <button type="button" class="btn btn-primary" @onclick="(() => AddCard(accounts.Last(), 2))" disabled="@IsButtonBlocked">Оформить карту</button>
+                                        }
+                                        else {
+                                            <button type="button" class="btn btn-primary" @onclick="(() => AddCard())" disabled="@IsButtonBlocked">Оформить карту</button>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -232,9 +242,9 @@
                                                 @NameOfDepositComboBox
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <li><a class="dropdown-item" @onclick="() => TypeOf(1)">Тип 1</a></li>
-                                                <li><a class="dropdown-item" @onclick="() => TypeOf(2)">Тип 2</a></li>
-                                                <li><a class="dropdown-item" @onclick="() => TypeOf(3)">Тип 3</a></li>
+                                                <li><a class="dropdown-item" @onclick="() => TypeOf(1)">Базовый</a></li>
+                                                <li><a class="dropdown-item" @onclick="() => TypeOf(2)">Расширенный</a></li>
+                                                <li><a class="dropdown-item" @onclick="() => TypeOf(3)">Накопительный</a></li>
                                             </ul>
                                         </div> 
                                     </div>
@@ -249,7 +259,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" @onclick="HideModalDeposit">Отменить</button>
-                                        <button type="button" class="btn btn-primary" disabled="@IsDepositLoading" @onclick="AddDeposit">Оформить вклад</button>
+                                        <button type="button" class="btn btn-primary" disabled="@IsButtonBlocked" @onclick="AddDeposit">Оформить вклад</button>
                                     </div>
                                 </div>
                             </div>
@@ -259,26 +269,45 @@
                     <div>
                         <div style="display: flex; flex-direction: row">
                             <h4>Ваши кредиты</h4>
-                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalLoan">Хотите оформить?</button>                                                       
+                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalLoan"  disabled="@IsLoanLoading">Хотите оформить?</button>                                                       
                         </div>
+                        <button class="btn btn-dark btn-sm" @onclick="LoadLoans" disabled="@IsLoanLoading">Обновить</button>
                         <div class="scroll-container">
-                            <div class="scroll-loan">
-                                <div>
-                                    Тип кредита:
-                                </div>
-                                <div>
-                                    Сумма: 70 000₽
-                                </div>
-                                <div>
-                                    Процент: 10%
-                                </div>
-                                <div>
-                                    До следующего платежа: 8 дней
-                                </div>
-                                <div>
-                                    Осталось погасить: 40 000₽
-                                </div>
-                            </div>
+                            @if (IsDepositLoading)
+                            {
+                                <h6>Информация загружается...</h6>
+                            }
+                            else
+                            {
+                                @if (loans is null || loans.Count == 0)
+                                {
+                                    <i style="font-size: 35px;" class="bi bi-emoji-frown"></i>
+                                    <h6>Кредиты отсутствуют</h6> 
+                                }
+                                else
+                                {
+                                    foreach (var l in loans)
+                                    {
+                                        <div class="scroll-loan">
+                                            <div>
+                                                Тип кредита: @l.TypeName
+                                            </div>
+                                            <div>
+                                                Сумма: @l.Balance
+                                            </div>
+                                            <div>
+                                                Процент: @l.InterestRate
+                                            </div>
+                                            <div>
+                                                До следующего платежа: 15 дней
+                                            </div>
+                                            <div>
+                                                Осталось погасить: @l.RemarningAmount
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
                         </div>
                     </div>
                     @if (isModalLoanVisible)
@@ -295,27 +324,27 @@
                                         <div style="padding-bottom: 10px;">
                                             <div class="dropdown" style="padding-bottom: 10px;">
                                             <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Выберите тип кредита
+                                                @NameOfLoanComboBox
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <li><a class="dropdown-item" href="#">Тип 1</a></li>
-                                                <li><a class="dropdown-item" href="#">Тип2</a></li>
-                                                <li><a class="dropdown-item" href="#">Тип 3</a></li>
+                                                <li><a class="dropdown-item" @onclick="() => TypeOfLoan(1)">Start</a></li>
+                                                <li><a class="dropdown-item" @onclick="() => TypeOfLoan(2)">Family comfort</a></li>
+                                                <li><a class="dropdown-item" @onclick="() => TypeOfLoan(3)">Auto+</a></li>
                                             </ul>
                                             </div>
                                             <div style="padding-bottom: 10px;">
                                                 <label for="phone"><b>Сумма</b></label>
-                                                <input type="text" class="form-control"/>
+                                                <input type="text" class="form-control" @bind="loanBalance"/>
                                             </div>
                                             <div style="padding-bottom: 10px;">
                                                 <label for="email"><b>Дата возврата</b></label>
-                                                <input id="depositEndTime" type="date" class="form-control" @bind="depositEndTime"/>
+                                                <input id="loanEndDate" type="date" class="form-control" @bind="loanEndDate"/>
                                             </div>
                                     </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" @onclick="HideModalLoan">Отменить</button>
-                                        <button type="button" class="btn btn-primary" disabled="@isAddingCard">Оформить кредит</button>
+                                        <button type="button" class="btn btn-primary" disabled="@IsButtonBlocked" @onclick="AddLoan">Оформить кредит</button>
                                     </div>
                                 </div>
                             </div>
@@ -491,6 +520,7 @@
 
         await LoadCards();
         await LoadDeposits();
+        await LoadLoans();
     }
 
 
@@ -564,6 +594,26 @@
         }
     }
 
+    public async Task<Account?> AddAccount(int typeId = 1, decimal Balance = 0)
+    {
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        var account = new Account(BlazorUser.User.ClientId, typeId, 1);
+        account.Balance = Balance;
+        HttpResponseMessage responseAccountToPost = await client.PostAsJsonAsync($"api/Account", account);
+
+        if (responseAccountToPost.IsSuccessStatusCode)
+        {
+            HttpResponseMessage responseAccountToGet = await client.GetAsync($"api/Account/client/{user.ClientId}");
+            if (responseAccountToGet.IsSuccessStatusCode)
+            {
+                Account userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList().First();
+                return userAccount;
+            }
+        }
+        return null;
+    }
+
 
     public async Task LoadAccounts()
     {
@@ -573,6 +623,165 @@
         accounts = await client.GetFromJsonAsync<List<Account>>($"api/Account/client/{user.ClientId}") ?? new List<Account>();
     }
 
+
+    public class CreateLoanRequest
+    {
+        public string? AccountId { get; set; }
+        public int LoanTypeId { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+
+    public class GetLoanRequest
+    {
+        public string LoanId { get; set; } = null!;
+        public string? AccountId { get; set; }
+        public int LoanTypeId { get; set; }
+        public int StatusId { get; set; }
+        public string DocumentId { get; set; } = null!;
+        public decimal Amount { get; set; }
+        public decimal RemarningAmount { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+    public class GetLoanTypeRequest
+    {
+
+        public int LoanTypeId { get; set; }
+        public string Name { get; set; } = null!;
+        public decimal InterestRate { get; set; }
+        public decimal MaxLoanAmount { get; set; }
+    }
+
+    public class LoanInfo
+    {
+        public string TypeName {get; set;}
+        public decimal Balance {get; set;}
+        public decimal InterestRate { get; set; }
+        public decimal RemarningAmount {get; set;}
+        
+    }
+
+    public bool IsLoanLoading = true;
+    public List<LoanInfo> loans = new List<LoanInfo>();
+    public decimal loanBalance = 10_000;
+    public DateTime loanEndDate = DateTime.Now.AddMonths(6);
+    public string NameOfLoanComboBox = "Выберите тип кредита";
+    public int TypeLoan = 1;
+    private void TypeOfLoan(int type){
+        switch(type){
+            case 1:
+                NameOfLoanComboBox = "Start";
+                break;
+            case 2: 
+                NameOfLoanComboBox = "Family comfort";
+                break;
+            case 3:
+                NameOfLoanComboBox = "Auto+";
+                break;
+            }
+        TypeLoan = type;
+    }
+
+
+    public async Task LoadLoans()
+    {
+        IsLoanLoading = true;
+        loans = new List<LoanInfo>();
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+
+        if (accounts != null && accounts.Count != 0)
+        {
+            var tasks = accounts.Select(async a =>
+            {
+                try
+                {
+                    var loan = await client.GetFromJsonAsync<GetLoanRequest>($"api/Loan/account/{a.AccountId}");
+                    var loanType = await client.GetFromJsonAsync<GetLoanTypeRequest>($"api/LoanType/{loan.LoanTypeId}");
+
+                    LoanInfo loanInfo = new LoanInfo
+                    {
+                        TypeName = loanType.Name,
+                        Balance = loan.Amount,
+                        InterestRate = loanType.InterestRate,
+                        RemarningAmount = loan.RemarningAmount
+                    };
+
+                    return loanInfo;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return null;
+                }
+            }).ToList();
+
+            var results = await Task.WhenAll(tasks);
+
+            loans.AddRange(results.Where(d => d != null));
+        }
+
+        IsLoanLoading = false;
+    }
+
+    public bool IsAddingLoan = false;
+    public bool IsButtonBlocked = false;
+    public async Task AddLoan()
+    {
+        IsButtonBlocked = true;
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+
+        if(NameOfLoanComboBox == "Выберите тип кредита"){
+            ToastService.ShowError("Выберите тип кредита");
+            IsLoanLoading = false;
+            IsButtonBlocked = false;
+            return;
+        }
+        var loanTypeForChecks = await client.GetFromJsonAsync<GetLoanTypeRequest>($"api/LoanType/{TypeLoan}");
+
+        if (loanBalance > loanTypeForChecks.MaxLoanAmount)
+        {
+            ToastService.ShowError($"Максимальная сумма кредита для данного типа должна быть меньше {(int)loanTypeForChecks.MaxLoanAmount}");
+            IsButtonBlocked = false;
+            return;
+        }
+        
+        if (loanBalance < loanTypeForChecks.MaxLoanAmount / 10)
+        {
+            ToastService.ShowError($"Минимальная сумма кредита для данного типа должна быть больше {(int)(loanTypeForChecks.MaxLoanAmount / 10)}");
+            IsButtonBlocked = false;
+            return;
+        }
+
+        var userAccount = await AddAccount(2, loanBalance);
+
+        if (userAccount is not null)
+        {
+            accounts.Add(userAccount);
+            var userLoan = new CreateLoanRequest{ AccountId = userAccount.AccountId, LoanTypeId  = TypeLoan, Amount = loanBalance, EndDate = loanEndDate};
+            if(userLoan.EndDate > DateTime.Now.AddYears(40)){
+                ToastService.ShowError("Кредит можно создать не более чем на 40 лет");
+                IsLoanLoading = false;
+                IsButtonBlocked = false;
+                return;
+            }
+            HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Loan", userLoan);
+            IsAddingLoan = true;
+            isModalLoanVisible = false;
+            IsButtonBlocked = false;
+            ShowModal();
+            @* 
+            ToastService.ShowError("Error in responseCardToPost"); 
+            var loanToDelete = await client.GetFromJsonAsync<GetLoanRequest>($"api/Loan/account/{userAccount.AccountId}");
+            await client.DeleteAsync($"api/Loan?id={loanToDelete.LoanId}"); 
+            *@
+        } else { ToastService.ShowError("Error in userAccount"); }
+        IsButtonBlocked = false;
+        await LoadLoans();
+        return;
+    }
 
     public DateTime depositEndTime;
     public bool IsDepositHaveEnd = true;
@@ -626,41 +835,36 @@
 
     public async Task AddDeposit()
     {
-        IsDepositLoading = true;
+        IsButtonBlocked = true;
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
-        var account = new Account(BlazorUser.User.ClientId, 1, 1);
-        HttpResponseMessage responseAccountToPost = await client.PostAsJsonAsync($"api/Account", account);
+        
+        var userAccount = await AddAccount();
 
-        if (responseAccountToPost.IsSuccessStatusCode)
+        if (userAccount is not null)
         {
-            HttpResponseMessage responseAccountToGet = await client.GetAsync($"api/Account/client/{user.ClientId}");
-            if (responseAccountToGet.IsSuccessStatusCode)
+            accounts.Add(userAccount);
+            var userDeposit = new CreateDepositRequest{DepositTypeId = TypeDeposit, AccountId = userAccount.AccountId, EndDate = IsDepositHaveEnd ? depositEndTime : null};
+            if(userDeposit.EndDate > DateTime.Now.AddYears(40)){
+                ToastService.ShowError("Вклад можно создать не более чем на 40 лет");
+                IsDepositLoading = false;
+                return;
+            }
+            if(NameOfDepositComboBox == "Выберите тип вклада"){
+                ToastService.ShowError("Выберите тип вклада");
+                IsDepositLoading = false;
+                return;
+            }
+            HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Deposit", userDeposit);
+            if (responseCardToPost.IsSuccessStatusCode)
             {
-                Account userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList().First();
-                if (userAccount is not null)
-                {
-                    accounts.Add(userAccount);
-                    var userDeposit = new CreateDepositRequest{ DepositTypeId = TypeDeposit, AccountId = userAccount.AccountId, EndDate = IsDepositHaveEnd ? depositEndTime : null};
-                    if(userDeposit.EndDate > DateTime.Now.AddYears(40)){
-                        ToastService.ShowError("Вклад можно создать не более чем на 40 лет");
-                        return;
-                    }
-                    if(userDeposit.DepositTypeId == null){
-                        ToastService.ShowError("Выберите тип вклада");
-                        return;
-                    }
-                    HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Deposit", userDeposit);
-                    if (responseCardToPost.IsSuccessStatusCode)
-                    {
-                        HideModalDeposit();  
-                        ToastService.ShowSuccess("Вклад создан");
-                    } else { ToastService.ShowError("Error in responseCardToPost");  }
-                } else { ToastService.ShowError("Error in userAccount"); }
-            } else { ToastService.ShowError("Error in responseAccountToGet"); }
-        } else { ToastService.ShowError("Error in responseAccountToPost"); }
-        IsDepositLoading = false;
-        LoadDeposits();
+                HideModalDeposit();  
+                ToastService.ShowSuccess("Вклад создан");
+            } else { ToastService.ShowError("Error in responseCardToPost");  }
+        } else { ToastService.ShowError("Error in userAccount"); }
+
+        IsButtonBlocked = false;
+        await LoadDeposits();
         return;
     }
 
@@ -718,20 +922,28 @@
         if (accounts is not null || accounts.Count != 0)
         {
             isUserHaveAccount = true;
-            foreach (var a in accounts)
+            var tasks = accounts.Select(async a =>
             {
-                try 
+                try
                 {
                     var card = await client.GetFromJsonAsync<CardWithBalance>($"api/Card/account/{a.AccountId}");
                     card.Balance = a.Balance;
-                    cards.Add(card);
+                    return card;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    return null;
                 }
-            }
+            }).ToList();
+
+            // Ожидаем выполнения всех задач
+            var results = await Task.WhenAll(tasks);
+
+            // Фильтруем результаты и добавляем в список
+            cards.AddRange(results.Where(c => c != null));
         }
+
         isLoading = false;
     }
 
@@ -764,44 +976,36 @@
     }
 
     public string ownerName = "";
-    public async Task AddCard()
+    public async Task AddCard(Account? account = null, int typeId = 1)
     {
         if (string.IsNullOrEmpty(ownerName))
         {
             ToastService.ShowError("Имя пустое, чел");
             return;
         }
-        isAddingCard = true;
+        IsButtonBlocked = true;
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
-        var account = new Account(BlazorUser.User.ClientId, 1, 1);
-        HttpResponseMessage responseAccountToPost = await client.PostAsJsonAsync($"api/Account", account);
-
-        if (responseAccountToPost.IsSuccessStatusCode)
+        var userAccount = account is null ? await AddAccount() : account;
+        if (userAccount is not null)
         {
-            HttpResponseMessage responseAccountToGet = await client.GetAsync($"api/Account/client/{user.ClientId}");
-            if (responseAccountToGet.IsSuccessStatusCode)
+            if (account is not null)
             {
-                Account userAccount = (await responseAccountToGet.Content.ReadFromJsonAsync<List<Account>>() ?? new List<Account>()).OrderByDescending(a => a.UpdatedAt).ToList().First();
-                if (userAccount is not null)
-                {
-                    accounts.Add(userAccount);
-                    var userCard = new Card(1, userAccount.AccountId, ownerName);
-                    HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Card", userCard);
-                    if (responseCardToPost.IsSuccessStatusCode)
-                    {
-                        HideModal();
-                        ToastService.ShowSuccess("Карта создана");
-                        await LoadCards();
-                    } else { ToastService.ShowError("Error in responseCardToPost"); }
-                } else { ToastService.ShowError("Error in userAccount"); }
-            } else { ToastService.ShowError("Error in responseAccountToGet"); }
-        } else { ToastService.ShowError("Error in responseAccountToPost"); }
-        isAddingCard = false;
+                accounts.Add(userAccount);
+            }
+            var userCard = new Card(typeId, userAccount.AccountId, ownerName.ToUpper());
+            HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Card", userCard);
+            if (responseCardToPost.IsSuccessStatusCode)
+            {
+                HideModal();
+                ToastService.ShowSuccess("Карта создана");
+                await LoadCards();
+            } else { ToastService.ShowError("Error in responseCardToPost"); }
+        } else { ToastService.ShowError("Error in userAccount"); }
+        IsButtonBlocked = false;
         ownerName = "";
         return;
     }
-
 
 
     public User[] result = new User[] { };
