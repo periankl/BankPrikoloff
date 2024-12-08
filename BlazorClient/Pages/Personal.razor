@@ -65,7 +65,7 @@
                                             {
                                             <div class="scroll-card">
                                                 <div class="cardUser">
-                                                    <div class="front">
+                                                    <div class="@(card.Blocked ? "frontBlocked" : (card.TypeId == 1 ? "frontDebet" : "frontLoan"))">
                                                         <div style="padding-bottom: 30px;">
                                                             @card.CardNumber
                                                         </div>
@@ -270,11 +270,13 @@
                     <div>
                         <div style="display: flex; flex-direction: row">
                             <h4>Ваши кредиты</h4>
-                            <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalLoan"  disabled="@IsLoanLoading">Хотите оформить?</button>                                                       
+                            @if(loans.Count == 0){
+                                <button class="btn btn-dark btn-sm" style="margin-left: 1%;" @onclick="ShowModalLoan"  disabled="@IsLoanLoading">Хотите оформить?</button>                                                       
+                            }
                         </div>
                         <button class="btn btn-dark btn-sm" @onclick="LoadLoans" disabled="@IsLoanLoading">Обновить</button>
                         <div class="scroll-container">
-                            @if (IsDepositLoading)
+                            @if (IsLoanLoading)
                             {
                                 <h6>Информация загружается...</h6>
                             }
@@ -939,14 +941,18 @@
                     return null;
                 }
             }).ToList();
-
-            // Ожидаем выполнения всех задач
+            
             var results = await Task.WhenAll(tasks);
 
-            // Фильтруем результаты и добавляем в список
-            cards.AddRange(results.Where(c => c != null));
-        }
+            var sortedResults = results
+                        .Where(c => c != null)
+                        .OrderBy(c => c.Blocked) 
+                        .ThenByDescending(c => c.TypeId == 1) 
+                        .ThenBy(c => c.CreatedAt) 
+                        .ToList();
 
+            cards.AddRange(sortedResults);
+        }
         isLoading = false;
     }
 

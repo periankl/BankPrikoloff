@@ -92,7 +92,7 @@ namespace BankPrikoloff.Controllers
         /// <returns></returns>
         /// 
         [HttpPut]
-        public async Task<IActionResult> Update(GetAccountRequest request)
+        public async Task<IActionResult> Update(UpdateAccountRequest request)
         {
             var Dto = request.Adapt<Account>();
 
