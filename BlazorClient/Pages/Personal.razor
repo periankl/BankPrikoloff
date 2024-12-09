@@ -140,7 +140,14 @@
                     }
                     @if (isModalVisible)
                     {
-                        <div class="modal-overlay" @onclick="HideModal"></div>
+                        @if (IsAddingLoan)
+                        {
+                            <div class="modal-overlay"></div>
+                        }
+                        else
+                        {
+                            <div class="modal-overlay" @onclick="HideModal"></div>
+                        }
                         <div class="modal" tabindex="-1">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -150,8 +157,8 @@
                                         }
                                         else {
                                             <h5 class="modal-title" id="modalBasicLabel">Оформление карты</h5>
+                                            <button type="button" class="btn-close" aria-label="Закрыть" @onclick="HideModal"></button>
                                         }
-                                        <button type="button" class="btn-close" aria-label="Закрыть" @onclick="HideModal"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div style="padding-bottom: 10px;">
@@ -160,11 +167,11 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" @onclick="HideModal">Отменить</button>
                                         @if (IsAddingLoan){
                                             <button type="button" class="btn btn-primary" @onclick="(() => AddCard(accounts.Last(), 2))" disabled="@IsButtonBlocked">Оформить карту</button>
                                         }
                                         else {
+                                            <button type="button" class="btn btn-secondary" @onclick="HideModal">Отменить</button>
                                             <button type="button" class="btn btn-primary" @onclick="(() => AddCard())" disabled="@IsButtonBlocked">Оформить карту</button>
                                         }
                                     </div>
