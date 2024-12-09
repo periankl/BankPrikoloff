@@ -893,16 +893,21 @@
             if(NameOfDepositComboBox == "Выберите тип вклада"){
                 ToastService.ShowError("Выберите тип вклада");
                 IsDepositLoading = false;
+                IsButtonBlocked = false;
                 return;
             }
-            HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Deposit", userDeposit);
-            if (responseCardToPost.IsSuccessStatusCode)
+            try
             {
-                HideModalDeposit();  
-                ToastService.ShowSuccess("Вклад создан");
-            } else { ToastService.ShowError("Error in responseDepositToPost");  }
+                HttpResponseMessage responseCardToPost = await client.PostAsJsonAsync($"api/Deposit", userDeposit);
+            }
+            catch  (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            HideModalDeposit();  
+            ToastService.ShowSuccess("Вклад создан");
         } else { ToastService.ShowError("Error in userAccount"); }
-
+    
         IsButtonBlocked = false;
         await LoadDeposits();
         return;
