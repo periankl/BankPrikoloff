@@ -1055,6 +1055,10 @@
                 await LoadCards();
             } else { ToastService.ShowError("Error in responseCardToPost"); }
         } else { ToastService.ShowError("Error in userAccount"); }
+        if (IsAddingLoan == true)
+        {
+            IsAddingLoan = false;
+        }
         IsButtonBlocked = false;
         ownerName = "";
         return;
