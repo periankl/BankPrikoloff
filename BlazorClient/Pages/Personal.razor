@@ -246,7 +246,7 @@
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 <li><a class="dropdown-item" @onclick="() => TypeOf(1)">Базовый, 5%, Минимальная сумма: 1000₽, Минимальный срок: 1 месяц</a></li>
                                                 <li><a class="dropdown-item" @onclick="() => TypeOf(2)">Расширенный, 7%, Минимальная сумма: 10000₽, Минимальный срок: 5% месяцев</a></li>
-                                                <li><a class="dropdown-item" @onclick="() => TypeOf(3)">Накопительный, 3%, Можно класть сколько из когда угодно</a></li>
+                                                <li><a class="dropdown-item" @onclick="() => TypeOf(3)">Накопительный, 3%, Можно класть сколько и снимать когда угодно</a></li>
                                             </ul>
                                         </div> 
                                     </div>
@@ -333,7 +333,7 @@
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 <li><a class="dropdown-item" @onclick="() => TypeOfLoan(1)">Start, 12%, Максимальная сумма: 500 000₽</a></li>
                                                 <li><a class="dropdown-item" @onclick="() => TypeOfLoan(2)">Family comfort, 8%, Максимальная сумма: 10 000 000₽</a></li>
-                                                <li><a class="dropdown-item" @onclick="() => TypeOfLoan(3)">Auto+, 100%, Максимальная сумма:# 3 000 000₽ </a></li>
+                                                <li><a class="dropdown-item" @onclick="() => TypeOfLoan(3)">Auto+, 10%, Максимальная сумма: 3 000 000₽ </a></li>
                                             </ul>
                                             </div>
                                             <div style="padding-bottom: 10px;">
@@ -441,16 +441,12 @@
             return string.Empty;
         }
 
-        // Создаем StringBuilder для эффективной конкатенации строк
         StringBuilder formattedNumber = new StringBuilder();
 
-        // Проходим по строке с шагом 4 символа
         for (int i = 0; i < numberOfCard.Length; i += 4)
         {
-            // Добавляем 4 символа в StringBuilder
             formattedNumber.Append(numberOfCard.Substring(i, Math.Min(4, numberOfCard.Length - i)));
 
-            // Если не последний блок, добавляем пробел
             if (i + 4 < numberOfCard.Length)
             {
                 formattedNumber.Append(" ");
@@ -904,7 +900,7 @@
             {
                 HideModalDeposit();  
                 ToastService.ShowSuccess("Вклад создан");
-            } else { ToastService.ShowError("Error in responseCardToPost");  }
+            } else { ToastService.ShowError("Error in responseDepositToPost");  }
         } else { ToastService.ShowError("Error in userAccount"); }
 
         IsButtonBlocked = false;

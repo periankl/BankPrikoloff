@@ -74,7 +74,7 @@ namespace BankPrikoloff.Controllers
             _context.Deposits.Add(Dto);
             _context.Documents.Add(Dto.Document);
             await _context.SaveChangesAsync();
-            await _depositService.Create(Dto);
+            //await _depositService.Create(Dto);
             return Ok();
         }
         /// <summary>
