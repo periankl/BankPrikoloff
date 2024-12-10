@@ -7,9 +7,10 @@
         <PageTitle>Not found</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
             <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;;">
-                <i style="font-size: 35px;" class="bi bi-emoji-frown"></i>
+            <lottie-player src="./Animations/data.json" background="transparent"  speed="1"  style="width: 150px; height: 150px;" loop autoplay></lottie-player>
+            <h1 style="padding-top: 15px; margin-bottom: 0px;">404</h1>
             <p role="alert" style="text-align: center;">Не прикольно получилось... <br> Такую страницу мы не нашли(</p> 
-            <button style="background-color: black; color:white" onclick="window.history.back()">Вернуться назад</button>
+            <button style="background-color: black; color:white; width: 100%;" onclick="window.history.back()">Вернуться назад</button>
 
             </div>
 
