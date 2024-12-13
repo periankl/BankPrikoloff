@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
+using System.Security.Claims;
 
 namespace BankPrikoloff.Authorization
 {
@@ -25,7 +26,16 @@ namespace BankPrikoloff.Authorization
 
         public string GenerateJwtToken(User account)
         {
-            throw new NotImplementedException();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new System.Security.Claims.ClaimsIdentity(new[] { new Claim("id", account.ClientId) }),
+                Expires = DateTime.UtcNow.AddMinutes(15),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         public async Task<RefreshToken> GenerateRefreshToken(string ipAddress)
@@ -48,7 +58,7 @@ namespace BankPrikoloff.Authorization
             
         }
 
-        public int? ValidateJwtToken(string token)
+        public string? ValidateJwtToken(string token)
         {
             if(token == null)
             {
@@ -68,7 +78,7 @@ namespace BankPrikoloff.Authorization
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var accountId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var accountId = jwtToken.Claims.First(x => x.Type == "id").Value;
 
                 return accountId;
             }

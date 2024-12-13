@@ -25,7 +25,7 @@ namespace BankPrikoloff
                 options => options.UseSqlServer(builder.Configuration["ConnectionString"]));
             builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
             builder.Services.AddScoped<IJwtUtils, JwtUtils>();
-            builder.Services.AddScoped<IAccountService, AccountService >();
+            builder.Services.AddScoped<IAccountJWTService, AccountJWTService >();
             //builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             builder.Services.AddScoped<IUserService, UserService>();

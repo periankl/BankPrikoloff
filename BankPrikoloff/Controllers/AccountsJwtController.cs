@@ -122,7 +122,7 @@ namespace BankPrikoloff.Controllers
             return Ok(new { message = "Password reset successfullm you can now login" });
         }
 
-        [Authorize(roles:2)]
+        [Authorize(2)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AccountResponse>>> GetAll()
         {

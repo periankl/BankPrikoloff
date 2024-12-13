@@ -23,7 +23,7 @@ namespace BusinessLogic.Authorization
             }
             var account = (User)context.HttpContext.Items["User"];
 
-            if(account == null | (_roles.Any() && !_roles.Contains(account.RoleId)))
+            if(account == null || (_roles.Any() && !_roles.Contains(account.RoleId)))
             {
                 context.Result = new JsonResult(new {message = "Unauthorized"}) { StatusCode = StatusCodes.Status401Unauthorized };
             }

@@ -22,7 +22,7 @@ namespace BankPrikoloff.Authorization
             var accountId = jwtUtils.ValidateJwtToken(token);
             if(accountId != null)
             {
-                context.Items["User"] = (await wrapper.User.GetByIdWithToken(accountId.Value.ToString())); //to string
+                context.Items["User"] = (await wrapper.User.GetByIdWithToken(accountId)); //to string
             }
 
             await _next(context);

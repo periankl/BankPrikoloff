@@ -23,20 +23,20 @@ namespace BusinessLogic.Servises
         private readonly IJwtUtils _jwtUtils;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
-        private readonly IEmailService _emailService;
+        //private readonly IEmailService _emailService;
 
         public AccountJWTService(
             IRepositoryWrapper repositoryWrapper,
             IJwtUtils jwtUtils,
             IMapper mapper,
-            IOptions<AppSettings> appSettings,
-            IEmailService emailService)
+            IOptions<AppSettings> appSettings)
+            //IEmailService emailService)
         {
             _repositoryWrapper = repositoryWrapper;
             _jwtUtils = jwtUtils;
             _mapper = mapper;
             _appSettings = appSettings.Value;
-            _emailService = emailService;
+            //_emailService = emailService;
         }
         private void removeOldRefreshTokens(User account)
         {
@@ -70,12 +70,13 @@ namespace BusinessLogic.Servises
                 throw new AppException($"Email '{model.Email}' is already registred");
 
             var account = _mapper.Map<User>(model);
+
             account.Created = DateTime.Now;
             account.Verified = DateTime.UtcNow;
+            account.FirstName = "GGG";
+            account.Password = BCrypt.Net.BCrypt.HashPassword(model.Password); 
 
-            //account.Password = BCrypt.Net.BCrypt.HashPassword(model.Password); пока без хеширования
-
-            await _repositoryWrapper.User.Update(account);
+            await _repositoryWrapper.User.Update(account); //update
             await _repositoryWrapper.Save();
 
             return _mapper.Map<AccountResponse>(account);
@@ -219,9 +220,10 @@ namespace BusinessLogic.Servises
             var isFirstAccount = (await _repositoryWrapper.User.FindAll()).Count == 0;
             account.Created = DateTime.UtcNow;
             account.Verified = DateTime.UtcNow;
+            account.Chat = new Chat();
+            account.ChatId = account.Chat.ChatId;
             account.VerificationToken = await generateVerificationToken();
-
-            //account.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            account.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
             await _repositoryWrapper.User.Create(account);
             await _repositoryWrapper.Save();
@@ -240,7 +242,7 @@ namespace BusinessLogic.Servises
         {
             var account = await getAccountByResetToken(model.Token);
 
-            //account.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            account.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
             account.PasswordReset = DateTime.UtcNow;
             account.ResetToken = null;
             account.ResetTokenExpires = null;
