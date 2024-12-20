@@ -5,21 +5,26 @@ using Domain.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BusinessLogic.Authorization;
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class OperationHistoryController : ControllerBase
+    public class OperationHistoryController : BaseController
     {
         private IOperationHistoryService _operationHistoryService;
-        public OperationHistoryController(IOperationHistoryService operationHistoryService)
+        private IAccountService _accountService;
+        public OperationHistoryController(IOperationHistoryService operationHistoryService, IAccountService accountService)
         {
             _operationHistoryService = operationHistoryService;
+            _accountService = accountService;
         }
         /// <summary>
         /// Получение всех операций
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -29,6 +34,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение операции по ID
         /// </summary>
+        [Authorize(2)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -59,6 +65,13 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateOperationHistoryRequest request)
         {
             var Dto = request.Adapt<OperationHistory>();
+            var Account = await _accountService.GetById(Dto.SenderAccountId);
+
+            if (Account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
+
             Dto.OperationId = Guid.NewGuid().ToString("N").Substring(0, 9);
             await _operationHistoryService.Create(Dto);
             return Ok();
@@ -87,12 +100,19 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Update(CreateOperationHistoryRequest request)
         {
             var Dto = request.Adapt<OperationHistory>();
+            var Account = await _accountService.GetById(Dto.SenderAccountId);
+
+            if (Account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _operationHistoryService.Create(Dto);
             return Ok();
         }
         /// <summary>
         /// Удаление операции по ID
         /// </summary>
+        [Authorize(2)]
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {

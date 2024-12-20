@@ -1,4 +1,5 @@
 ﻿using BankPrikoloff.Contracts;
+using BusinessLogic.Authorization;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Servises;
 using Domain.Models;
@@ -6,11 +7,13 @@ using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class LoanTypeController : ControllerBase
+    public class LoanTypeController : BaseController
     {
         private ILoanTypeService _loanTypeService;
         public LoanTypeController(ILoanTypeService loanTypeService)
@@ -49,6 +52,7 @@ namespace BankPrikoloff.Controllers
         ///     }
         /// </remarks>
         /// <returns></returns>
+        [Authorize(2)]
         [HttpPost]
         public async Task<IActionResult> Add(CreateLoanTypeRequest request)
         {
@@ -71,6 +75,7 @@ namespace BankPrikoloff.Controllers
         ///     }
         /// </remarks>
         /// <returns></returns>
+        [Authorize(2)]
         [HttpPut]
         public async Task<IActionResult> Update(GetLoanTypeRequest request)
         {
@@ -81,6 +86,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Удаление типа кредита по ID
         /// </summary>
+        [Authorize(2)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

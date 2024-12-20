@@ -1,17 +1,16 @@
 ﻿using BankPrikoloff.Contracts;
-using BusinessLogic.Interfaces;
-using BusinessLogic.Servises;
+using BusinessLogic.Authorization;
 using Domain.Interfaces;
 using Domain.Models;
 using Mapster;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private IUserService _userService;
         public UserController(IUserService userService)
@@ -21,6 +20,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение пользователя
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -30,6 +30,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение пользователя по ID
         /// </summary>
+        [Authorize(2)]
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -127,6 +128,11 @@ namespace BankPrikoloff.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
+            var user = await _userService.GetById(id);
+            if (user.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _userService.Delete(id);
             return Ok();
         }

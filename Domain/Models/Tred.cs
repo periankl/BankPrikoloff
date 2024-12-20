@@ -11,7 +11,7 @@ namespace Domain.Models
         }
 
         public int TredId { get; set; }
-        public int? ChatId { get; set; }
+        public int ChatId { get; set; }
         public string? OperatorId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public bool IsClosed { get; set; } = false;

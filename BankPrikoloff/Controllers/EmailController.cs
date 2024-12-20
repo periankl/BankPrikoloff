@@ -5,7 +5,6 @@ using Domain.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mail;
 

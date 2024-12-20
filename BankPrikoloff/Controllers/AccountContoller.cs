@@ -5,12 +5,16 @@ using Domain.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BusinessLogic.Authorization;
+
+
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route(template: "api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController
     {
         private IAccountService _accountService;
         public AccountController(IAccountService accountService)
@@ -20,6 +24,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение информации о всех счетах
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -30,6 +35,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение информации о счете по ID
         /// </summary>
+        [Authorize(2)]
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -43,6 +49,10 @@ namespace BankPrikoloff.Controllers
         [HttpGet("client/{clientId}")]
         public async Task<IActionResult> GetByClientId(string clientId)
         {
+            if (clientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             var account = await _accountService.GetUserAccounts(clientId);
             return Ok(account.Adapt<List<GetAccountRequest>>());
         }
@@ -67,7 +77,12 @@ namespace BankPrikoloff.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CreateAccountRequest request)
         {
+
             var Dto = request.Adapt<Account>();
+            if (Dto.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             Dto.AccountId = Guid.NewGuid().ToString("N").Substring(0, 9);
             await _accountService.Create(Dto);
             return Ok();
@@ -95,7 +110,10 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Update(GetAccountRequest request)
         {
             var Dto = request.Adapt<Account>();
-
+            if (Dto.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _accountService.Update(Dto);
             return Ok();
         }
@@ -105,6 +123,11 @@ namespace BankPrikoloff.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
+            var account = await _accountService.GetById(id);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _accountService.Delete(id);
             return Ok();
         }

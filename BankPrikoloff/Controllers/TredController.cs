@@ -6,13 +6,15 @@ using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using BusinessLogic.Authorization;
 
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class TredController : ControllerBase
+    public class TredController : BaseController
     {
         private ITredService _tredService;
         public TredController(ITredService tredService)
@@ -22,6 +24,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение треда
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -31,6 +34,8 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение треда по ID
         /// </summary>
+        /// 
+        [Authorize(2)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -53,6 +58,7 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateTredRequest request)
         {
             var Dto = request.Adapt<Tred>();
+
             await _tredService.Create(Dto);
             return Ok();
         }
@@ -83,6 +89,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Удаление треда по ID
         /// </summary>
+        [Authorize(2)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

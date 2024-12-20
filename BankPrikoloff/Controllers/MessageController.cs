@@ -1,4 +1,5 @@
 ﻿using BankPrikoloff.Contracts;
+using BusinessLogic.Authorization;
 using BusinessLogic.Interfaces;
 using BusinessLogic.Servises;
 using Domain.Models;
@@ -8,9 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class MessageController : ControllerBase
+    public class MessageController : BaseController
     {
         private IMessageService _messageService;
         public MessageController(IMessageService messageService)
@@ -20,6 +22,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение всех сообщений
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -33,6 +36,10 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var dto = await _messageService.GetById(id);
+            if (dto.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             return Ok(dto.Adapt<GetMessageRequest>());
         }
         /// <summary>
@@ -53,6 +60,10 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Add(CreateMessageRequest request)
         {
             var Dto = request.Adapt<Message>();
+            if (Dto.ClientId != User.ClientId)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _messageService.Create(Dto);
             return Ok();
         }
@@ -77,6 +88,10 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Update(GetMessageRequest request)
         {
             var Dto = request.Adapt<Message>();
+            if (Dto.ClientId != User.ClientId)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _messageService.Create(Dto);
             return Ok();
         }
@@ -86,6 +101,11 @@ namespace BankPrikoloff.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
+            var message = await _messageService.GetById(id);
+            if (message.ClientId != User.ClientId)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _messageService.Delete(id);
             return Ok();
         }

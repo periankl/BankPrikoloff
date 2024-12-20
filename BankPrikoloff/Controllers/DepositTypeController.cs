@@ -5,9 +5,11 @@ using Domain.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BusinessLogic.Authorization;
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DepositTypeController : ControllerBase
@@ -50,6 +52,7 @@ namespace BankPrikoloff.Controllers
         ///     }
         /// </remarks>
         /// <returns></returns>
+        [Authorize(2)]
         [HttpPost]
         public async Task<IActionResult> Add(CreateDepositTypeRequest request)
         {
@@ -75,16 +78,18 @@ namespace BankPrikoloff.Controllers
         ///     }
         /// </remarks>
         /// <returns></returns>
+        [Authorize(2)]
         [HttpPut]
         public async Task<IActionResult> Update(GetDepositTypeRequest request)
         {
             var Dto = request.Adapt<DepositType>();
-            await _depositTypeService.Create(Dto);
+            await _depositTypeService.Update(Dto);
             return Ok();
         }
         /// <summary>
         /// Удаление вклада по ID
         /// </summary>
+        [Authorize(2)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

@@ -6,23 +6,28 @@ using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BusinessLogic.Authorization;
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class DepositController : ControllerBase
+    public class DepositController : BaseController
     {
         private IDepositService _depositService;
         private BankContext _context;
-        public DepositController(BankContext context, IDepositService depositService)
+        private IAccountService _accountService;
+        public DepositController(BankContext context, IDepositService depositService, IAccountService accountService)
         {
             _context = context;
             _depositService = depositService;
+            _accountService = accountService;   
         }
         /// <summary>
         /// Получение всех вкладов
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -64,6 +69,11 @@ namespace BankPrikoloff.Controllers
             Dto.Document.Path = $"/document/{Dto.Document.DocumentId}";
             Dto.Document.CreatedAt = DateTime.Now;
             Dto.Name = $"{Dto.AccountId}Deposit";
+            var account = await _accountService.GetById(Dto.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             _context.Deposits.Add(Dto);
             _context.Documents.Add(Dto.Document);
             await _context.SaveChangesAsync();
@@ -93,7 +103,12 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Update(GetDepositRequest request)
         {
             var Dto = request.Adapt<Deposit>();
-            await _depositService.Create(Dto);
+            var account = await _accountService.GetById(Dto.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
+            await _depositService.Update(Dto);
             return Ok();
         }
         /// <summary>
@@ -102,6 +117,12 @@ namespace BankPrikoloff.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
+            var deposit = await _depositService.GetById(id);
+            var account = await _accountService.GetById(deposit.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _depositService.Delete(id);
             return Ok();
         }

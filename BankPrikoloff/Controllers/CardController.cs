@@ -4,21 +4,27 @@ using Domain.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BusinessLogic.Authorization;
+
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CardController : ControllerBase
+    public class CardController : BaseController
     {
         private ICardService _cardService;
-        public CardController(ICardService cardService)
+        private IAccountService _accountService;
+        public CardController(ICardService cardService, IAccountService accountService)
         {
             _cardService = cardService;
+            _accountService = accountService;
         }
         /// <summary>
         /// Получение всех карт
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -28,6 +34,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение карты по ID
         /// </summary>
+        [Authorize(2)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -38,9 +45,15 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение карт по AccountID
         /// </summary>
+        /// 
         [HttpGet("account/{accountId}")]
         public async Task<IActionResult> GetByAccount(string accountId)
         {
+            var account = await _accountService.GetById(accountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             var card = await _cardService.GetByAccountId(accountId);
             return Ok(card.Adapt<GetCardRequest>());
         }
@@ -70,6 +83,7 @@ namespace BankPrikoloff.Controllers
         ///       "ownerName": "QWERTY QWERTY",
         ///     }
         /// </remarks>
+        
         [HttpPost]
         public async Task<IActionResult> Add(CreateCardRequest request)
         {
@@ -106,6 +120,11 @@ namespace BankPrikoloff.Controllers
             Dto.Cvv = random.Next(100, 1000).ToString();
             Dto.ExpDate = Dto.CreatedAt.AddYears(3);
             Dto.Blocked = false;
+            var account = await _accountService.GetById(Dto.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _cardService.Create(Dto);
             return Ok();
         }
@@ -134,6 +153,11 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Update(GetCardRequest request)
         {
             var card = request.Adapt<Card>();
+            var account = await _accountService.GetById(card.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _cardService.Update(card);
             return Ok();
         }
@@ -143,6 +167,12 @@ namespace BankPrikoloff.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
+            var card = await _cardService.GetById(id);
+            var account = await _accountService.GetById(card.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _cardService.Delete(id);
             return Ok();
         }

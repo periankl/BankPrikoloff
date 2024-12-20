@@ -1,4 +1,5 @@
 using BankPrikoloff.Contracts;
+using BusinessLogic.Authorization;
 using BusinessLogic.Interfaces;
 using Domain.Models;
 using Mapster;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CurrencyController : ControllerBase
@@ -46,6 +48,7 @@ namespace BankPrikoloff.Controllers
         ///         "course": "100000"
         ///     }
         /// </remarks>
+        [Authorize(2)]
         [HttpPost]
         public async Task<IActionResult> Add(CreateCurrencyRequest request)
         {
@@ -66,6 +69,7 @@ namespace BankPrikoloff.Controllers
         ///         "course": "100000"
         ///     }
         /// </remarks>
+        [Authorize(2)]
         [HttpPut]
         public async Task<IActionResult> Update(GetCurrencyRequest request)
         {
@@ -76,6 +80,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Удаление курса валюты по ID
         /// </summary>
+        [Authorize(2)]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

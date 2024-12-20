@@ -140,13 +140,14 @@ namespace BankPrikoloff.Controllers
             var account = await _accountJWTService.GetById(id);
             return Ok();
         }
-        //[Authorize(roles:2)]
-        //[HttpPost]
-        //public async Task<ActionResult<IEnumerable<AccountResponse>>> Create(CreateRequest model)
-        //{
-        //    var account = await _accountJWTService.Create(model);
-        //    return Ok(account);
-        //}
+
+        [Authorize(2)]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<AccountResponse>>> Create(CreateRequest model)
+        {
+            var account = await _accountJWTService.Create(model);
+            return Ok(account);
+        }
 
         [HttpPut("{id:Guid}")]
         public async Task<ActionResult<AccountResponse>> Update(string id, UpdateRequest model)

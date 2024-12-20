@@ -5,12 +5,14 @@ using Domain.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BusinessLogic.Authorization;
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class DocumentController : ControllerBase
+    public class DocumentController : BaseController
     {
         private IDocumentService _documentService;
         public DocumentController(IDocumentService documentService)
@@ -20,6 +22,7 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение всех документов
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -32,7 +35,12 @@ namespace BankPrikoloff.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
+           
             var dto = await _documentService.GetById(id);
+            if (dto.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             return Ok(dto.Adapt<GetDocumentRequest>());
         }
         /// <summary>
@@ -55,6 +63,10 @@ namespace BankPrikoloff.Controllers
             Dto.DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9);
             Dto.Name = $"Doc{Dto.DocumentId}";
             Dto.Path = $"Docs/{Dto.Name}";
+            if (Dto.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _documentService.Create(Dto);
             return Ok();
         }
@@ -79,7 +91,11 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Update(GetDocumentRequest request)
         {
             var Dto = request.Adapt<Document>();
-            await _documentService.Create(Dto);
+            if (Dto.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
+            await _documentService.Update(Dto);
             return Ok();
         }
         /// <summary>
@@ -88,6 +104,11 @@ namespace BankPrikoloff.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
+            var document = await _documentService.GetById(id);
+            if (document.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _documentService.Delete(id);
             return Ok();
         }

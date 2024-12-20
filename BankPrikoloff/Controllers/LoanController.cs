@@ -7,23 +7,28 @@ using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BusinessLogic.Authorization;
 
 namespace BankPrikoloff.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class LoanController : ControllerBase
+    public class LoanController : BaseController
     {
         private ILoanService _loanService;
         private BankContext _context;
-        public LoanController(BankContext context, ILoanService loanService)
+        private IAccountService _accountService;
+        public LoanController(BankContext context, ILoanService loanService, IAccountService accountService)
         {
             _context = context;
             _loanService = loanService;
+            _accountService = accountService;
         }
         /// <summary>
         /// Получение всех кредитов
         /// </summary>
+        [Authorize(2)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -33,10 +38,17 @@ namespace BankPrikoloff.Controllers
         /// <summary>
         /// Получение кредита по ID
         /// </summary>
+       
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
             var dto = await _loanService.GetById(id);
+            var account = await _accountService.GetById(dto.AccountId);
+
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             return Ok(dto.Adapt<GetLoanRequest>());
         }
         /// <summary>
@@ -54,10 +66,16 @@ namespace BankPrikoloff.Controllers
         ///     }
         /// </remarks>
         /// <returns></returns>
+        /// 
         [HttpPost]
         public async Task<IActionResult> Add(CreateLoanRequest request)
         {
             var Dto = request.Adapt<Loan>();
+            var account = await _accountService.GetById(Dto.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             Dto.RemarningAmount = Dto.Amount;
             Dto.Document = new Document();
             Dto.Document.DocumentId = Guid.NewGuid().ToString("N").Substring(0, 9);
@@ -98,6 +116,11 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> Update(GetLoanRequest request)
         {
             var Dto = request.Adapt<Loan>();
+            var account = await _accountService.GetById(Dto.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _loanService.Create(Dto);
             return Ok();
         }
@@ -107,6 +130,12 @@ namespace BankPrikoloff.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
+            var loan = await _loanService.GetById(id);
+            var account = await _accountService.GetById(loan.AccountId);
+            if (account.ClientId != User.ClientId && User.RoleId != 2)
+            {
+                return Unauthorized(new { message = "Unathorized" });
+            }
             await _loanService.Delete(id);
             return Ok();
         }

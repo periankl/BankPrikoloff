@@ -9,7 +9,7 @@ namespace BusinessLogic.Authorization
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
     {
-        private readonly IList<int> _roles; //Сделал массивом
+        private readonly IList<int> _roles; 
         public AuthorizeAttribute(params int[] roles)
         {
             _roles = roles ?? new int[] { };
