@@ -49,7 +49,7 @@ namespace BankPrikoloff.Controllers
             var Dto = await _userService.GetByLogin(login, password);
             return Ok(Dto.Adapt<GetUserRequest>());
         }
-
+        [AllowAnonymous]
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetByEmail(string email)
         {

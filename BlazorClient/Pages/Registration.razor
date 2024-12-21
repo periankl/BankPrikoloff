@@ -246,10 +246,11 @@
         }
 
         isButtonDisabled = true;
+        
 
         HttpClient client = new HttpClient();
-        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
-        HttpResponseMessage response = await client.PostAsJsonAsync("api/User", user);
+        client.BaseAddress = new Uri("https://bankprikoloffapitest.onrender.com/");
+        HttpResponseMessage response = await client.PostAsJsonAsync("api/AccountsJwt/registrer", user);
 
         
         if (response.IsSuccessStatusCode)

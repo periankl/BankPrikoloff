@@ -278,7 +278,7 @@
             isButtonDisabled = true;
 
             HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+            client.BaseAddress = new Uri("https://bankprikoloffapitest.onrender.com/");
 
             HttpResponseMessage response = await client.GetAsync($"api/User/email/{Email}");
 

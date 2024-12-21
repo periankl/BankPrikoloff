@@ -160,7 +160,7 @@
 
         error = false;
         HttpClient client = new HttpClient();
-        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        client.BaseAddress = new Uri("https://bankprikoloffapitest.onrender.com/");
 
         HttpResponseMessage responseCheckEmail = await client.GetAsync($"api/User/email/{fieldEmail}");
 
