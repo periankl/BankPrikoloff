@@ -41,10 +41,10 @@ namespace BusinessLogic.Servises
             {
                 throw new ArgumentNullException(nameof(model));
             }
-            if (!model.ChatId.HasValue)
-            {
-                throw new ArgumentException(nameof(model.ChatId));
-            }
+            //if (!model.ChatId)
+            //{
+            //    throw new ArgumentException(nameof(model.ChatId));
+            //}
             if (model.IsClosed == true & model.ClosedAt == null)
             {
                 throw new ArgumentException(nameof(model.IsClosed));
