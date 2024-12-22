@@ -260,7 +260,7 @@
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloffapitest.onrender.com/");
         user.AcceptTerms = true;
-        HttpResponseMessage response = await client.PostAsJsonAsync("AccountsJwt/registrer", user);
+        HttpResponseMessage response = await client.PostAsJsonAsync("AccountsJwt/register", user);
 
         if (response.IsSuccessStatusCode)
         {
