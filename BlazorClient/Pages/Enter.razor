@@ -3,7 +3,7 @@
 @inject BlazorUser User
 @inject NavigationManager NavigationManager
 @inject IToastService ToastService
-
+@using System;
 @page "/enter"
 <nav class="py-3 navbar navbar-expand-lg fixed-top auto-hiding-navbar navbar-light" style="background-color: white;">
     <div class="container">
@@ -95,7 +95,7 @@
 </section>
 
 @code {
-    User user;
+    User user = new User();
     int code;
     Random random = new Random();
     int step = 0;
@@ -155,6 +155,8 @@
             message = "Некорректный формат почты";
             return;
         }
+        user.Email = fieldEmail;
+
         isButtonDisabled = true;
 
         error = false;
@@ -216,7 +218,7 @@
             if (responseSendEmail.IsSuccessStatusCode)
             {
                 ToastService.ShowInfo("Код отправлен на почту");
-                BlazorUser.User = await responseCheckEmail.Content.ReadFromJsonAsync<User>();
+
             }
             else
             {
@@ -259,14 +261,8 @@
 
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloffapitest.onrender.com/");
-        User user = new User();
-        user.Email = BlazorUser.User.Email;
         user.Password = password;
-        if(BlazorUser.User.Login != login)
-        {
-            ToastService.ShowError("Неверный логин или пароль");
-            return;
-        }
+
         HttpResponseMessage response = await client.PostAsJsonAsync($"AccountsJwt/authenficate", user);
 
         //ShowStatus(response);
@@ -274,13 +270,8 @@
         if (response.IsSuccessStatusCode)
         {
             BlazorUser.User = await response.Content.ReadFromJsonAsync<User>();
-            if (BlazorUser.User.Email != fieldEmail)
-            {
-                ToastService.ShowError("Неправильный логин или пароль");
-                isButtonDisabled = false;
-                return;
-            }
             NavigationManager.NavigateTo("/personal");
+            
         }
         else
             isButtonDisabled = false;
