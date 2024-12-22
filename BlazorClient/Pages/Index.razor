@@ -294,7 +294,8 @@
 
                 var shortErrorResponse = errorResponse.Split('\n')[0];
 
-                if (errorResponse != null && !string.IsNullOrEmpty(errorResponse) && shortErrorResponse  == "System.ArgumentException: Email not registered")
+                if (errorResponse != null && !string.IsNullOrEmpty(errorResponse) && 
+                    shortErrorResponse != null && shortErrorResponse.Equals("{\"message\":\"Email not registered\"}", StringComparison.OrdinalIgnoreCase))                
                 {
                     user.Email = Email;
                     user.FirstName = FirstName;

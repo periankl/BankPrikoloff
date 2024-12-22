@@ -30,6 +30,15 @@ namespace BusinessLogic.Models.Accounts
         public string Password { get; set; }
 
         [Required]
+        public DateTime DateOfBirth { get; set; }
+
+        [Required]
+        public int SeriesPasport { get; set; }
+
+        [Required]
+        public int NumberPasport { get; set; }
+
+        [Required]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
 

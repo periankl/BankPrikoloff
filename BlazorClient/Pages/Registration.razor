@@ -92,7 +92,7 @@
                                         <label for="phone"><b>Пароль</b></label>
                                         <input type="password" class="form-control" id="Password" @bind="user.Password"/>
                                         <label for="phone"><b>Повторите пароль</b></label>
-                                        <input type="password" class="form-control" id="Password" @bind="user.Password"/>
+                                        <input type="password" class="form-control" id="PasswordNew" @bind="user.ConfirmPassword"/>
                                         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
                                             Показать пароль
                                             <input type="checkbox" id="showPassword" onclick="togglePasswordVisibility()">
@@ -101,7 +101,7 @@
                                 </div>
                                 <div class="w-100" style="display: flex; justify-items: center; align-items: center; flex-direction:column;" >
                                     <button type="button" class="btn btn-dark btn-lg w-100" style="margin-bottom: 5%;" @onclick="RegistrateUser" disabled="@isButtonDisabled">Зарегистрироваться</button>
-                                    <button type="button" class="btn btn-dark btn-lg w-100" style="margin-bottom: 5%;" @onclick="RegistrateUser" disabled="@isButtonDisabled">Зарегистрироваться при помощи API V2</button>
+                                    <button type="button" class="btn btn-dark btn-lg w-100" style="margin-bottom: 5%;" @onclick="RegistrateUserNew" disabled="@isButtonDisabled">Зарегистрироваться при помощи API V2</button>
 
                                     <div>
                                         <p style="text-align: center; font-size: smaller;">
@@ -191,6 +191,7 @@
         input.value = formattedValue;
     }
 </script>
+
 @code{
 
     User user;
@@ -217,40 +218,69 @@
 
     }
 
-    private async Task RegistrateUser()
+    private bool Checks()
     {
-        
         string ser = user.SeriesPasport.ToString();
         string num = user.NumberPasport.ToString();
 
         if (ser == null || ser.Length < 4)
         {
-            ToastService.ShowError("Пожалуйста, укажите в профиле корректные паспортные данные");
-            return;
+            ToastService.ShowError("Неверная серия паспорта");
+            return false;
         }
 
         if (num == null || num.Length < 6)
         {
             ToastService.ShowError("Неверный номер паспорта");
-            return;
+            return false;
         }
 
         if(!IsValidUsername(user.Login)){
             ToastService.ShowError("Логин должен содержать не менее 5 символов и хотя бы 3 английские буквы");
-            return;
+            return false;
         }
 
         if(!IsValidPassword(user.Password)){
             ToastService.ShowError("Пароль должен быть минимум 8 символов, содержать 2 английские буквы разного регистра и хотя бы одну цифру.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task RegistrateUserNew()
+    {
+        if (Checks() == false)
+        {
             return;
         }
 
         isButtonDisabled = true;
-        
 
         HttpClient client = new HttpClient();
         client.BaseAddress = new Uri("https://bankprikoloffapitest.onrender.com/");
-        HttpResponseMessage response = await client.PostAsJsonAsync("api/AccountsJwt/registrer", user);
+        user.AcceptTerms = true;
+        HttpResponseMessage response = await client.PostAsJsonAsync("AccountsJwt/registrer", user);
+
+        if (response.IsSuccessStatusCode)
+        {
+            step = 2;
+        }
+        else
+        {
+            isButtonDisabled = false;
+            ToastService.ShowError("Что-то пошло не так");
+        }
+    }
+
+    private async Task RegistrateUser()
+    {
+
+        isButtonDisabled = true;
+
+        HttpClient client = new HttpClient();
+        client.BaseAddress = new Uri("https://bankprikoloff.onrender.com/");
+        HttpResponseMessage response = await client.PostAsJsonAsync("api/User", user);
 
         
         if (response.IsSuccessStatusCode)

@@ -10,8 +10,6 @@ namespace BusinessLogic.Models.Accounts
 {
     public class CreateRequest
     {
-        [Required]
-        public string Title { get; set; }
 
         [Required]
         public string FirstName { get; set; }
