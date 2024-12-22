@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using static System.Net.WebRequestMethods;
 
 namespace BankPrikoloff
 {
@@ -52,7 +53,7 @@ namespace BankPrikoloff
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Version = "v1",
+                    Version = "v2",
                     Title = "Prikoloff API",
                     Description = "API BankPrikoloff",
                     Contact = new OpenApiContact
@@ -210,9 +211,8 @@ namespace BankPrikoloff
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
             app.UseCors(builder => builder
-                .WithOrigins(new[] { "https://bankprikoloff.onrender.com/", "https://bankprikoloffapitest.onrender.com/" })
+                .WithOrigins(new[] { "https://bankprikoloff.onrender.com/", "https://bankprikoloffapitest.onrender.com/", "http://localhost:7269/" })
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowAnyOrigin());
