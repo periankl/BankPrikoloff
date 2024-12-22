@@ -17,8 +17,6 @@ namespace BusinessLogic.Models.Accounts
 
         [Required]
         public string LastName { get; set; }
-
-        [Required]
         public string Patronomic { get; set; }
 
         [Required]

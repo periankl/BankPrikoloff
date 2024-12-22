@@ -59,7 +59,14 @@ namespace BankPrikoloff.Controllers
         public async Task<IActionResult> GetByEmail(string email)
         {
             var Dto = await _userService.GetByEmail(email);
-            return Ok(Dto.Adapt<GetUserRequest>());
+            if (Dto != null)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound("Пользователь с указанным email не найден.");
+            }
         }
 
 
