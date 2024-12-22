@@ -215,7 +215,7 @@ namespace BankPrikoloff
                 .WithOrigins(new[] { "https://bankprikoloff.onrender.com/", "https://bankprikoloffapitest.onrender.com/" })
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowCredentials());
+                .AllowAnyOrigin());
 
             //CORS для локальной разработки
             /*             app.UseCors(builder => builder.WithOrigins(new[] { "http://localhost:7269/", })
