@@ -211,11 +211,23 @@ namespace BankPrikoloff
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseCors(builder => builder
-                .WithOrigins(new[] { "https://bankprikoloff.onrender.com/", "https://bankprikoloffapitest.onrender.com/", "http://localhost:7269/" })
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowAnyOrigin());
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins", builder =>
+                {
+                    builder.WithOrigins(
+                            "https://bankprikoloff.onrender.com",
+                            "https://bankprikoloffapitest.onrender.com",
+                            "http://localhost:7269"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials(); 
+                });
+            });
+
+            app.UseCors("AllowSpecificOrigins"); 
 
             //CORS для локальной разработки
             /*             app.UseCors(builder => builder.WithOrigins(new[] { "http://localhost:7269/", })

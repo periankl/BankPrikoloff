@@ -270,6 +270,15 @@
         if (response.IsSuccessStatusCode)
         {
             BlazorUser.User = await response.Content.ReadFromJsonAsync<User>();
+            var responseCookies = response.Headers.SingleOrDefault(header => header.Key == "Set-Cookie").Value;
+            if (responseCookies != null)
+            {
+                foreach (var cookie in responseCookies)
+                {
+                    // Сохраняем cookie в локальном хранилище или в памяти
+                    await JSRuntime.InvokeVoidAsync("eval", $"document.cookie = '{cookie}'");
+                }
+            }
             NavigationManager.NavigateTo("/personal");
             
         }
