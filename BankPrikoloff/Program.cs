@@ -101,6 +101,22 @@ namespace BankPrikoloff
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins", builder =>
+                {
+                    builder.WithOrigins(
+                            "https://bankprikoloff.onrender.com",
+                            "https://bankprikoloffapitest.onrender.com",
+                            "http://localhost:7269"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
+
 
 
             var app = builder.Build();
@@ -212,22 +228,8 @@ namespace BankPrikoloff
                 app.UseSwaggerUI();
             }
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowSpecificOrigins", builder =>
-                {
-                    builder.WithOrigins(
-                            "https://bankprikoloff.onrender.com",
-                            "https://bankprikoloffapitest.onrender.com",
-                            "http://localhost:7269"
-                        )
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials(); 
-                });
-            });
+            app.UseCors("AllowSpecificOrigins");
 
-            app.UseCors("AllowSpecificOrigins"); 
 
             //CORS для локальной разработки
             /*             app.UseCors(builder => builder.WithOrigins(new[] { "http://localhost:7269/", })
